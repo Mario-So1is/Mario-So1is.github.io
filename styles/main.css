@@ -39,7 +39,7 @@ main {
     clear: left;
 }
 main h3 {
-    margin: 3em 2em 1.5em auto;
+    margin: 3em 2em 1.5em;
     border: 5px double blue;
     border-radius: 20px;
     box-shadow: 3px 3px 4px red;
