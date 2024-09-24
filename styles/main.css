@@ -11,6 +11,7 @@ body {
     border: 1px solid black;
     border-radius: 20px;
     box-shadow: 5px 5 px 0 0;
+    background-image: url("../images/SHSU_athletics_logo.svg.png");
     background-repeat: repeat-y;
     background-attachment: fixed;
 }
@@ -39,6 +40,10 @@ main {
 }
 main h3 {
     margin-top: 3em;
+    margin-left: 2em;
+    margin-bottom: 1.5em;
+    border: 5px double blue;
+    
     font-size: 105%;
 }
 #list {
