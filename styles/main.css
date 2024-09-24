@@ -11,9 +11,9 @@ body {
     border: 1px solid black;
     border-radius: 20px;
     box-shadow: 5px 5 px 0 0;
+    background-image: url("../images/Orange+Box.png");
     background-repeat: repeat-y;
     background-attachment: fixed;
-    background-image: url("../images/SHSU_athletics_logo.png");
 }
 a:focus, a:hover {
     font-style: italic;
@@ -55,6 +55,15 @@ main nav {
     box-shadow: 3px 3px 4px 4px red;
     padding: 0.5em;
 
+
+}
+
+main div.contact{
+    margin: 1.5em 2em 1.5em;
+    border: 5px dashed blue;
+    border-radius: 20px;
+    box-shadow: 3px 3px 4px 4px red;
+    padding: 1em;
 
 }
 #list {
