@@ -13,7 +13,7 @@ body {
     box-shadow: 5px 5 px 0 0;
     background-image: url("../images/Orange+Box.png");
     background-repeat: repeat-y;
-    background-position: left top;
+    background-position: right;
     background-attachment: fixed;
 }
 a:focus, a:hover {
@@ -41,7 +41,7 @@ main {
 }
 main h3 {
     margin: 3em 2em 1.5em;
-    border: 5px double blue;
+    border: 5px dashed, blue;
     border-radius: 20px;
     box-shadow: 3px 3px 4px red;
     padding: 1em;
@@ -51,7 +51,7 @@ main h3 {
 main nav {
     margin: 1.5em 2em 1.5em;
     border: 5px;
-    border-style: dashed blue;
+    border-style: dashed, blue;
     border-radius: 20px;
     box-shadow: 3px 3px 4px 4px red;
     padding: 0.5em;
@@ -61,7 +61,7 @@ main nav {
 
 main div.contact{
     margin: 1.5em 2em 1.5em;
-    border: 5px dashed blue;
+    border: 5px dashed, blue;
     border-radius: 20px;
     box-shadow: 3px 3px 4px 4px red;
     padding: 1em;
