@@ -62,14 +62,25 @@ article p::first-letter{
     font-style: italic;
     color: lightgreen;
 }
+
 aside{
     width: 20%;
     float: right;
     background-color: #ffebc6;
     padding-left: 2em;
     padding-bottom: 2em;
-
 }
+
+aside{
+    width: 350px;
+    padding: 20px;
+    background-color: #ffebc6;
+    position: fixed;
+    right: 0;
+    top: 170px;
+}
+
+
 footer{
     clear: both;
     border-top: 2px solid maroon;
