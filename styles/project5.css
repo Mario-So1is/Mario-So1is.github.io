@@ -18,9 +18,9 @@ a:focus, a:hover {
     border: 3px blue;
     border-style: dotted solid;
 }
-header {
+header{
     clear: both;
-    border-top: 2px solid maroon;
+    border-bottom: 2px solid maroon;
 }
 
 header h1 {
