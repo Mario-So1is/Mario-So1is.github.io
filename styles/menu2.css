@@ -5,32 +5,40 @@
     box-sizing: border-box;
 }
 
-/* Navigation Bar */
-nav {
-    background-color: #333;
-    overflow: hidden;
+/* Navigation Menu Styling */
+#nav_menu ul {
+    list-style-type: none;
 }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
+#nav_menu ul li {
+    float: left;
 }
 
-nav ul li {
-    display: inline;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
+#nav_menu ul li a {
+    text-align: center;
     display: block;
+    width: 175px;
+    padding: 1em 0;
+    text-decoration: none;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border-right: 2px solid white;
 }
 
-nav ul li a:hover {
-    background-color: #575757;
+#nav_menu ul li a.lastitem {
+    border-right: none;
+}
+
+#nav_menu ul li a.current {
+    color: yellow;
+}
+
+/* Clear floats after the navigation menu */
+nav::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 /* Article Styling */
