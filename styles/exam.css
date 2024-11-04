@@ -1,0 +1,53 @@
+/* Body Styling */
+body {
+    width: 95%;
+    margin: 15px auto;
+    background-image: url('background.jpg');
+    background-position: right;
+    background-repeat: repeat-y;
+    background-attachment: fixed;
+}
+
+/* Navigation Styling */
+nav ul {
+    display: flex;
+    list-style: none;
+    justify-content: space-around;
+    border-bottom: 1px solid black;
+    padding: 0;
+}
+
+nav ul li {
+    padding: 10px;
+}
+
+/* Article Styling */
+article {
+    width: 75%;
+    padding: 10px;
+}
+
+article h2 {
+    border-top: 1px solid black;
+}
+
+/* First Letter Styling */
+.first-letter {
+    font-size: 2em;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Aside Styling */
+aside {
+    width: 20%;
+    position: fixed;
+    top: 100px;
+}
+
+/* Footer Styling */
+footer {
+    border-top: 1px solid black;
+    text-align: center;
+    padding: 10px;
+}
