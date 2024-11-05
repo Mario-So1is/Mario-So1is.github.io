@@ -1,0 +1,148 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family:Arial, Helvetica, sans-serif;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #00539B;
+  }
+  
+  header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FFF;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  nav ul li a {
+    color: #FFF;
+    text-decoration: none;
+    padding: 0.5rem;
+    transition: background 0.3s;
+  }
+  
+  nav ul li a:hover {
+    background-color: #003f6f;
+    border-radius: 5px;
+  }
+  
+  /* Welcome Section */
+  .welcome {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .welcome h1 {
+    font-size: 2rem;
+    color: #00539B;
+  }
+  
+  .welcome img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 1rem;
+  }
+  
+  /* Icon Section */
+  .icons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .icon {
+    text-align: center;
+  }
+  
+  .icon img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .icon p {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Quick Links */
+  .quick-links {
+    padding: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .quick-links h2 {
+    font-size: 1.2rem;
+    color: #00539B;
+    margin-bottom: 0.5rem;
+  }
+  
+  .quick-links ul {
+    list-style: none;
+  }
+  
+  .quick-links ul li a {
+    color: #00539B;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 0;
+    transition: color 0.3s;
+  }
+  
+  .quick-links ul li a:hover {
+    color: #003f6f;
+  }
+  
+  /* Info Boxes */
+  .info-boxes {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .info-boxes .box {
+    flex: 1;
+    background-color: #FFF;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 5px;
+  }
+  
+  .info-boxes .box h3 {
+    font-size: 1rem;
+    color: #00539B;
+  }
+  
+  .info-boxes .box ul {
+    list-style: none;
+    padding: 0.5rem 0;
+  }
+  
+  .info-boxes .box ul li a {
+    color: #00539B;
+    text-decoration: none;
+  }
+  
+  .info-boxes .box ul li a:hover {
+    color: #003f6f;
+  }
+  
