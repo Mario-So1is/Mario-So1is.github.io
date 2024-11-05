@@ -38,7 +38,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 100%;
-    width: 1000px;
+    width: 95%;
     background-color: white;
     margin: 15px auto;
     padding: 15px 1.5em;
@@ -123,7 +123,7 @@ footer {
     border-top: 4px solid blue;
     text-align: center;
     padding: 1em 0;
-    margin-top: 431.3em;
+    margin-top: 247em;
 }
 
 /* Copyright Styling */
