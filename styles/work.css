@@ -6,9 +6,15 @@
   }
   
   body {
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
     color: #333;
     line-height: 1.6;
+  }
+  
+  /* Accent Color */
+  :root {
+    --accent-orange: #F05A28; /* Orange accent color */
+    --primary-blue: #00539B; /* Primary blue color */
   }
   
   /* Header */
@@ -17,7 +23,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background-color: #00539B;
+    background-color: var(--primary-blue);
   }
   
   header .logo {
@@ -40,7 +46,7 @@
   }
   
   nav ul li a:hover {
-    background-color: #003f6f;
+    background-color: var(--accent-orange);
     border-radius: 5px;
   }
   
@@ -52,7 +58,12 @@
   
   .welcome h1 {
     font-size: 2rem;
-    color: #00539B;
+    color: var(--primary-blue);
+  }
+  
+  .welcome p {
+    color: var(--accent-orange);
+    margin-top: 0.5rem;
   }
   
   .welcome img {
@@ -81,6 +92,7 @@
   .icon p {
     margin-top: 0.5rem;
     font-size: 0.9rem;
+    color: var(--accent-orange);
   }
   
   /* Quick Links */
@@ -91,8 +103,10 @@
   
   .quick-links h2 {
     font-size: 1.2rem;
-    color: #00539B;
+    color: var(--primary-blue);
     margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-orange);
+    display: inline-block;
   }
   
   .quick-links ul {
@@ -100,7 +114,7 @@
   }
   
   .quick-links ul li a {
-    color: #00539B;
+    color: var(--primary-blue);
     text-decoration: none;
     display: block;
     padding: 0.5rem 0;
@@ -108,7 +122,7 @@
   }
   
   .quick-links ul li a:hover {
-    color: #003f6f;
+    color: var(--accent-orange);
   }
   
   /* Info Boxes */
@@ -125,11 +139,18 @@
     border: 1px solid #ddd;
     padding: 1rem;
     border-radius: 5px;
+    transition: border-color 0.3s;
+  }
+  
+  .info-boxes .box:hover {
+    border-color: var(--accent-orange);
   }
   
   .info-boxes .box h3 {
     font-size: 1rem;
-    color: #00539B;
+    color: var(--primary-blue);
+    border-bottom: 2px solid var(--accent-orange);
+    padding-bottom: 0.5rem;
   }
   
   .info-boxes .box ul {
@@ -138,11 +159,11 @@
   }
   
   .info-boxes .box ul li a {
-    color: #00539B;
+    color: var(--primary-blue);
     text-decoration: none;
   }
   
   .info-boxes .box ul li a:hover {
-    color: #003f6f;
+    color: var(--accent-orange);
   }
   
