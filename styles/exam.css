@@ -90,7 +90,7 @@ article {
     width: 70%;
     float: left;
     column-count: 3;
-    column-rule: 2px dashed blue;
+    column-rule: 5px dashed blue;
     column-gap: 2em;
     margin-left: 2em;
 }
@@ -111,7 +111,7 @@ article p::first-letter {
 }
 
 /* Footer Styling */
-}footer {
+footer {
     border-top: 2px solid blue;
     text-align: center;
     padding: 1em 0;
@@ -120,6 +120,6 @@ article p::first-letter {
 
 /* Copyright Styling */
 footer .copyright {
-    font-size: 1em;
+    font-size: 0.9em;
     color: black;
 }
