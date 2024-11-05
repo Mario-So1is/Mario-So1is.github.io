@@ -61,3 +61,10 @@ p.fixed{
     right: 20px;
     bottom: 450px;
 }
+
+article img{
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 1em;
+
+}
