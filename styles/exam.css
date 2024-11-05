@@ -112,7 +112,7 @@ article p::first-letter {
 
 /* Footer Styling */
 footer {
-    border-top: 2px solid blue;
+    border-top: 4px solid blue;
     text-align: center;
     padding: 1em 0;
     margin-top: 431.3em;
