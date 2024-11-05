@@ -40,10 +40,6 @@ body {
     background-attachment: fixed;
 }
 
-header{
-    border-bottom: 3px solid maroon;
-}
-
 aside{
     width: 25%;
     float: right;
