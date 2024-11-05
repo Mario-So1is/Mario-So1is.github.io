@@ -44,3 +44,20 @@ footer{
     border-top: 3px solid maroon;
     text-align: center;
 }
+
+aside{
+    width: 20%;
+    float: right;
+    background-color: #ffebc6;
+    padding-left: 2em;
+    padding-bottom: 2em;
+}
+
+p.fixed{
+    width: 200px;
+    padding: 20px;
+    background-color: #ffebc6;
+    position: fixed;
+    right: 20px;
+    bottom: 450px;
+}
