@@ -52,11 +52,13 @@ body {
 }
 
 h1{
-    color: blue
+    color: blue;
+    padding: 0.5em
 }
 
 h2{
-    color: blue
+    color: blue;
+    padding: 0.5em;
 }
 
 /* Header Styling */
@@ -73,8 +75,7 @@ aside {
     float: right;
     background-color: lightblue;
     padding: 2em;
-    margin-top: 20px;
-    overflow-y: scroll;
+    margin-top: 2px;
 }
 
 /* Ordered and Unordered List Styles in Aside */
@@ -124,7 +125,7 @@ footer {
     border-top: 4px solid blue;
     text-align: center;
     padding: 1em 0;
-    margin-top: 247em;
+    margin-top: 249.8em;
 }
 
 /* Copyright Styling */
