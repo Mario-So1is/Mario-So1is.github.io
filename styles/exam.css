@@ -89,8 +89,8 @@ article {
     clear: left;
     width: 70%;
     float: left;
-    column-count: 2;
-    column-rule: 2px dotted maroon;
+    column-count: 3;
+    column-rule: 2px dashed blue;
     column-gap: 2em;
     margin-left: 2em;
 }
@@ -111,15 +111,15 @@ article p::first-letter {
 }
 
 /* Footer Styling */
-footer {
-    border-top: 2px solid maroon;
+}footer {
+    border-top: 2px solid blue;
     text-align: center;
     padding: 1em 0;
-    margin-top: 390em;
+    margin-top: 431.3em;
 }
 
 /* Copyright Styling */
 footer .copyright {
-    font-size: 0.9em;
-    color: gray;
+    font-size: 1em;
+    color: black;
 }
