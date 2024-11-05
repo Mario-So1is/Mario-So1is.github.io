@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+/* Nav Menu Styling */
 #nav_menu ul {
     list-style-type: none;
 }
@@ -24,6 +25,16 @@
     border-right: 2px solid white;
 }
 
+/* Set active and last item styles */
+#nav_menu ul li a.current {
+    background-color: darkblue;
+}
+
+#nav_menu ul li a.lastitem {
+    border-right: none;
+}
+
+/* Main Body Styling */
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 100%;
@@ -40,48 +51,43 @@ body {
     background-attachment: fixed;
 }
 
-header{
+/* Header Styling */
+header {
+    text-align: center;
     border-bottom: 2px solid maroon;
+    padding: 1em 0;
+    margin-bottom: 20px;
 }
 
-aside{
+/* Aside Styling */
+aside {
     width: 25%;
     float: right;
     background-color: lightblue;
-    padding-left: 2em;
-    padding-bottom: 2em;
+    padding: 2em;
+    margin-top: 20px;
 }
 
-aside{
-    
-}
-
-p.fixed{
-    width: 200px;
-    padding: 20px;
-    background-color: #ffebc6;
-    position: fixed;
-    right: 20px;
-    bottom: 450px;
-}
-
-article img{
-    float: left;
-    margin-right: 1em;
+/* Ordered and Unordered List Styles in Aside */
+aside ol {
+    list-style-type: upper-roman;
     margin-bottom: 1em;
-
 }
 
-article p::first-letter{
-    font-size: 3em;
-    font-weight: bold;
-    font-style: italic;
-    color: black;
+aside ul {
+    list-style-type: square;
+    margin-left: 1.5em;
 }
 
-article{
+/* Return to Top Link */
+aside p {
+    margin-top: 20px;
+}
+
+/* Article Styling */
+article {
     clear: left;
-    width: 75%;
+    width: 70%;
     float: left;
     column-count: 2;
     column-rule: 2px dotted maroon;
@@ -89,7 +95,31 @@ article{
     margin-left: 2em;
 }
 
-footer{
+/* Article Image and Paragraph Styling */
+article img {
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    width: 160px; /* Fixed width to match the provided image */
+}
+
+article p::first-letter {
+    font-size: 3em;
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+}
+
+/* Footer Styling */
+footer {
     border-top: 2px solid maroon;
     text-align: center;
+    padding: 1em 0;
+    margin-top: 20px;
+}
+
+/* Copyright Styling */
+footer .copyright {
+    font-size: 0.9em;
+    color: gray;
 }
