@@ -46,7 +46,7 @@ footer{
 }
 
 aside{
-    width: 20%;
+    width: 25%;
     float: right;
     background-color: #ffebc6;
     padding-left: 2em;
@@ -67,4 +67,13 @@ article img{
     margin-right: 1em;
     margin-bottom: 1em;
 
+}
+article{
+    clear: left;
+    width: 75%;
+    float: left;
+    column-count: 2;
+    column-rule: 2px dotted maroon;
+    column-gap: 2em;
+    margin-left: 2em;
 }
