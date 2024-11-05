@@ -74,6 +74,7 @@ aside {
     background-color: lightblue;
     padding: 2em;
     margin-top: 20px;
+    overflow-y: scroll;
 }
 
 /* Ordered and Unordered List Styles in Aside */
