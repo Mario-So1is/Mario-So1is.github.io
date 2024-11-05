@@ -40,9 +40,8 @@ body {
     background-attachment: fixed;
 }
 
-footer{
-    border-top: 2px solid maroon;
-    text-align: center;
+header{
+    border-bottom: 3px solid maroon;
 }
 
 aside{
@@ -76,4 +75,9 @@ article{
     column-rule: 2px dotted maroon;
     column-gap: 2em;
     margin-left: 2em;
+}
+
+footer{
+    border-top: 2px solid maroon;
+    text-align: center;
 }
