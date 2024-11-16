@@ -28,5 +28,20 @@ table.second th, table.second td {
 }
 
 table.third{
-    
+    border-collapse: collapse;
+    border: 2px solid lightgreen;
+    caption-side: top;
 }
+
+table.third th{
+    background-color: lightgreen;
+}
+
+table.third{
+    padding: 0.7em;
+    vertical-align: top;
+}
+
+table.third thead tr:first-child{
+    border-top: 2px solid orangered;
+} 
