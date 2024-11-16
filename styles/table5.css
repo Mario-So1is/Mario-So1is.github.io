@@ -28,49 +28,5 @@ table.second th, table.second td {
 }
 
 table.third{
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-family: Arial, sans-serif;
-}
-
-table.third thead tr:first-child {
-    border-top: 2px solid orangered;
-    border-bottom: 2px solid orangered;
-}
-
-table.third thead tr {
-    background-color: #90ee90;
-}
-
-table.third thead tr th {
-    padding: 10px;
-    font-weight: bold;
-}
-
-table.third tbody tr {
-    border-bottom: 1px solid #000;
-}
-
-table.third tbody tr:nth-child(3) {
-    border-bottom: 2px solid orangered;
-}
-
-table.third tbody tr td {
-    padding: 5px 10px;
-    vertical-align: top;
-}
-
-table.third tbody tr:last-child {
-    border-bottom: none;
-}
-
-@media only screen and (max-width: 425px) {
-    th, td {
-    display: block;
-    }
-    thead, td.number {
-    display: none;
-    padding: 0;
-    }
+    
 }
