@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply to SHSU - Static Version</title>
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: #002855;
+      color: white;
+      padding: 1em 2em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5em;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-box {
+      padding: 0.5em;
+      border: none;
+      border-radius: 4px;
+      width: 0;
+      opacity: 0;
+      transition: width 0.4s ease, opacity 0.4s ease;
+    }
+
+    .search-box.visible {
+      width: 200px;
+      opacity: 1;
+    }
+
+    .search-icon {
+      background: white;
+      border: none;
+      padding: 0.5em;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 2em;
+      background: #f2f2f2;
+    }
+
+    .hero img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .hero-text {
+      margin-top: 1em;
+    }
+
+    /* Cards Section */
+    .options {
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 2em;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #f4f4f4;
+      padding: 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      width: 280px;
+      text-align: center;
+    }
+
+    .card button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      background-color: #002855;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Footer Styles */
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <h1>Apply to SHSU</h1>
+    <div class="search-container">
+      <button class="search-icon" onclick="toggleSearch()">🔍</button>
+      <input type="text" id="searchBox" class="search-box" placeholder="Search...">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Undergraduate</a></li>
+        <li><a href="#">Graduate</a></li>
+        <li><a href="#">International</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="https://via.placeholder.com/1400x300" alt="Hero Placeholder">
+    <div class="hero-text">
+      <h1>Your Journey Starts Here</h1>
+      <p>Choose your path and start your application to Sam Houston State University.</p>
+    </div>
+  </section>
+
+  <!-- Application Cards Section -->
+  <section class="options">
+    <div class="card">
+      <h3>Freshman</h3>
+      <p>Apply as a first-time college student.</p>
+      <button onclick="alert('Apply as Freshman')">Start Application</button>
+    </div>
+    <div class="card">
+      <h3>Transfer</h3>
+      <p>Continue your education at SHSU.</p>
+      <button onclick="alert('Apply as Transfer')">Start Application</button>
+    </div>
+    <div class="card">
+      <h3>Graduate</h3>
+      <p>Advance your academic career.</p>
+      <button onclick="alert('Apply as Graduate')">Start Application</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 SHSU (Mockup for Educational Use)</p>
+  </footer>
+
+  <!-- Script Section -->
+  <script>
+    function toggleSearch() {
+      const box = document.getElementById('searchBox');
+      box.classList.toggle('visible');
+      if (box.classList.contains('visible')) {
+        box.focus();
+      } else {
+        box.value = '';
+      }
+    }
+  </script>
+</body>
+</html>
