@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sam Houston State University (Example)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      background: #002855;
+      color: #fff;
+      padding: 1em 2em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5em;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .search-container {
+      position: relative;
+      margin-top: 0.5em;
+    }
+    .search-box {
+      padding: 0.5em;
+      border: none;
+      border-radius: 4px;
+      width: 0;
+      opacity: 0;
+      transition: width 0.4s ease, opacity 0.4s ease;
+    }
+    .search-box.visible {
+      width: 200px;
+      opacity: 1;
+    }
+    .search-icon {
+      background: white;
+      border: none;
+      padding: 0.5em;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .hero {
+      background: url('https://via.placeholder.com/1400x400') center/cover;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+      font-size: 2em;
+    }
+    .section {
+      padding: 2em;
+    }
+    .cards {
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+    .card {
+      flex: 1 1 calc(33.333% - 2em);
+      background: #f4f4f4;
+      padding: 1em;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      margin-top: 3em;
+    }
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+      }
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      background: #002855;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    .dropdown-content a:hover {background-color: #f1f1f1;}
+    .dropdown:hover .dropdown-content {display: block;}
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sam Houston State University</h1>
+    <div class="search-container">
+      <button class="search-icon" onclick="toggleSearch()">🔍</button>
+      <input type="text" id="searchBox" class="search-box" placeholder="Search..." />
+    </div>
+    <nav>
+      <ul>
+        <li class="dropdown">
+          <a href="#">Admissions</a>
+          <div class="dropdown-content">
+            <a href="#">Undergraduate</a>
+            <a href="#">Graduate</a>
+            <a href="#">International</a>
+          </div>
+        </li>
+        <li><a href="#">Academics</a></li>
+        <li><a href="#">Campus Life</a></li>
+        <li><a href="#">Research</a></li>
+        <li><a href="#">Athletics</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>Welcome to Bearkat Country</div>
+  </div>
+
+  <section class="section">
+    <h2>News & Announcements</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Story Title 1</h3>
+        <p>Sample summary of the news or announcement with a link to read more.</p>
+        <button class="btn" onclick="openModal('Story Title 1')">Read More</button>
+      </div>
+      <div class="card">
+        <h3>Story Title 2</h3>
+        <p>Another news snippet students might be interested in.</p>
+        <button class="btn" onclick="openModal('Story Title 2')">Read More</button>
+      </div>
+      <div class="card">
+        <h3>Story Title 3</h3>
+        <p>Event information or highlight goes here.</p>
+        <button class="btn" onclick="openModal('Story Title 3')">Read More</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Quick Links</h2>
+    <ul>
+      <li><a href="#">Apply Now</a></li>
+      <li><a href="#">Visit Campus</a></li>
+      <li><a href="#">Request Info</a></li>
+      <li><a href="#">Give to SHSU</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Sam Houston State University (Example Only)</p>
+  </footer>
+
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p id="modal-text"></p>
+    </div>
+  </div>
+
+  <script>
+    function showAlert(title) {
+      alert('You clicked on ' + title);
+    }
+
+    function openModal(title) {
+      document.getElementById("modal-text").innerText = "You selected: " + title;
+      document.getElementById("myModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("myModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      let modal = document.getElementById("myModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    function toggleSearch() {
+      const searchBox = document.getElementById("searchBox");
+      searchBox.classList.toggle("visible");
+      if (searchBox.classList.contains("visible")) {
+        searchBox.focus();
+      } else {
+        searchBox.value = "";
+      }
+    }
+  </script>
+</body>
+</html>
