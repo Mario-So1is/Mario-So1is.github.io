@@ -4,6 +4,1171 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Apply Now | SamPoly</title>
+  <style>
+          /* Font Imports */
+    @font-face {
+      font-family: GTAmericaStandardLight;
+      src: url("/fonts/GT-America-Standard-Light.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: GTAmericaStandardMedium;
+      src: url("/fonts/GT-America-Standard-Medium.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: GTFlexaCondensedMedium;
+      src: url("/fonts/GT-Flexa-Condensed-Medium.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: GTFlexaCondensedRegular;
+      src: url("/fonts/GT-Flexa-Condensed-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: GTFlexaExpandedRegular;
+      src: url("/fonts/GT-Flexa-Expanded-Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: GTFlexaXCompressedMedium;
+      src: url("/fonts/GT-Flexa-X-Compressed-Medium.otf") format("opentype");
+    }
+
+    /* CSS Variables */
+    :root {
+      --color-primary: #f56423;
+      --color-primary-darker: hsl(from var(--color-primary) h s calc(l - 5));
+      --color-primary-darkest: hsl(from var(--color-primary) h s calc(l - 10));
+      --color-secondary: #ffffff;
+      --color-accent: #004853;
+      --color-accent-darker: hsl(from var(--color-accent) h s calc(l - 5));
+      --color-accent-darkest: hsl(from var(--color-accent) h s calc(l - 10));
+      --color-supporting-1: #ddcdae;
+      --color-supporting-2: #465d7b;
+      --color-supporting-2-darker: hsl(from var(--color-supporting-2) h s calc(l - 5));
+      --color-supporting-2-darkest: hsl(from var(--color-supporting-2) h s calc(l - 10));
+      --text-color: #333;
+      --font-family-intro-body: 'GTAmericaStandardMedium', sans-serif;
+      --font-family-body: 'GTAmericaStandardLight', sans-serif;
+      --font-family-headline: 'GTFlexaXCompressedMedium', sans-serif;
+      --font-family-alt-headline: 'GTFlexaCondensedMedium', sans-serif;
+      --font-family-subheadline: 'GTFlexaExpandedRegular', sans-serif;
+    }
+
+    /* Foundation Overrides */
+    a {
+      color: var(--color-supporting-2);
+    }
+
+    a:focus,
+    a:hover {
+      color: var(--color-supporting-2-darker);
+    }
+
+    a.primary {
+      color: var(--color-primary);
+    }
+
+    a.primary:focus,
+    a.primary:hover {
+      color: var(--color-primary-darker);
+    }
+
+    a.secondary {
+      color: var(--color-secondary);
+    }
+
+    .button.primary {
+      display: inline-block;
+      border: 2px solid var(--color-primary);
+      border-radius: 0 2rem 2rem 0;
+      padding: 0.75rem 1.5rem;
+      color: var(--color-secondary);
+      font-family: var(--font-family-body);
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      background: var(--color-primary);
+    }
+
+    .button.primary:hover {
+      color: var(--color-primary);
+      background: var(--color-secondary);
+    }
+
+    .button.primary.disabled,
+    .button.primary.disabled:focus,
+    .button.primary.disabled:hover,
+    .button.primary[disabled],
+    .button.primary[disabled]:focus,
+    .button.primary[disabled]:hover {
+      opacity: .35;
+      color: #fefefe;
+      background-color: var(--color-primary);
+    }
+
+    .button.secondary {
+      display: inline-block;
+      border: 2px solid var(--color-accent);
+      border-radius: 0 2rem 2rem 0;
+      padding: 0.75rem 1.5rem;
+      color: var(--color-secondary);
+      font-family: var(--font-family-body);
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      background: var(--color-accent);
+    }
+
+    .button.secondary:hover {
+      color: var(--color-accent);
+      background: var(--color-secondary);
+    }
+
+    .button.secondary.disabled,
+    .button.secondary.disabled:focus,
+    .button.secondary.disabled:hover,
+    .button.secondary[disabled],
+    .button.secondary[disabled]:focus,
+    .button.secondary[disabled]:hover {
+      opacity: .35;
+      color: #fefefe;
+      background-color: var(--color-accent);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--color-accent);
+      font-family: var(--font-family-headline);
+    }
+
+    .dropdown.menu>li.is-active>a {
+      color: var(--color-accent);
+    }
+
+    .dropdown.menu>li.is-dropdown-submenu-parent>a::after {
+      border-color: var(--color-accent) transparent transparent;
+    }
+
+    .dropdown.menu.vertical>li.opens-right>a::after {
+      border-color: transparent transparent transparent var(--color-accent)
+    }
+
+    .submenu-toggle::after {
+      border-color: var(--color-accent) transparent transparent;
+    }
+
+    /* Utilities */
+    .margin-0 {
+      margin: 0;
+    }
+
+    .no-wrap {
+      white-space: nowrap;
+    }
+
+    /* Overall */
+    body {
+      color: var(--text-color);
+      font-family: var(--font-family-body);
+    }
+
+    /* Header Section */
+    .header {
+      background: var(--color-secondary);
+      padding: 1rem 0;
+    }
+
+    .header__container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header__logo {
+      color: var(--color-primary);
+      font-family: var(--font-family-headline);
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .header__nav .menu a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .header__nav .menu a:hover {
+      border-bottom: 1px solid var(--color-primary);
+    }
+
+    .header__nav .menu a.header__button {
+      margin-left: 1rem;
+      border: 2px solid var(--color-accent);
+      color: var(--color-secondary);
+    }
+
+    .header__nav .menu a.header__button:hover {
+      color: var(--color-accent);
+    }
+
+    .header__nav .menu a.header__button--primary {
+      margin-left: 1rem;
+      border: 2px solid var(--color-primary);
+      color: var(--color-secondary);
+    }
+
+    .header__nav .menu a.header__button--primary:hover {
+      color: var(--color-primary);
+    }
+
+    .nav-icon {
+      margin-right: 1.5rem;
+      width: 50px;
+      height: 36px;
+      -webkit-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-transition: .5s ease-in-out;
+      -o-transition: .5s ease-in-out;
+      transition: .5s ease-in-out;
+      cursor: pointer;
+    }
+
+    .nav-icon span {
+      display: block;
+      position: absolute;
+      height: 4px;
+      width: 100%;
+      background: var(--color-accent);
+      border-radius: 4px;
+      opacity: 1;
+      left: 0;
+      -webkit-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-transition: .25s ease-in-out;
+      -o-transition: .25s ease-in-out;
+      transition: .25s ease-in-out;
+      cursor: pointer;
+    }
+
+    .nav-icon span:nth-child(1) {
+      top: 0px;
+    }
+
+    .nav-icon span:nth-child(2) {
+      top: 16px;
+    }
+
+    .nav-icon span:nth-child(3) {
+      top: 32px;
+    }
+
+    .nav-icon--active span:nth-child(1) {
+      top: 18px;
+      -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+      transform: rotate(135deg);
+    }
+
+    .nav-icon--active span:nth-child(2) {
+      opacity: 0;
+      left: 60px;
+    }
+
+    .nav-icon--active span:nth-child(3) {
+      top: 18px;
+      -webkit-transform: rotate(-135deg);
+      -ms-transform: rotate(-135deg);
+      transform: rotate(-135deg);
+    }
+
+    /* Off-Canvas Styling */
+    .off-canvas__nav {
+      margin-bottom: 1rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60vh;
+      min-height: 30rem;
+      background: url("/images/SamPolyHomeHeroOp.jpg") no-repeat center;
+      background-size: cover;
+    }
+
+    .hero--orange {
+      background: url("/images/SamPolyWebsiteOrangeHero.jpg") no-repeat center;
+    }
+
+    .hero--who-we-are {
+      background: url("/images/SamPolyWhoWeAreHero.jpg") no-repeat center;
+    }
+
+    .hero--programs {
+      background: url("/images/SamPolyWebsiteProgramsHero.jpg") no-repeat center;
+    }
+
+    .hero--paralegal {
+      background: url("/images/SamPolyProgramParalegalHero.png") no-repeat center;
+    }
+
+    .hero--computer {
+      background: url("/images/SamPolyProgramComputerHero.png") no-repeat center;
+    }
+
+    .hero--practical {
+      background: url("/images/SamPolyProgramPracticalHero.png") no-repeat center;
+    }
+
+    .hero--get-started {
+      background: url("/images/GetStartedHERO_orange.jpg") no-repeat center;
+    }
+
+    .hero--apply {
+      background: url("/images/ApplyPage.png") no-repeat center;
+    }
+
+    .hero__overlay {
+      width: 100%;
+      padding: 2rem;
+    }
+
+    .hero__page-title {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-secondary);
+      color: var(--color-secondary);
+      font-family: var(--font-family-subheadline);
+    }
+
+    .hero__title {
+      color: var(--color-secondary);
+      font-family: var(--font-family-headline);
+      font-size: 5rem;
+      line-height: .8;
+    }
+
+    .hero__title--no-support {
+      line-height: .8;
+    }
+
+    .hero__title--support {
+      font-family: var(--font-family-alt-headline);
+      font-size: 4rem;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: white;
+    }
+
+    .hero__subtitle {
+      margin-bottom: 1rem;
+      font-family: var(--font-family-body);
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--color-secondary);
+    }
+
+    .hero__subtitle--students {
+      font-size: 1rem;
+    }
+
+    .hero-support {
+      position: relative;
+      margin-top: -2rem;
+      max-width: 67rem;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      color: var(--color-secondary);
+      background: var(--color-accent);
+      background: url("/images/SamPolyHomeHeroSupport.jpg") no-repeat center;
+      background-size: cover;
+    }
+
+    .hero-support--program {
+      color: var(--color-accent);
+      background: #DDCDAE;
+    }
+
+    .hero-support_icon {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+    }
+
+    .hero-support__title {
+      display: inline-block;
+      margin: 0;
+      border-bottom: 1px solid var(--color-secondary);
+      color: var(--color-secondary);
+      font-family: var(--font-family-subheadline);
+      font-size: 1rem;
+    }
+
+    .hero-support__title--program {
+      border: 0;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      color: var(--color-primary);
+      font-size: 1.2rem;
+    }
+
+    /* Description Section */
+    .description {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .description__title {
+      color: var(--color-primary);
+      font-size: 4rem;
+    }
+
+    /* Action Section */
+    .action {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      color: var(--color-accent);
+    }
+
+    .action__section-title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--color-primary);
+      font-family: var(--font-family-subheadline);
+      font-size: 1rem;
+    }
+
+    .action__title {
+      font-size: 4.5rem;
+      line-height: .8;
+    }
+
+    .action__title--support {
+      color: transparent;
+      font-family: var(--font-family-alt-headline);
+      font-size: 5rem;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: var(--color-accent);
+    }
+
+    /* Staff Section */
+    .staff {
+      color: var(--color-accent);
+    }
+
+    .staff__title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid;
+      font-family: var(--font-family-subheadline);
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .staff__name {
+      margin: .5rem 0 0;
+      font-family: var(--font-family-subheadline);
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+
+    .staff__icon {
+      margin: 0 .5rem;
+      color: var(--color-primary);
+      font-size: 1.5rem;
+    }
+
+    /* Student Features Section */
+    .student-features {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      color: var(--color-accent);
+      background: var(--color-supporting-1);
+    }
+
+    .student-features__title {
+      font-size: 4rem;
+      text-align: center;
+    }
+
+    .student-features__item-icon {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .student-features__item-icon {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .student-features__item-title {
+      color: var(--color-primary);
+      font-family: var(--font-family-subheadline);
+      font-size: 1rem;
+    }
+
+    /* Program Description Section */
+    .program-description {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      color: var(--color-accent);
+    }
+
+    .program-description__title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--color-accent);
+      font-family: var(--font-family-subheadline);
+      font-size: 1.2rem;
+    }
+
+    .program-description__text:last-of-type {
+      margin-bottom: 2rem;
+    }
+
+    .program-description__skills {
+      padding: 1rem;
+      color: var(--color-secondary);
+      background: var(--color-accent);
+    }
+
+    .program-description__skills-title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--color-secondary);
+      font-family: var(--font-family-subheadline);
+      font-size: 1.2rem;
+      color: var(--color-secondary);
+      text-align: center;
+    }
+
+    .program-description__enroll {
+      padding: 1rem;
+      color: var(--color-secondary);
+      text-align: center;
+      background: var(--color-primary);
+    }
+
+    .program-description__enroll-title {
+      color: var(--color-secondary);
+    }
+
+    /* Program Courses Section */
+    .program-courses {
+      padding: 0 0 2rem 0;
+    }
+
+    .program-courses__button {
+      margin: 0;
+    }
+
+    .program-courses__item {
+      margin-bottom: .5rem;
+    }
+
+    .program-courses__item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* .program-courses__title {
+      border: 3px solid var(--color-accent);
+      color: var(--color-secondary);
+      font-size: 1rem;
+      font-weight: bold;
+      background: var(--color-accent);
+    }
+
+    .program-courses__title:focus, .program-courses__title:hover {
+      color: var(--color-secondary);
+      background: var(--color-accent-darker);
+    }
+
+    .program-courses__details {
+      overflow-x: auto;
+      border: 3px solid var(--color-accent) !important;
+    }
+
+    .program-courses__details:last-child {
+      border-bottom: 3px solid var(--color-accent);
+    }
+
+    .program-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    .program-table__head {
+      color: var(--color-secondary);
+      font-weight: bold;
+      background: var(--color-accent);
+    }
+
+    .program-table__header {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .program-table__header--right {
+      text-align: right;
+    }
+
+    .program-table__semester {
+      border: 1px solid var(--color-accent);
+      color: var(--color-secondary);
+      font-weight: bold;
+      background: var(--color-primary);
+    }
+
+    .program-table__semester-label {
+      display: block;
+      transform: rotate(270deg);
+    }
+
+    .program-table__row td {
+      border: 1px solid var(--color-accent);
+      padding: 10px;
+    }
+
+    .program-table__spacer {
+      padding: .25rem;
+    }
+
+    .program-table__term {
+      white-space: nowrap;
+      background: var(--color-supporting-1)
+    }
+
+    .program-table__lecture-hours {
+      text-align: center;
+    }
+
+    .program-table__lab-ext-hours {
+      text-align: center;
+    }
+
+    .program-table__credit-hours {
+      text-align: center;
+    } */
+
+    /* Partners Section */
+    .partners {
+      color: var(--color-secondary);
+      background-color: #4D73A0;
+      background-image: url(/images/SamPolyWebsitePartnersBlue.jpg);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    .partners__item {
+      padding: 2.5rem;
+    }
+
+    .partners__title {
+      color: var(--color-secondary);
+      border-bottom: 1px solid var(--color-secondary);
+    }
+
+    /* Partner Highlights Section */
+    .partner-highlights {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .partner-highlights__title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid;
+      font-family: var(--font-family-subheadline);
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .partner-highlights__partner-image {
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+    }
+
+    .partner-highlights__partner-image--tilted-square {
+      object-fit: cover;
+      clip-path: url(#svg-shape--tilted-square);
+    }
+
+    .partner-highlights__partner-image--oval {
+      object-fit: cover;
+      clip-path: url(#svg-shape--oval);
+    }
+
+    .partner-highlights__partner-image--hexagon {
+      object-fit: cover;
+      clip-path: url(#svg-shape--hexagon);
+    }
+
+    .partner-highlights__partner-name {
+      margin: 1rem 0 0 0;
+      font-family: var(--font-family-subheadline);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .partner-highlights__partner-position {
+      margin-top: 0;
+      color: var(--color-accent);
+      font-weight: bold;
+    }
+
+    .partner-highlights__partner-quote {
+      font-size: .85rem;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 2rem 0;
+      text-align: center;
+    }
+
+    .features__item {
+      padding: 1rem;
+    }
+
+    .features__icon {
+      color: var(--color-accent);
+      font-size: 2rem;
+    }
+
+    .features__title {
+      font-size: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .features__text {
+      color: var(--color-supporting-2);
+    }
+
+    /* Apply Section */
+    .apply {
+        padding: 2rem;
+    }
+
+    .apply__heading {
+        color: var(--color-primary);
+        font-family: var(--font-family-headline);
+        font-size: 4rem;
+        line-height: 1;
+    }
+
+    .apply__heading--primary {
+        color: var(--color-primary);
+    }
+
+    .apply__heading--accent {
+        color: var(--color-accent);
+    }
+
+    .apply__callout {
+        display: block;
+        transition: transform 0.2s;
+        border-radius: .5rem;
+        margin-right: 1rem;
+        margin-left: 1rem;
+        font-size: 2rem;
+    }
+
+    .apply__callout:hover,
+    .apply__callout:focus {
+        transform: scale(1.05);
+    }
+
+    .apply__callout--primary {
+        color: var(--color-secondary);
+        background: var(--color-primary);
+    }
+
+    .apply__callout--accent {
+        color: var(--color-secondary);
+        background: var(--color-accent);
+    }
+
+    .apply__callout--primary:hover,
+    .apply__callout--primary:focus {
+        color: var(--color-secondary);
+        background: var(--color-primary);
+    }
+
+    .apply__callout--accent:hover,
+    .apply__callout--accent:focus {
+        color: var(--color-secondary);
+        background: var(--color-accent);
+    }
+
+    .apply__callout-button {
+        display: block;
+        transition: background-color 0.2s;
+        margin-top: 1rem;
+        border: 2px solid var(--color-secondary);
+        border-radius: 0 2rem 2rem 0;
+        font-size: 1.5rem;
+    }
+
+    .apply__callout:hover .apply__callout-button,
+    .apply__callout:focus .apply__callout-button {
+        background: var(--color-secondary);
+    }
+
+    .apply__callout--primary:hover .apply__callout-button,
+    .apply__callout--primary:focus .apply__callout-button {
+        color: var(--color-primary);
+    }
+
+    .apply__callout--accent:hover .apply__callout-button,
+    .apply__callout--accent:focus .apply__callout-button {
+        color: var(--color-accent);
+    }
+
+    /* FAQ Section */
+    .faq__title {
+      display: inline-block;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid;
+      font-family: var(--font-family-subheadline);
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .faq__accordion-title {
+        margin: .5rem 0;
+        border: 2px solid #f56423;
+        color: var(--color-accent);
+        font-size: 1.5rem;
+    }
+
+    .faq__accordion-title:focus,
+    .faq__accordion-title:hover {
+        color: var(--color-accent-darker);
+    }
+
+    :last-child:not(.is-active)>.faq__accordion-title {
+        border: 2px solid #f56423;
+    }
+
+    .faq__accordion-content {
+        margin-top: -.5rem;
+        border: 1px solid #e6e6e6;
+    }
+
+    /* Subfooter Section */
+    .subfooter {
+      /* display: flex; --Commented out since no current contact image */
+      align-items: center;
+      justify-content: center;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+      color: var(--color-secondary);
+      text-align: center;
+      background: url("/images/SamPolyWebsiteSubfooter.jpg") no-repeat center;
+      background-size: cover;
+    }
+
+    .subfooter--program {
+      margin-top: 5rem;
+      margin-bottom: 5rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .subfooter__coordinator {
+      margin-top: -3rem;
+      margin-bottom: -3rem;
+    }
+
+    .subfooter__title {
+      color: var(--color-secondary);
+      font-size: 4rem;
+    }
+
+    /* Footer Section */
+    .footer {
+      padding: 2rem 0;
+      color: var(--color-secondary);
+      background: var(--color-accent);
+      background: url("/images/SamPolyHomeHeroSupport.jpg") no-repeat center;
+      background-size: cover;
+    }
+
+    .footer__link:hover {
+      color: var(--color-primary);
+    }
+
+    .footer__links {
+      position: relative;
+    }
+
+    .footer__links-title {
+      position: absolute;
+      left: -2rem;
+      top: 55px;
+      transform: rotate(90deg);
+      margin: 0;
+      border-top: 1px solid var(--color-primary);
+      width: 150px;
+      padding-top: 1rem;
+      color: var(--color-primary);
+      font-family: var(--font-family-subheadline);
+      font-size: 1rem;
+    }
+
+    .footer__links-list {
+      margin-left: 2rem;
+    }
+
+    .footer__links-item--no-link {
+      padding: .7rem 0rem .7rem 1rem;
+    }
+
+    .footer__links-link {
+      color: var(--color-secondary);
+    }
+
+    .footer__links-link:hover {
+      color: var(--color-primary);
+    }
+
+    .footer__links-link--primary {
+      color: var(--color-primary);
+    }
+
+    .footer__links-link--primary:hover {
+      color: var(--color-secondary);
+    }
+
+    .footer__title {
+      margin-bottom: 1rem;
+      font-family: var(--font-family-headline);
+      font-size: 3rem;
+      text-align: right;
+    }
+
+    .footer__text {
+      color: var(--color-supporting-1);
+    }
+
+    .footer__list {
+      padding: 0;
+      list-style: none;
+    }
+
+    .footer__list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer__icon {
+      margin-right: 0.5rem;
+      color: var(--color-supporting-1);
+    }
+
+    .footer__link {
+      color: var(--color-secondary);
+      text-decoration: none;
+    }
+
+    .footer__link:hover {
+      text-decoration: underline;
+    }
+
+    .button.primary.footer__button:hover {
+      color: var(--color-primary);
+      background: var(--color-secondary);
+    }
+
+    /* News Card */
+    .news-card {
+      position: relative;
+      height: 200px;
+      background-position: center center;
+      background-size: cover
+    }
+
+    .news-card__link {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      background-color: rgba(0, 0, 0, 0.75);
+      -webkit-transition: .2s opacity ease;
+      -o-transition: .2s opacity ease;
+      transition: .2s opacity ease
+    }
+
+    .news-card__content {
+      padding: 1rem;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 0 .4rem rgb(0, 0, 0)
+    }
+
+    .news-card:hover .news-card__link,
+    .news-card .news-card__link:focus {
+      opacity: 1
+    }
+
+    .news-card__header {
+      margin-bottom: 1.5rem
+    }
+
+    .news-card__heading {
+      color: #fff;
+      font-size: 1.2rem
+    }
+
+    .news-card__continue {
+      margin: 0;
+      text-decoration: underline
+    }
+
+    .news-card__continue:hover,
+    .news-card__continue:focus {
+      text-decoration: none
+    }
+
+    .news-card__continue span {
+      margin-left: 0;
+      -webkit-transition: all .2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      -o-transition: all .2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all .2s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+    }
+
+    .news-card__continue:hover span,
+    .news-card__continue:focus span {
+      margin-left: .25rem
+    }
+
+    .news-card__display-text {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      margin: 0;
+      padding: 2rem 1rem 1rem;
+      color: #fff;
+      font-weight: 700;
+      background: -webkit-linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.75)), to(rgba(0, 0, 0, 0)));
+      background: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      -webkit-transition: .2s opacity ease;
+      -o-transition: .2s opacity ease;
+      transition: .2s opacity ease
+    }
+
+    .news-card:hover .news-card__display-text,
+    .news-card:focus .news-card__display-text {
+      opacity: 0
+    }
+
+    /* Small only */
+    @media screen and (max-width: 39.9375em) {}
+
+    /* Medium and up */
+    @media screen and (min-width: 40em) {
+      .hero__title {
+        font-size: 7rem;
+        line-height: .6;
+      }
+
+      .hero__title {
+        line-height: .6;
+      }
+
+      .hero__title--no-support {
+        line-height: .8;
+      }
+
+      .hero__title--support {
+        font-size: 6.2rem;
+        line-height: 1;
+      }
+
+      .hero__subtitle {
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+        font-family: var(--font-family-body);
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      /* Action Section */
+      .action__section-title {
+        font-size: 1.2rem;
+      }
+
+      .action__title {
+        font-size: 6rem;
+        line-height: .8;
+      }
+
+      .action__title--support {
+        color: transparent;
+        font-family: var(--font-family-alt-headline);
+        font-size: 6.2rem;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: var(--color-accent);
+      }
+    }
+
+    /* Medium only */
+    @media screen and (min-width: 40em) and (max-width: 63.9375em) {}
+
+    /* Large and up */
+    @media screen and (min-width: 64em) {}
+
+    /* Large only */
+    @media screen and (min-width: 64em) and (max-width: 74.9375em) {}
+
+    /* Gecko Form Overrides */
+    .gecko-btn.btn-primary {
+      border-color: var(--color-secondary);
+      background-color: var(--color-accent);
+    }
+
+    .gecko-btn.btn-primary:hover {
+      border-color: var(--color-accent);
+      background-color: var(--color-secondary);
+    }
+  </style>
 	<meta name="robots" content="NOODP">
 	<meta name="keywords" content="Sam Houston State University Polytechnic, SamPoly admissions, get started at SamPoly, request information, applied learning, career-focused education, hands-on training, workforce development, technical education, higher education Texas, industry-aligned programs, career pathways.">
 	<meta name="description" content="Start your journey at SamPoly, the Polytechnic College at Sam Houston State University. Gain hands-on experience, industry-aligned education, and career-ready skills. Applying is easy! Complete a short application and submit required documents (high school transcript or equivalent or college transcripts).">
