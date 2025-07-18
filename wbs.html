@@ -6,8 +6,9 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
+      background-color: #f9f9f9;
       padding: 20px;
+      text-align: center;
     }
     .wbs-box {
       border-radius: 10px;
@@ -15,100 +16,110 @@
       color: white;
       font-weight: bold;
       text-align: center;
-      margin: 10px;
-      display: inline-block;
+      margin: 10px auto;
+      width: fit-content;
     }
-    .main { background-color: #2e8b57; }
-    .phase { background-color: #4682b4; }
-    .task { background-color: #6a5acd; font-weight: normal; }
-    .subtask { background-color: #8a2be2; font-weight: normal; }
+    .main { background-color: #2e8b57; font-size: 20px; }
+    .phase { background-color: #4682b4; font-size: 16px; }
+    .task { background-color: #6a5acd; font-weight: normal; font-size: 14px; }
     .line {
+      height: 20px;
       width: 2px;
       background-color: black;
-      height: 30px;
       margin: 0 auto;
     }
-    .container {
+    .branch {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
     }
     .column {
+      margin: 0 15px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 0 15px;
     }
   </style>
 </head>
 <body>
   <div class="wbs-box main">Coffee Gathering WBS</div>
-  <div class="container">
+  <div class="line"></div>
+  <div class="branch">
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Guest Planning</div>
+      <div class="line"></div>
       <div class="wbs-box task">Identify who is going to drink coffee</div>
       <div class="wbs-box task">Identify each person’s coffee habits</div>
       <div class="wbs-box task">Identify quantity each person will consume</div>
       <div class="wbs-box task">Develop list for guests</div>
     </div>
     <div class="column">
+      <div class="wbs-box phase">Research & Preparation</div>
       <div class="line"></div>
-      <div class="wbs-box phase">Research & Prep</div>
-      <div class="wbs-box task">Research instructions for coffee</div>
+      <div class="wbs-box task">Researching instructions online for making coffee</div>
       <div class="wbs-box task">Research recipes</div>
-      <div class="wbs-box task">Identify coffee process</div>
-      <div class="wbs-box task">Trial run</div>
+      <div class="wbs-box task">Identify process for making coffee</div>
+      <div class="wbs-box task">Do a trial run of making coffee</div>
       <div class="wbs-box task">Taste test</div>
       <div class="wbs-box task">Try with additives</div>
-      <div class="wbs-box task">Ask an expert</div>
+      <div class="wbs-box task">Ask an experienced coffee preparer to help</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Equipment Planning</div>
-      <div class="wbs-box task">Identify equipment</div>
+      <div class="line"></div>
+      <div class="wbs-box task">Identifying equipment needed to make coffee</div>
       <div class="wbs-box task">Type of coffeemaker</div>
-      <div class="wbs-box task">Research coffeemakers</div>
+      <div class="wbs-box task">Research differences between coffeemakers</div>
       <div class="wbs-box task">Quality of coffeemakers</div>
-      <div class="wbs-box task">Identify cup types</div>
+      <div class="wbs-box task">Identify types of cups</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Ingredient Planning</div>
-      <div class="wbs-box task">Identify ingredients</div>
+      <div class="line"></div>
+      <div class="wbs-box task">Identifying ingredients for making coffee</div>
       <div class="wbs-box task">Type of coffee</div>
-      <div class="wbs-box task">Additives: Sugar & Creamer</div>
-      <div class="wbs-box task">Research sugar & creamer</div>
+      <div class="wbs-box task">Types of additives for coffee</div>
+      <div class="wbs-box task">Research Sugar</div>
+      <div class="wbs-box task">Research Creamer</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Equipment & Setup</div>
-      <div class="wbs-box task">Purchase equipment</div>
-      <div class="wbs-box task">Unpack & setup maker</div>
-      <div class="wbs-box task">Clean pot & filter</div>
-      <div class="wbs-box task">Clean system</div>
-      <div class="wbs-box task">Prepare mugs</div>
+      <div class="line"></div>
+      <div class="wbs-box task">Purchase Equipment</div>
+      <div class="wbs-box task">Bring Coffee Maker Home</div>
+      <div class="wbs-box task">Unpack Coffee Maker</div>
+      <div class="wbs-box task">Setup Coffee Maker</div>
+      <div class="wbs-box task">Clean Coffee pot</div>
+      <div class="wbs-box task">Clean Coffee filter</div>
+      <div class="wbs-box task">Run Water Through coffeemaker to clean out system</div>
+      <div class="wbs-box task">Bring Coffee Mugs Home</div>
+      <div class="wbs-box task">Unpack coffee mugs</div>
+      <div class="wbs-box task">Wash Coffee mugs</div>
+      <div class="wbs-box task">Dry Coffee mugs</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Ingredient Shopping</div>
-      <div class="wbs-box task">Plan purchase</div>
-      <div class="wbs-box task">Go to store</div>
-      <div class="wbs-box task">Buy ingredients</div>
-      <div class="wbs-box task">Drive home</div>
+      <div class="line"></div>
+      <div class="wbs-box task">Purchase Ingredients</div>
+      <div class="wbs-box task">Identify grocery store to make the purchase of coffee and additives</div>
+      <div class="wbs-box task">Drive to store</div>
+      <div class="wbs-box task">Make Purchase</div>
+      <div class="wbs-box task">Drive Home</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Execution</div>
+      <div class="line"></div>
       <div class="wbs-box task">Setup coffee space</div>
-      <div class="wbs-box task">Brew & serve</div>
-      <div class="wbs-box task">Gather feedback</div>
-      <div class="wbs-box task">Redo process (if needed)</div>
-      <div class="wbs-box task">Repeat process (if liked)</div>
+      <div class="wbs-box task">Brew coffee</div>
+      <div class="wbs-box task">Serve to guests</div>
+      <div class="wbs-box task">Listen for comments about coffee</div>
+      <div class="wbs-box task">If there are complaints, ask what the issue is and start the brewing process over</div>
+      <div class="wbs-box task">Compliments then ask what they like about the coffee and repeat your process</div>
+      <div class="wbs-box task">Other pots of coffee</div>
     </div>
     <div class="column">
-      <div class="line"></div>
       <div class="wbs-box phase">Cleanup</div>
+      <div class="line"></div>
       <div class="wbs-box task">Clean coffeepot</div>
       <div class="wbs-box task">Wash mugs</div>
       <div class="wbs-box task">Put mugs away</div>
