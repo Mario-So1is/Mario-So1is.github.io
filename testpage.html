@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next-Generation HR Trainings - Sam Houston State University</title>
+
+    <style>
+        /* 
+        ==========================================================================
+         IMPORTANT: Custom SHSU Font Setup
+         You must upload the font files to your server and update the 'url' paths 
+         below to match their location. The paths here are placeholders.
+        ==========================================================================
+        */
+        @font-face {
+            font-family: 'GT America Standard';
+            src: url('/fonts/GT-America-Standard-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'GT Flexa Expanded';
+            src: url('/fonts/GT-Flexa-Expanded-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        /* Official SHSU Brand Colors & Design System */
+        :root {
+            --shsu-orange: #F56423;
+            --shsu-white: #FFFFFF;
+            --shsu-jade: #004853;
+            --shsu-denim: #465D7B;
+            --text-primary: #EAEBF0;
+            --text-secondary: #A8B2C2;
+            --background-dark: #0A101C;
+            --glass-bg: rgba(18, 25, 41, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            
+            --font-body: 'GT America Standard', sans-serif;
+            --font-display: 'GT Flexa Expanded', sans-serif;
+        }
+
+        /* CSS Reset & Base Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 500;
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Dynamic Gradient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 72, 83, 0.4), transparent 40%),
+                        radial-gradient(circle at 80% 90%, rgba(70, 93, 123, 0.3), transparent 50%);
+            animation: moveGradient 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes moveGradient {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Scroll-Triggered Fade-In Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* HERO SECTION STYLES */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+        }
+
+        .hero-content {
+            max-width: 65%;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            color: var(--shsu-white);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        
+        .hero-content p {
+            color: var(--text-secondary);
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            max-width: 550px;
+            margin-bottom: 40px;
+        }
+
+        .hero-button {
+            display: inline-block;
+            background-image: linear-gradient(90deg, var(--shsu-denim) 0%, #5a7599 100%);
+            color: var(--shsu-white);
+            padding: 16px 40px;
+            border: none;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-weight: 500;
+            transition: transform 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-button:hover {
+             transform: translateY(-3px);
+             box-shadow: 0 15px 40px rgba(70, 93, 123, 0.3);
+        }
+
+
+        /* Training Previews Section */
+        .training-previews {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--shsu-white);
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
+
+        .previews-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 40px;
+        }
+
+        /* MODERN GLASSMORPHISM CARD STYLES */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            will-change: transform;
+            perspective: 1000px; /* For 3D effect */
+        }
+        
+        .card:hover {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transform: translateY(-10px) rotateX(5deg) rotateY(-5deg) scale(1.02);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .card-image {
+            opacity: 1;
+        }
+
+        .card-content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-family: var(--font-display);
+            font-size: 1.5em;
+            color: var(--shsu-white);
+            text-transform: uppercase;
+        }
+        
+        .card-description {
+            position: relative;
+            max-height: 5em; /* Approx 3 lines */
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-bottom: 25px;
+        }
+        
+        .card-description p {
+            font-size: 1em;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .card-description::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2em;
+            background: linear-gradient(to bottom, transparent, var(--glass-bg));
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .card:hover .card-description {
+            max-height: 500px;
+        }
+        
+        .card:hover .card-description::after {
+            opacity: 0;
+        }
+
+        .card-button {
+            display: block;
+            background-color: var(--shsu-orange);
+            color: var(--shsu-white);
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            margin-top: auto;
+        }
+
+        .card-button:hover {
+            background-color: #d85419;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 100px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--glass-border);
+        }
+        
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <section class="hero-section fade-in-up">
+                <div class="hero-content">
+                    <h1>Desarrollo Profesional a su Alcance</h1>
+                    <p>Bienvenido al portal de desarrollo de Recursos Humanos. Complete sus capacitaciones obligatorias y explore nuevos cursos para fomentar su crecimiento profesional, todo en un solo lugar.</p>
+                    <a href="mailto:hrtraining@shsu.edu" class="hero-button">Contactar a HR</a>
+                </div>
+            </section>
+            
+            <section class="training-previews">
+                <h2 class="section-title fade-in-up">Capacitaciones Obligatorias</h2>
+                <div class="previews-container">
+                    
+                    <div class="card fade-in-up">
+                        <img src="/clientimg/samhouston/welcome/Website%20Redesign%20July%202025/DSCF8502.jpg" alt="Campus view" class="card-image">
+                        <div class="card-content">
+                            <h3>Reconocimiento y Reporte de Abuso Infantil</h3>
+                            <div class="card-description">
+                                <p>Formación de cumplimiento exigida por la ley estatal SB 939 sobre la prevención, reconocimiento y denuncia del abuso infantil. Debe completarse dentro de los 30 días posteriores a la asignación para evitar notificaciones al supervisor. Este curso de 15 minutos proporciona una guía esencial y recursos para garantizar la seguridad de nuestra comunidad.</p>
+                            </div>
+                            <a href="#" class="card-button">Comenzar Curso</a>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in-up" style="transition-delay: 0.1s;">
+                        <img src="/clientimg/samhouston/welcome/Website%20Redesign%20July%202025/right%20quadrant.jpg" alt="Student studying" class="card-image">
+                        <div class="card-content">
+                            <h3>Acuerdo de Confidencialidad (NDA)</h3>
+                            <div class="card-description">
+                                <p>Este acuerdo anual es un requisito para acceder a la red de SHSU y sus recursos tecnológicos. Su firma garantiza que la información sensible y confidencial de la universidad se protege y se utiliza de manera adecuada, en cumplimiento con las leyes y políticas institucionales.</p>
+                            </div>
+                            <a href="#" class="card-button">Comenzar Curso</a>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in-up" style="transition-delay: 0.2s;">
+                        <img src="/clientimg/samhouston/welcome/Website%20Redesign%20July%202025/DSCF9256.jpg" alt="Students collaborating" class="card-image">
+                        <div class="card-content">
+                            <h3>Prevención de la Discriminación Laboral</h3>
+                            <div class="card-description">
+                                <p>Capacitación obligatoria requerida por ley para comprender el impacto de las leyes de igualdad de oportunidades (EEO). Se debe completar dentro de los 30 días de contratación y cada dos años. El incumplimiento puede exponer al departamento a sanciones económicas considerables en caso de una auditoría.</p>
+                            </div>
+                            <a href="#" class="card-button">Comenzar Curso</a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Sam Houston State University | Miembro del Sistema Universitario Estatal de Texas</p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for Scroll-Triggered Animations
+        // This is a modern, performant way to detect when elements enter the viewport.
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        // Observe all elements with the class 'fade-in-up'
+        const elementsToAnimate = document.querySelectorAll('.fade-in-up');
+        elementsToAnimate.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
