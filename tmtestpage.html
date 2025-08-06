@@ -70,11 +70,10 @@
             text-transform: uppercase;
         }
         
-        /* HERO SECTION - Now with Background Image */
+        /* HERO SECTION */
         .hero-section {
             width: 100%;
             min-height: 450px;
-            /* Added background image */
             background-image: url('/clientimg/samhouston/welcome/Website%20Redesign%20July%202025/Test%20Homepage%20Image2.jpg');
             background-size: cover;
             background-position: center;
@@ -83,7 +82,7 @@
             justify-content: flex-start;
             position: relative;
         }
-        .hero-section::before { /* Gradient Overlay */
+        .hero-section::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
@@ -91,7 +90,7 @@
             background: linear-gradient(90deg, rgba(0, 72, 83, 0.95) 0%, rgba(0, 72, 83, 0.8) 50%, rgba(0, 72, 83, 0) 100%);
         }
         .hero-content {
-            position: relative; /* Ensure text is above the overlay */
+            position: relative;
             width: 55%; 
             padding: 50px 0 50px 5%;
         }
@@ -131,53 +130,14 @@
             transform: translateY(-2px);
         }
         
-        /* CSS-ONLY TABBED INTERFACE (NO JAVASCRIPT) */
+        /* REFINED: SINGLE UNIFIED CARD GRID */
         .links-section {
             padding-top: 60px;
         }
-        .tab-container {
-            width: 100%;
-        }
-        .tab-navigation {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 40px;
-            border-bottom: 2px solid var(--light-border);
-        }
-        .tab-container input[type="radio"] {
-            display: none;
-        }
-        .tab-container label {
-            font-family: var(--font-button);
-            font-weight: 500;
-            font-size: 1.1em;
-            padding: 10px 25px;
-            cursor: pointer;
-            color: var(--shsu-denim);
-            border-bottom: 4px solid transparent;
-            transform: translateY(2px);
-            transition: color 0.3s ease, border-color 0.3s ease;
-        }
-        .tab-container label:hover {
-            color: var(--shsu-orange);
-        }
-        .tab-container input[type="radio"]:checked + label {
-            color: var(--shsu-jade);
-            border-bottom-color: var(--shsu-orange);
-        }
-        .tab-content {
-            display: none; 
-        }
-        #tab1:checked ~ #content1,
-        #tab2:checked ~ #content2,
-        #tab3:checked ~ #content3 {
-            display: grid;
-        }
-
-        /* CARD STYLES & ORANGE OVERLAY HOVER */
+        /* Grid with 4 columns for large screens */
         .links-grid {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 25px;
         }
         .link-card {
@@ -224,52 +184,6 @@
             margin: 0;
         }
         
-        /* USER INFO SECTION */
-        .user-info-section {
-            background-color: var(--light-gray-bg);
-            padding: 60px 0;
-            margin-top: 60px;
-        }
-        .user-info-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-        }
-        .info-box {
-            background-color: var(--shsu-white);
-            border: 1px solid var(--light-border);
-            border-radius: 8px; padding: 30px;
-            flex: 1; min-width: 300px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .info-box h2 {
-            font-family: var(--font-display);
-            font-size: 1.8em;
-            color: var(--shsu-jade);
-            margin-top: 0; margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-        .info-box ul {
-            list-style: none; padding: 0; margin: 0;
-        }
-        .info-box ul li {
-            margin-bottom: 15px;
-        }
-        .info-box ul a {
-            font-family: var(--font-body-light);
-            font-weight: 600; color: var(--shsu-denim);
-            text-decoration: none;
-            transition: color 0.3s ease; font-size: 1.05em;
-        }
-        .info-box ul a:hover {
-            color: var(--shsu-orange);
-            text-decoration: underline;
-        }
-        .no-tasks {
-            font-family: var(--font-body-light);
-            color: #777; font-style: italic;
-        }
-
         /* FOOTER */
         footer {
             background-color: var(--shsu-jade);
@@ -277,14 +191,15 @@
             text-align: center;
             padding: 20px 0;
             font-family: var(--font-body-light);
+            margin-top: 60px;
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-            .hero-content { width: 75%; }
-            .links-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        /* RESPONSIVE DESIGN FOR THE GRID */
+        @media (max-width: 1200px) {
+             .links-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
+            .links-grid { grid-template-columns: repeat(2, 1fr); }
             .hero-section::before { background: linear-gradient(to top, rgba(0, 72, 83, 0.8) 0%, rgba(0, 72, 83, 0.95) 100%);}
             .hero-content {
                 width: 100%; box-sizing: border-box; text-align: center;
@@ -293,8 +208,11 @@
             .hero-content h1 { font-size: 2.5em; }
             .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 15px; }
             .hero-buttons .hero-button { margin-right: 0; }
-            .tab-container label { padding: 10px 15px; font-size: 1em;}
         }
+        @media (max-width: 500px) {
+            .links-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
@@ -315,61 +233,22 @@
             <section class="links-section">
                 <h2 class="section-title">Talent Management Toolkit</h2>
                 
-                <div class="tab-container">
-                    <input type="radio" id="tab1" name="tabs" checked>
-                    <input type="radio" id="tab2" name="tabs">
-                    <input type="radio" id="tab3" name="tabs">
-                    
-                    <nav class="tab-navigation">
-                        <label for="tab1">Portal Tools</label>
-                        <label for="tab2">Learning & Development</label>
-                        <label for="tab3">Support & Info</label>
-                    </nav>
-
-                    <div id="content1" class="tab-content links-grid">
-                        <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A person reviewing a report on a clipboard." class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
-                        <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A collection of books on wooden shelves." class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
-                        <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="People in a collaborative training session with sticky notes." class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
-                        <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A dashboard with various performance charts and graphs." class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
-                        <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A team of colleagues working together around a desk." class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
-                    </div>
-
-                    <div id="content2" class="tab-content links-grid">
-                        <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An exciting event with a speaker on a brightly lit stage." class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
-                        <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An engaged audience listens to a speaker in a lecture hall." class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
-                        <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A desk with a laptop, notepad, and coffee, representing great ideas." class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
-                        <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Colorful question mark blocks." class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
-                    </div>
-
-                    <div id="content3" class="tab-content links-grid">
-                        <a href="http://www.shsu.edu/dept/it@sam/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1573496773905-f5b17e76b254?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A friendly technical support agent with a headset smiles at her computer." class="card-image"><div class="card-overlay"><h3>Technical Support</h3></div></a>
-                        <a href="https://www.shsu.edu/dept/hr/learndevelop/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c710?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse and happy team of professionals." class="card-image"><div class="card-overlay"><h3>Meet The Team</h3></div></a>
-                        <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse group of students in a bright and collaborative training environment." class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
-                    </div>
+                <div class="links-grid">
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A person reviewing a report on a clipboard." class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A collection of books on wooden shelves." class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="People in a collaborative training session with sticky notes." class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A dashboard with various performance charts and graphs." class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A team of colleagues working together around a desk." class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An exciting event with a speaker on a brightly lit stage." class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An engaged audience listens to a speaker in a lecture hall." class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A desk with a laptop, notepad, and coffee, representing great ideas." class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Colorful question mark blocks." class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
+                    <a href="http://www.shsu.edu/dept/it@sam/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1573496773905-f5b17e76b254?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A friendly technical support agent with a headset smiles at her computer." class="card-image"><div class="card-overlay"><h3>Technical Support</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c710?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse and happy team of professionals." class="card-image"><div class="card-overlay"><h3>Meet The Team</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse group of students in a bright and collaborative training environment." class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
                 </div>
             </section>
         </div>
-        
-        <section class="user-info-section">
-            <div class="container">
-                <div class="user-info-container">
-                    <div class="info-box">
-                        <h2>Your Tasks</h2>
-                        <p class="no-tasks">No Current Tasks In Progress</p>
-                    </div>
-                    <div class="info-box">
-                        <h2>Featured Training</h2>
-                        <ul>
-                            <li><a href="#">(Video) HR Policy Update - HR-08 Holiday and Skeleton Crew Days</a></li>
-                            <li><a href="#">(Video) LEL: Fundamentals of Time Reporting: A toolkit for time approvers and reporters</a></li>
-                            <li><a href="#">(Video) LEL: Preparing for the SHSU Budget Cycle</a></li>
-                            <li><a href="#">(Video) SHSU Conversations with Administrators 1/12/2021 "Where does the money come from?"</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <footer>
