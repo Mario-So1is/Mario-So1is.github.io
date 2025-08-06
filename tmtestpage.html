@@ -8,24 +8,27 @@
     <style>
         /* 
         ==========================================================================
-         CUSTOM FONT SETUP & BRAND VARIABLES
+         EMBEDDED FONT SETUP (BASE64) & BRAND VARIABLES
         ==========================================================================
         */
         @font-face {
             font-family: 'GT America Standard';
-            src: url('https://shsu-prod.dotcms.cloud/contentAsset/raw-data/8b48bcd6-6c2d-48d3-9a00-d7c2039518b6/fileAsset/byInode/1?random=96') format('woff2');
+            /* PASTE THE BASE64 STRING FOR 'GT America Standard' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_AMERICA_STANDARD_BASE64_STRING_HERE) format('woff2');
             font-weight: 500;
             font-style: normal;
         }
         @font-face {
             font-family: 'GT Flexa Expanded';
-            src: url('https://shsu-prod.dotcms.cloud/contentAsset/raw-data/f182d394-fe56-4c35-9718-1a60cb00b56f/fileAsset/byInode/1?random=96432') format('woff2');
+             /* PASTE THE BASE64 STRING FOR 'GT Flexa Expanded' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_FLEXA_EXPANDED_BASE64_STRING_HERE) format('woff2');
             font-weight: 400;
             font-style: normal;
         }
         @font-face {
             font-family: 'GT America Standard Light';
-            src: url('https://shsu-prod.dotcms.cloud/contentAsset/raw-data/890e8f95-0005-4715-be59-bc642049bada/fileAsset/byInode/1?random=96432') format('woff2');
+             /* PASTE THE BASE64 STRING FOR 'GT America Standard Light' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_AMERICA_STANDARD_LIGHT_BASE64_STRING_HERE) format('woff2');
             font-weight: 300;
             font-style: normal;
         }
@@ -63,7 +66,8 @@
         .hero-section {
             width: 100%;
             min-height: 400px;
-            background-image: url('https://images.unsplash.com/photo-1693499469279-886d34c0f860?q=80&w=2070');
+            /* UPDATED with new file path */
+            background-image: url('images/Test Homepage Image2.jpg'); 
             background-size: cover;
             background-position: center 30%;
             display: flex;
@@ -103,7 +107,7 @@
             border-color: var(--shsu-orange); transform: translateY(-2px);
         }
 
-        /* NEW: ASYMMETRICAL LAYOUT */
+        /* ASYMMETRICAL LAYOUT */
         .main-layout {
             padding: 60px 0;
             display: flex;
@@ -112,10 +116,10 @@
             align-items: flex-start;
         }
         .toolkit-main-content {
-            flex: 3; /* Takes up 3/4 of the space */
+            flex: 3;
         }
         .action-sidebar {
-            flex: 1; /* Takes up 1/4 of the space */
+            flex: 1;
             position: sticky;
             top: 40px;
         }
@@ -233,16 +237,17 @@
             <div class="toolkit-main-content">
                 <h2 class="section-title">Talent Management Toolkit</h2>
                 <div class="links-grid">
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Transcripts" class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Course Catalog" class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
+                    <!-- ALPHABETIZED CARDS -->
                     <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Add External Training" class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Performance" class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="My Team" class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="FAQ" class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
-                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="News & Events" class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Learning Academies" class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
-                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Tips & Tricks" class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
                     <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Capacitaciones" class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Course Catalog" class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="FAQ" class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Learning Academies" class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="My Team" class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="News & Events" class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Performance" class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Tips & Tricks" class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Transcripts" class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
                 </div>
             </div>
 
@@ -252,14 +257,11 @@
                     <p>Review assigned tasks, deadlines, and performance evaluations to stay on track.</p>
                     <a href="#" class="action-button">View All Tasks</a>
                 </div>
+                <!-- REIMAGINED Featured Training Box -->
                 <div class="sidebar-box">
                     <h3>Featured Training</h3>
-                    <ul>
-                        <li><a href="#">HR Policy Update - HR-08 Holiday</a></li>
-                        <li><a href="#">LEL: Fundamentals of Time Reporting</a></li>
-                        <li><a href="#">LEL: Preparing for the SHSU Budget Cycle</a></li>
-                        <li><a href="#">SHSU Conversations with Admins</a></li>
-                    </ul>
+                    <p>Explore new and noteworthy training opportunities recommended for SHSU employees.</p>
+                    <a href="#" class="action-button">Browse Featured Training</a>
                 </div>
                 <div class="sidebar-box">
                     <h3>Support Hub</h3>
