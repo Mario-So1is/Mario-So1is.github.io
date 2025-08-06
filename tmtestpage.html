@@ -58,15 +58,12 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        main {
-            padding-bottom: 60px;
-        }
         .section-title {
             text-align: center;
             font-family: var(--font-display);
             font-size: 2.5em;
             color: var(--shsu-jade);
-            margin-bottom: 40px;
+            margin: 0 0 40px 0;
             text-transform: uppercase;
         }
         
@@ -84,81 +81,56 @@
         }
         .hero-section::before {
             content: '';
-            position: absolute;
-            top: 0; left: 0;
+            position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             background: linear-gradient(90deg, rgba(0, 72, 83, 0.95) 0%, rgba(0, 72, 83, 0.8) 50%, rgba(0, 72, 83, 0) 100%);
         }
         .hero-content {
-            position: relative;
-            width: 55%; 
+            position: relative; width: 55%; 
             padding: 50px 0 50px 5%;
         }
         .hero-content h1 {
-            font-family: var(--font-display);
-            font-weight: 400; 
-            color: var(--shsu-white);
-            font-size: 3.0em;
-            line-height: 1.1;
-            margin: 0 0 15px 0;
+            font-family: var(--font-display); font-weight: 400; 
+            color: var(--shsu-white); font-size: 3.0em;
+            line-height: 1.1; margin: 0 0 15px 0;
             text-transform: uppercase;
         }
         .hero-content p {
-            font-family: var(--font-body-light);
-            color: var(--shsu-white);
-            font-size: 1.1em;
-            max-width: 500px;
-            margin-bottom: 30px;
+            font-family: var(--font-body-light); color: var(--shsu-white);
+            font-size: 1.1em; max-width: 500px; margin-bottom: 30px;
         }
         .hero-buttons .hero-button {
-            display: inline-block;
-            background-color: var(--shsu-white);
-            color: var(--shsu-jade);
-            padding: 12px 30px;
-            border: 2px solid var(--shsu-white);
-            text-decoration: none;
-            border-radius: 5px;
-            font-family: var(--font-button);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-right: 15px;
+            display: inline-block; background-color: var(--shsu-white);
+            color: var(--shsu-jade); padding: 12px 30px; border: 2px solid var(--shsu-white);
+            text-decoration: none; border-radius: 5px; font-family: var(--font-button);
+            font-weight: 500; transition: all 0.3s ease; margin-right: 15px;
         }
         .hero-buttons .hero-button:hover {
-            background-color: var(--shsu-orange);
-            color: var(--shsu-white);
-            border-color: var(--shsu-orange);
-            transform: translateY(-2px);
+            background-color: var(--shsu-orange); color: var(--shsu-white);
+            border-color: var(--shsu-orange); transform: translateY(-2px);
         }
         
-        /* REFINED: SINGLE UNIFIED CARD GRID */
+        /* UNIFIED CARD STYLES */
         .links-section {
             padding-top: 60px;
         }
-        /* Grid with 4 columns for large screens */
         .links-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
         }
         .link-card {
-            position: relative;
-            display: block;
-            border-radius: 8px;
-            overflow: hidden;
+            position: relative; display: block; border-radius: 8px; overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
-            height: 250px;
+            text-decoration: none; height: 180px; /* Adjusted height for 6-col grid */
         }
         .link-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .link-card .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;
         }
         .link-card:hover .card-image {
             transform: scale(1.05);
@@ -167,39 +139,77 @@
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
-            display: flex; align-items: flex-end;
-            padding: 20px;
-            box-sizing: border-box;
-            transition: background 0.3s ease; 
+            display: flex; align-items: flex-end; padding: 15px;
+            box-sizing: border-box; transition: background 0.3s ease; 
         }
         .link-card:hover .card-overlay {
              background: linear-gradient(to top, rgba(245, 100, 35, 0.8) 0%, rgba(245, 100, 35, 0.1) 60%, transparent 100%);
         }
         .link-card h3 {
-            font-family: var(--font-display);
-            color: var(--shsu-white);
-            font-size: 1.4em;
-            text-transform: uppercase;
-            line-height: 1.2;
-            margin: 0;
+            font-family: var(--font-display); color: var(--shsu-white); font-size: 1.1em;
+            text-transform: uppercase; line-height: 1.2; margin: 0;
         }
         
-        /* FOOTER */
-        footer {
-            background-color: var(--shsu-jade);
-            color: var(--shsu-white);
-            text-align: center;
-            padding: 20px 0;
-            font-family: var(--font-body-light);
+        /* NEW: QUICK ACTIONS SECTION */
+        .quick-actions-section {
+            background-color: var(--light-gray-bg);
+            padding: 50px 0;
             margin-top: 60px;
         }
+        .actions-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .action-box {
+            background-color: var(--shsu-white);
+            border: 1px solid var(--light-border);
+            border-radius: 8px; padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex: 1; min-width: 300px;
+        }
+        .action-box h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em; color: var(--shsu-denim);
+            margin: 0 0 15px 0; text-transform: uppercase;
+        }
+        .action-box p {
+            margin: 0 0 25px 0;
+            font-family: var(--font-body-light); font-weight: 600;
+        }
+        .action-button {
+            display: inline-block; text-decoration: none;
+            background-color: var(--shsu-orange); color: var(--shsu-white);
+            padding: 10px 25px; border-radius: 5px; font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .action-button:hover {
+            background-color: #d85419;
+            transform: translateY(-2px);
+        }
+        .action-box ul {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .action-box ul a {
+            font-family: var(--font-body-light); font-weight: 600; color: var(--shsu-denim);
+            text-decoration: none; transition: color 0.3s ease;
+            font-size: 1.05em; display: block;
+            padding: 5px 0; border-bottom: 1px solid var(--light-border);
+        }
+        .action-box ul a:hover { color: var(--shsu-orange); }
 
-        /* RESPONSIVE DESIGN FOR THE GRID */
+        /* FOOTER */
+        footer {
+            background-color: var(--shsu-jade); color: var(--shsu-white); text-align: center;
+            padding: 20px 0; font-family: var(--font-body-light); margin-top: 60px;
+        }
+
+        /* RESPONSIVE DESIGN */
         @media (max-width: 1200px) {
              .links-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
-            .links-grid { grid-template-columns: repeat(2, 1fr); }
+            .links-grid { grid-template-columns: repeat(2, 1fr); height: 220px; }
             .hero-section::before { background: linear-gradient(to top, rgba(0, 72, 83, 0.8) 0%, rgba(0, 72, 83, 0.95) 100%);}
             .hero-content {
                 width: 100%; box-sizing: border-box; text-align: center;
@@ -231,24 +241,51 @@
 
         <div class="container">
             <section class="links-section">
-                <h2 class="section-title">Talent Management Toolkit</h2>
-                
+                <h2 class="section-title">Core Portal Tools</h2>
                 <div class="links-grid">
                     <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A person reviewing a report on a clipboard." class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
                     <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A collection of books on wooden shelves." class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="People in a collaborative training session with sticky notes." class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A dashboard with various performance charts and graphs." class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A team of colleagues working together around a desk." class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
-                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An exciting event with a speaker on a brightly lit stage." class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An engaged audience listens to a speaker in a lecture hall." class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
-                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A desk with a laptop, notepad, and coffee, representing great ideas." class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Colorful question mark blocks." class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
-                    <a href="http://www.shsu.edu/dept/it@sam/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1573496773905-f5b17e76b254?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A friendly technical support agent with a headset smiles at her computer." class="card-image"><div class="card-overlay"><h3>Technical Support</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/learndevelop/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c710?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse and happy team of professionals." class="card-image"><div class="card-overlay"><h3>Meet The Team</h3></div></a>
-                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A diverse group of students in a bright and collaborative training environment." class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="People collaborating." class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Performance charts." class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A team of colleagues." class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Question marks." class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
                 </div>
             </section>
         </div>
+
+        <section class="quick-actions-section">
+            <div class="container actions-container">
+                <div class="action-box">
+                    <h3>Your Tasks</h3>
+                    <p>Review your assigned tasks, deadlines, and performance evaluations to stay on track.</p>
+                    <a href="#" class="action-button">View All Tasks</a>
+                </div>
+                <div class="action-box">
+                    <h3>Featured Training</h3>
+                    <ul>
+                        <li><a href="#">HR Policy Update - HR-08 Holiday and Skeleton Crew Days</a></li>
+                        <li><a href="#">LEL: Fundamentals of Time Reporting</a></li>
+                        <li><a href="#">LEL: Preparing for the SHSU Budget Cycle</a></li>
+                        <li><a href="#">SHSU Conversations with Administrators</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="links-section">
+                <h2 class="section-title">Campus Resources & Info</h2>
+                 <div class="links-grid">
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="An event." class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A lecture hall." class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A desk with a laptop." class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
+                    <a href="http://www.shsu.edu/dept/it@sam/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1573496773905-f5b17e76b254?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A support agent." class="card-image"><div class="card-overlay"><h3>Technical Support</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c710?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="A team of professionals." class="card-image"><div class="card-overlay"><h3>Meet The Team</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Students learning." class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
+                </div>
+            </section>
+        </div>
+
     </main>
 
     <footer>
