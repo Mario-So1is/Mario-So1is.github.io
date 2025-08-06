@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Gestión de Talento - Sam Houston State University</title>
+
+    <style>
+        /* 
+        ==========================================================================
+         EMBEDDED FONT SETUP (BASE64) & BRAND VARIABLES
+        ==========================================================================
+        */
+        @font-face {
+            font-family: 'GT America Standard';
+            /* PASTE THE BASE64 STRING FOR 'GT America Standard' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_AMERICA_STANDARD_BASE64_STRING_HERE) format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'GT Flexa Expanded';
+             /* PASTE THE BASE64 STRING FOR 'GT Flexa Expanded' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_FLEXA_EXPANDED_BASE64_STRING_HERE) format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'GT America Standard Light';
+             /* PASTE THE BASE64 STRING FOR 'GT America Standard Light' HERE */
+            src: url(data:application/font-woff2;base64,PASTE_YOUR_GT_AMERICA_STANDARD_LIGHT_BASE64_STRING_HERE) format('woff2');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        :root {
+            --shsu-orange: #F56423;
+            --shsu-white: #FFFFFF;
+            --shsu-jade: #004853;
+            --shsu-denim: #465D7B;
+            --light-gray-bg: #f4f6f7;
+            --light-border: #e9ecef;
+            --text-color: #333;
+            --font-button: 'GT America Standard', sans-serif;
+            --font-display: 'GT Flexa Expanded', sans-serif;
+            --font-body-light: 'GT America Standard Light', sans-serif;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: var(--font-button); 
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.6;
+            background-color: var(--shsu-white);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* HERO SECTION */
+        .hero-section {
+            width: 100%;
+            min-height: 400px;
+            background-image: url('images/Test Homepage Image2.jpg'); 
+            background-size: cover;
+            background-position: center 30%;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to right, 
+                var(--shsu-jade) 0%, 
+                rgba(0, 72, 83, 0.95) 40%, 
+                rgba(0, 72, 83, 0.3) 70%, 
+                transparent 100%);
+        }
+        .hero-content {
+            position: relative;
+            max-width: 1200px; margin: auto; padding: 40px 20px;
+        }
+        .hero-content h1 {
+            font-family: var(--font-display); font-weight: 400; 
+            color: var(--shsu-white); font-size: 3em;
+            line-height: 1.1; margin: 0 0 15px 0;
+            text-transform: uppercase;
+        }
+        .hero-content p {
+            font-family: var(--font-body-light); font-weight: 600;
+            color: var(--shsu-white);
+            font-size: 1.1em; max-width: 500px; margin-bottom: 30px;
+        }
+        .hero-buttons { display: flex; gap: 15px; flex-wrap: wrap;}
+        .hero-button {
+            display: inline-block; background-color: var(--shsu-white);
+            color: var(--shsu-jade); padding: 10px 25px; border: 2px solid var(--shsu-white);
+            text-decoration: none; border-radius: 5px; font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .hero-button:hover {
+            background-color: var(--shsu-orange); color: var(--shsu-white);
+            border-color: var(--shsu-orange); transform: translateY(-2px);
+        }
+
+        /* ASYMMETRICAL LAYOUT */
+        .main-layout {
+            padding: 60px 0;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .toolkit-main-content {
+            flex: 3;
+        }
+        .action-sidebar {
+            flex: 1;
+            position: sticky;
+            top: 40px;
+        }
+        
+        /* TOOLKIT STYLES */
+        .section-title {
+            text-align: left;
+            font-family: var(--font-display);
+            font-size: 2em;
+            color: var(--shsu-jade);
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .link-card {
+            position: relative; display: block; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease; text-decoration: none;
+            min-height: 180px;
+        }
+        .link-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .link-card .card-image {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .link-card:hover .card-image { transform: scale(1.05); }
+        .link-card .card-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+            display: flex; align-items: flex-end; padding: 15px; box-sizing: border-box; 
+            transition: background 0.3s ease;
+        }
+        .link-card:hover .card-overlay {
+            background: linear-gradient(to top, rgba(245, 100, 35, 0.8) 0%, rgba(245, 100, 35, 0.1) 60%, transparent 100%);
+        }
+        .link-card h3 {
+            font-family: var(--font-display); color: var(--shsu-white); font-size: 1.1em;
+            text-transform: uppercase; line-height: 1.2; margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* SIDEBAR STYLES */
+        .sidebar-box {
+            background-color: var(--light-gray-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid var(--light-border);
+        }
+        .sidebar-box h3 {
+            font-family: var(--font-display); font-size: 1.5em; color: var(--shsu-denim);
+            margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid var(--light-border);
+        }
+        .sidebar-box p { margin: 0 0 20px 0; font-family: var(--font-body-light); font-weight: 600; font-size: 0.9em; }
+        .sidebar-box .action-button {
+            display: block; text-align: center; text-decoration: none;
+            background-color: var(--shsu-orange); color: var(--shsu-white);
+            padding: 10px; border-radius: 5px; font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .sidebar-box .action-button:hover { background-color: #d85419; transform: translateY(-2px); }
+        .sidebar-box ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-box ul a {
+            font-family: var(--font-body-light); font-weight: 600; color: var(--shsu-denim);
+            text-decoration: none; transition: color 0.3s ease; font-size: 0.9em;
+            display: block; padding: 8px 0;
+        }
+        .sidebar-box ul a:not(:last-child){ border-bottom: 1px solid var(--light-border); }
+        .sidebar-box ul a:hover { color: var(--shsu-orange); }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--shsu-jade); color: var(--shsu-white);
+            text-align: center; padding: 20px 0;
+            font-family: var(--font-body-light);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) {
+            .main-layout { flex-direction: column; }
+            .action-sidebar { position: static; top: 0; width: 100%;}
+            .links-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .links-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-content { text-align: center; }
+            .hero-buttons { justify-content: center; }
+        }
+         @media (max-width: 500px) {
+            .links-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>HOLA {FIRSTNAME}, ¡BIENVENIDO(A) A GESTIÓN DE TALENTO!</h1>
+                    <p>Tu centro principal para el desarrollo profesional, seguimiento de desempeño y recursos de capacitación esenciales en Sam Houston State University.</p>
+                    <div class="hero-buttons">
+                        <a href="https://samhouston.csod.com/LMS/catalog/EventsCalendar.aspx?tab_page_id=-10" class="hero-button" target="_blank">Ver Calendario de Eventos</a>
+                        <a href="http://linkedinlearning.shsu.edu/" class="hero-button" target="_blank">LinkedIn Learning</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container main-layout">
+            <div class="toolkit-main-content">
+                <h2 class="section-title">Herramientas de Gestión de Talento</h2>
+                <div class="links-grid">
+                    <!-- ALPHABETIZED CARDS IN SPANISH -->
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Añadir Formación Externa" class="card-image"><div class="card-overlay"><h3>Añadir Formación Externa</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Academias de Aprendizaje" class="card-image"><div class="card-overlay"><h3>Academias de Aprendizaje</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Capacitaciones" class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Catálogo de Cursos" class="card-image"><div class="card-overlay"><h3>Catálogo de Cursos</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Consejos y Trucos" class="card-image"><div class="card-overlay"><h3>Consejos y Trucos</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Desempeño" class="card-image"><div class="card-overlay"><h3>Desempeño</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Expedientes" class="card-image"><div class="card-overlay"><h3>Expedientes</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Mi Equipo" class="card-image"><div class="card-overlay"><h3>Mi Equipo</h3></div></a>
+                    <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Noticias y Eventos" class="card-image"><div class="card-overlay"><h3>Noticias y Eventos</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Preguntas Frecuentes" class="card-image"><div class="card-overlay"><h3>Preguntas Frecuentes</h3></div></a>
+                </div>
+            </div>
+
+            <aside class="action-sidebar">
+                <div class="sidebar-box">
+                    <h3>Tus Tareas</h3>
+                    <p>Revisa las tareas asignadas, fechas de entrega y evaluaciones de desempeño para mantenerte al día.</p>
+                    <a href="#" class="action-button">Ver Todas las Tareas</a>
+                </div>
+                <div class="sidebar-box">
+                    <h3>Formación Destacada</h3>
+                    <p>Explora oportunidades de formación nuevas y relevantes recomendadas para los empleados de SHSU.</p>
+                    <a href="#" class="action-button">Explorar Formación Destacada</a>
+                </div>
+                <div class="sidebar-box">
+                    <h3>Centro de Soporte</h3>
+                     <ul>
+                        <li><a href="http://www.shsu.edu/dept/it@sam/">Soporte Técnico</a></li>
+                        <li><a href="https://www.shsu.edu/dept/hr/learndevelop/">Conoce al Equipo</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Sam Houston State University | Miembro del Sistema Universitario Estatal de Texas</p>
+        </div>
+    </footer>
+
+</body>
+</html>
