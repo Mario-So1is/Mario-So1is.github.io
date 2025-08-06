@@ -166,7 +166,7 @@
             display: grid;
         }
 
-        /* CARD STYLES & NEW ORANGE GLOW HOVER */
+        /* REVISED: CARD STYLES & ORANGE OVERLAY HOVER */
         .links-grid {
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 25px;
@@ -183,7 +183,7 @@
         }
         .link-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(245, 100, 35, 0.7); /* Orange Glow Effect */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .link-card .card-image {
             width: 100%;
@@ -201,10 +201,11 @@
             display: flex; align-items: flex-end;
             padding: 20px;
             box-sizing: border-box;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease; /* Transition for the background */
         }
+        /* This is the key change: Orange overlay on hover */
         .link-card:hover .card-overlay {
-             background: linear-gradient(to top, rgba(20, 20, 20, 0.8) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+             background: linear-gradient(to top, rgba(245, 100, 35, 0.8) 0%, rgba(245, 100, 35, 0.1) 60%, transparent 100%);
         }
         .link-card h3 {
             font-family: var(--font-display);
@@ -342,6 +343,25 @@
             </section>
         </div>
         
+        <section class="user-info-section">
+            <div class="container">
+                <div class="user-info-container">
+                    <div class="info-box">
+                        <h2>Your Tasks</h2>
+                        <p class="no-tasks">No Current Tasks In Progress</p>
+                    </div>
+                    <div class="info-box">
+                        <h2>Featured Training</h2>
+                        <ul>
+                            <li><a href="#">(Video) HR Policy Update - HR-08 Holiday and Skeleton Crew Days</a></li>
+                            <li><a href="#">(Video) LEL: Fundamentals of Time Reporting: A toolkit for time approvers and reporters</a></li>
+                            <li><a href="#">(Video) LEL: Preparing for the SHSU Budget Cycle</a></li>
+                            <li><a href="#">(Video) SHSU Conversations with Administrators 1/12/2021 "Where does the money come from?"</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
