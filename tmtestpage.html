@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talent Management - Sam Houston State University</title>
+    <title>Talent Management Hub - Sam Houston State University</title>
 
     <style>
         /* 
@@ -36,7 +36,7 @@
             --shsu-jade: #004853;
             --shsu-denim: #465D7B;
             --light-gray-bg: #f4f6f7;
-            --light-border: #e0e0e0;
+            --light-border: #e9ecef;
             --text-color: #333;
             --font-button: 'GT America Standard', sans-serif;
             --font-display: 'GT Flexa Expanded', sans-serif;
@@ -58,14 +58,6 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        .section-title {
-            text-align: center;
-            font-family: var(--font-display);
-            font-size: 2.2em; /* Reduced Font Size */
-            color: var(--shsu-jade);
-            margin: 0 0 40px 0;
-            text-transform: uppercase;
-        }
         
         /* HERO SECTION */
         .hero-section {
@@ -73,12 +65,12 @@
             min-height: 400px;
             background-image: url('https://images.unsplash.com/photo-1693499469279-886d34c0f860?q=80&w=2070');
             background-size: cover;
-            background-position: center 30%; /* Adjusts focus of image */
+            background-position: center 30%;
             display: flex;
             align-items: center;
             position: relative;
         }
-        .hero-section::before { /* Gradient Overlay */
+        .hero-section::before {
             content: '';
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
@@ -86,20 +78,20 @@
         }
         .hero-content {
             position: relative;
-            padding: 40px 0;
             max-width: 1200px; margin: auto; padding: 40px 20px;
         }
         .hero-content h1 {
             font-family: var(--font-display); font-weight: 400; 
-            color: var(--shsu-white); font-size: 2.8em; /* Reduced Font Size */
-            line-height: 1.1; margin: 0 0 15px 0; text-transform: uppercase;
+            color: var(--shsu-white); font-size: 3em;
+            line-height: 1.1; margin: 0 0 15px 0;
+            text-transform: uppercase;
         }
         .hero-content p {
             font-family: var(--font-body-light); font-weight: 600;
-            color: var(--shsu-white); font-size: 1.1em;
-            max-width: 500px; margin-bottom: 30px;
+            color: var(--shsu-white);
+            font-size: 1.1em; max-width: 500px; margin-bottom: 30px;
         }
-        .hero-buttons { display: flex; gap: 15px; }
+        .hero-buttons { display: flex; gap: 15px; flex-wrap: wrap;}
         .hero-button {
             display: inline-block; background-color: var(--shsu-white);
             color: var(--shsu-jade); padding: 10px 25px; border: 2px solid var(--shsu-white);
@@ -110,178 +102,174 @@
             background-color: var(--shsu-orange); color: var(--shsu-white);
             border-color: var(--shsu-orange); transform: translateY(-2px);
         }
+
+        /* NEW: ASYMMETRICAL LAYOUT */
+        .main-layout {
+            padding: 60px 0;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .toolkit-main-content {
+            flex: 3; /* Takes up 3/4 of the space */
+        }
+        .action-sidebar {
+            flex: 1; /* Takes up 1/4 of the space */
+            position: sticky;
+            top: 40px;
+        }
         
-        /* UNIFIED CARD STYLES */
-        .toolkit-section { padding: 60px 0; }
-        .links-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+        /* TOOLKIT STYLES */
+        .section-title {
+            text-align: left;
+            font-family: var(--font-display);
+            font-size: 2em;
+            color: var(--shsu-jade);
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
         .link-card {
             position: relative; display: block; border-radius: 8px; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;
-            text-decoration: none; background-color: var(--shsu-denim); min-height: 180px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease; text-decoration: none;
+            min-height: 180px;
         }
-        .link-card:hover {
-            transform: translateY(-5px); box-shadow: 0 0 20px rgba(245, 100, 35, 0.5);
-        }
+        .link-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .link-card .card-image {
-            width: 100%; height: 100%; object-fit: cover; transition: all 0.4s ease;
-            opacity: 0.5; mix-blend-mode: luminosity;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s ease;
         }
-        .link-card:hover .card-image { opacity: 0.8; mix-blend-mode: normal; }
+        .link-card:hover .card-image { transform: scale(1.05); }
         .link-card .card-overlay {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 70%);
-            display: flex; align-items: flex-end; padding: 15px;
-            box-sizing: border-box; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+            display: flex; align-items: flex-end; padding: 15px; box-sizing: border-box; 
+            transition: background 0.3s ease;
+        }
+        .link-card:hover .card-overlay {
+            background: linear-gradient(to top, rgba(245, 100, 35, 0.8) 0%, rgba(245, 100, 35, 0.1) 60%, transparent 100%);
         }
         .link-card h3 {
-            font-family: var(--font-display); color: var(--shsu-white); font-size: 1.0em; /* Reduced Font Size */
+            font-family: var(--font-display); color: var(--shsu-white); font-size: 1.1em;
             text-transform: uppercase; line-height: 1.2; margin: 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); width: 100%;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        
-        /* NEW: INTERACTIVE ACCORDION SECTION */
-        .interactive-section-wrapper { background-color: var(--light-gray-bg); padding: 20px 0; }
-        .accordion-toggle { display: none; }
-        .accordion-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 30px; border-radius: 8px;
-            background-color: var(--shsu-white);
-            border: 1px solid var(--light-border);
-            cursor: pointer; transition: all 0.3s ease;
-        }
-        .accordion-header:hover { border-color: var(--shsu-orange); }
-        .accordion-header h3 {
-            font-family: var(--font-display); font-size: 1.5em; /* Reduced Font Size */
-            color: var(--shsu-denim); margin: 0;
-        }
-        .accordion-header .arrow { font-size: 1.5em; transition: transform 0.4s ease; }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-        }
-        .accordion-toggle:checked ~ .accordion-content {
-            max-height: 1000px; /* Large value to ensure it can contain content */
-            padding-top: 30px;
-        }
-        .accordion-toggle:checked + .accordion-header .arrow { transform: rotate(180deg); }
 
-        /* Styles for content inside the accordion */
-        .actions-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .action-box {
-            background-color: var(--shsu-white);
-            border-radius: 8px; padding: 30px;
+        /* SIDEBAR STYLES */
+        .sidebar-box {
+            background-color: var(--light-gray-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
             border: 1px solid var(--light-border);
         }
-        .action-box h3 {
-            font-family: var(--font-display); font-size: 1.3em; /* Reduced Font Size */
-            color: var(--shsu-denim); margin: 0 0 15px 0; text-transform: uppercase;
+        .sidebar-box h3 {
+            font-family: var(--font-display); font-size: 1.5em; color: var(--shsu-denim);
+            margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid var(--light-border);
         }
-        .action-box p { margin: 0 0 25px 0; font-family: var(--font-body-light); font-weight: 600; }
-        .action-button {
-            display: inline-block; text-decoration: none;
+        .sidebar-box p { margin: 0 0 20px 0; font-family: var(--font-body-light); font-weight: 600; font-size: 0.9em; }
+        .sidebar-box .action-button {
+            display: block; text-align: center; text-decoration: none;
             background-color: var(--shsu-orange); color: var(--shsu-white);
-            padding: 10px 25px; border-radius: 5px; font-weight: 500;
+            padding: 10px; border-radius: 5px; font-weight: 500;
             transition: all 0.3s ease;
         }
-        .action-button:hover { background-color: #d85419; transform: translateY(-2px); }
-        .action-box ul { list-style: none; padding: 0; margin: 0; }
-        .action-box ul a {
+        .sidebar-box .action-button:hover { background-color: #d85419; transform: translateY(-2px); }
+        .sidebar-box ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-box ul a {
             font-family: var(--font-body-light); font-weight: 600; color: var(--shsu-denim);
-            text-decoration: none; transition: color 0.3s ease;
-            font-size: 1em; display: block;
-            padding: 8px 0; border-bottom: 1px solid var(--light-border);
+            text-decoration: none; transition: color 0.3s ease; font-size: 0.9em;
+            display: block; padding: 8px 0;
         }
-        .action-box ul a:hover { color: var(--shsu-orange); }
+        .sidebar-box ul a:not(:last-child){ border-bottom: 1px solid var(--light-border); }
+        .sidebar-box ul a:hover { color: var(--shsu-orange); }
 
         /* FOOTER */
         footer {
             background-color: var(--shsu-jade); color: var(--shsu-white);
-            text-align: center; padding: 20px 0; font-family: var(--font-body-light);
+            text-align: center; padding: 20px 0;
+            font-family: var(--font-body-light);
         }
 
         /* RESPONSIVE DESIGN */
-        @media (max-width: 1200px) { .links-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 768px) {
-            .links-grid { grid-template-columns: repeat(2, 1fr); min-height: 200px; }
-            .actions-container { grid-template-columns: 1fr; }
-            .hero-content { text-align: center; width: 100%; padding: 40px 20px;}
-            .hero-buttons { flex-direction: column; align-items: center; }
+        @media (max-width: 992px) {
+            .main-layout { flex-direction: column; }
+            .action-sidebar { position: static; top: 0; width: 100%;}
+            .links-grid { grid-template-columns: repeat(3, 1fr); }
         }
-        @media (max-width: 500px) { .links-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .links-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-content { text-align: center; }
+            .hero-buttons { justify-content: center; }
+        }
+         @media (max-width: 500px) {
+            .links-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <main>
         <section class="hero-section">
-            <div class="hero-content">
-                <h1>HI {FIRSTNAME}, WELCOME TO TALENT MANAGEMENT!</h1>
-                <p>Your central hub for professional development, performance tracking, and essential training resources at Sam Houston State University.</p>
-                <div class="hero-buttons">
-                    <a href="https://samhouston.csod.com/LMS/catalog/EventsCalendar.aspx?tab_page_id=-10" class="hero-button" target="_blank">View Events Calendar</a>
-                    <a href="http://linkedinlearning.shsu.edu/" class="hero-button" target="_blank">LinkedIn Learning</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="toolkit-section">
             <div class="container">
-                <h2 class="section-title">Core Portal Tools</h2>
-                <div class="links-grid">
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Transcripts" class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Course Catalog" class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="External Training" class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Performance" class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
-                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="My Team" class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="FAQ" class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
-                </div>
-            </div>
-        </section>
-        
-        <!-- NEW INTERACTIVE ACCORDION SECTION -->
-        <section class="interactive-section-wrapper">
-            <div class="container">
-                <input type="checkbox" id="accordion-toggle" class="accordion-toggle">
-                <label for="accordion-toggle" class="accordion-header">
-                    <h3>View Quick Actions</h3>
-                    <span class="arrow">▼</span>
-                </label>
-                <div class="accordion-content">
-                    <div class="actions-container">
-                        <div class="action-box">
-                            <h3>Your Tasks</h3>
-                            <p>Review your assigned tasks, deadlines, and performance evaluations to stay on track.</p>
-                            <a href="#" class="action-button">View All Tasks</a>
-                        </div>
-                        <div class="action-box">
-                            <h3>Featured Training</h3>
-                            <ul>
-                                <li><a href="#">HR Policy Update - HR-08 Holiday and Skeleton Crew Days</a></li>
-                                <li><a href="#">LEL: Fundamentals of Time Reporting</a></li>
-                                <li><a href="#">LEL: Preparing for the SHSU Budget Cycle</a></li>
-                                <li><a href="#">SHSU Conversations with Administrators</a></li>
-                            </ul>
-                        </div>
+                <div class="hero-content">
+                    <h1>HI {FIRSTNAME}, WELCOME TO TALENT MANAGEMENT!</h1>
+                    <p>Your central hub for professional development, performance tracking, and essential training resources at Sam Houston State University.</p>
+                    <div class="hero-buttons">
+                        <a href="https://samhouston.csod.com/LMS/catalog/EventsCalendar.aspx?tab_page_id=-10" class="hero-button" target="_blank">View Events Calendar</a>
+                        <a href="http://linkedinlearning.shsu.edu/" class="hero-button" target="_blank">LinkedIn Learning</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="toolkit-section">
-            <div class="container">
-                <h2 class="section-title">Campus Resources & Info</h2>
-                 <div class="links-grid">
+        <div class="container main-layout">
+            <div class="toolkit-main-content">
+                <h2 class="section-title">Talent Management Toolkit</h2>
+                <div class="links-grid">
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1583321500441-9b19e4811a21?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Transcripts" class="card-image"><div class="card-overlay"><h3>Transcripts</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1491841550275-55e39626380c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Course Catalog" class="card-image"><div class="card-overlay"><h3>Course Catalog</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Add External Training" class="card-image"><div class="card-overlay"><h3>Add External Training</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Performance" class="card-image"><div class="card-overlay"><h3>Performance</h3></div></a>
+                    <a href="#" class="link-card"><img src="https://images.unsplash.com/photo-1531535701839-7541fc141595?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="My Team" class="card-image"><div class="card-overlay"><h3>My Team</h3></div></a>
+                    <a href="https://www.shsu.edu/dept/hr/talent-management/faq" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1526425024227-b235a82868ce?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="FAQ" class="card-image"><div class="card-overlay"><h3>FAQ</h3></div></a>
                     <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000326" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="News & Events" class="card-image"><div class="card-overlay"><h3>News & Events</h3></div></a>
                     <a href="https://www.shsu.edu/dept/hr/learndevelop/tla.html" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Learning Academies" class="card-image"><div class="card-overlay"><h3>Learning Academies</h3></div></a>
                     <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=20000325" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Tips & Tricks" class="card-image"><div class="card-overlay"><h3>Tips & Tricks</h3></div></a>
-                    <a href="http://www.shsu.edu/dept/it@sam/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1573496773905-f5b17e76b254?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Technical Support" class="card-image"><div class="card-overlay"><h3>Technical Support</h3></div></a>
-                    <a href="https://www.shsu.edu/dept/hr/learndevelop/" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c710?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Meet The Team" class="card-image"><div class="card-overlay"><h3>Meet The Team</h3></div></a>
                     <a href="https://samhouston.csod.com/catalog/CustomPage.aspx?id=221000496" target="_blank" class="link-card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=600" alt="Capacitaciones" class="card-image"><div class="card-overlay"><h3>Capacitaciones</h3></div></a>
                 </div>
             </div>
-        </section>
+
+            <aside class="action-sidebar">
+                <div class="sidebar-box">
+                    <h3>Your Tasks</h3>
+                    <p>Review assigned tasks, deadlines, and performance evaluations to stay on track.</p>
+                    <a href="#" class="action-button">View All Tasks</a>
+                </div>
+                <div class="sidebar-box">
+                    <h3>Featured Training</h3>
+                    <ul>
+                        <li><a href="#">HR Policy Update - HR-08 Holiday</a></li>
+                        <li><a href="#">LEL: Fundamentals of Time Reporting</a></li>
+                        <li><a href="#">LEL: Preparing for the SHSU Budget Cycle</a></li>
+                        <li><a href="#">SHSU Conversations with Admins</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-box">
+                    <h3>Support Hub</h3>
+                     <ul>
+                        <li><a href="http://www.shsu.edu/dept/it@sam/">Technical Support</a></li>
+                        <li><a href="https://www.shsu.edu/dept/hr/learndevelop/">Meet The Team</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
 
     </main>
 
