@@ -70,19 +70,28 @@
             text-transform: uppercase;
         }
         
-        /* HERO SECTION */
+        /* HERO SECTION - Now with Background Image */
         .hero-section {
             width: 100%;
             min-height: 450px;
+            /* Added background image */
             background-image: url('/clientimg/samhouston/welcome/Website%20Redesign%20July%202025/Test%20Homepage%20Image2.jpg');
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            position: relative;
+        }
+        .hero-section::before { /* Gradient Overlay */
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(0, 72, 83, 0.95) 0%, rgba(0, 72, 83, 0.8) 50%, rgba(0, 72, 83, 0) 100%);
         }
         .hero-content {
-            background: linear-gradient(90deg, rgba(0, 72, 83, 0.95) 0%, rgba(0, 72, 83, 0.9) 60%, rgba(0, 72, 83, 0) 100%);
+            position: relative; /* Ensure text is above the overlay */
             width: 55%; 
             padding: 50px 0 50px 5%;
         }
@@ -166,7 +175,7 @@
             display: grid;
         }
 
-        /* REVISED: CARD STYLES & ORANGE OVERLAY HOVER */
+        /* CARD STYLES & ORANGE OVERLAY HOVER */
         .links-grid {
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 25px;
@@ -201,9 +210,8 @@
             display: flex; align-items: flex-end;
             padding: 20px;
             box-sizing: border-box;
-            transition: background 0.3s ease; /* Transition for the background */
+            transition: background 0.3s ease; 
         }
-        /* This is the key change: Orange overlay on hover */
         .link-card:hover .card-overlay {
              background: linear-gradient(to top, rgba(245, 100, 35, 0.8) 0%, rgba(245, 100, 35, 0.1) 60%, transparent 100%);
         }
@@ -277,11 +285,10 @@
             .links-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
         }
         @media (max-width: 768px) {
-            .hero-section { background-position: center; }
+            .hero-section::before { background: linear-gradient(to top, rgba(0, 72, 83, 0.8) 0%, rgba(0, 72, 83, 0.95) 100%);}
             .hero-content {
-                background: linear-gradient(90deg, rgba(0, 72, 83, 0.95) 0%, rgba(0, 72, 83, 0.9) 100%);
-                text-align: center; padding: 40px; width: 100%;
-                box-sizing: border-box;
+                width: 100%; box-sizing: border-box; text-align: center;
+                padding: 40px;
             }
             .hero-content h1 { font-size: 2.5em; }
             .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 15px; }
