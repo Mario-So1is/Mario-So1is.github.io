@@ -12,7 +12,6 @@
             /* Google Pixel / Material You Inspired Palette */
             --brand-primary: #1967d2;
             --brand-secondary: #ff7575; /* Playful accent */
-            --brand-tertiary: #a142f4;
             
             --surface-light: #f6f8fe; /* Lightest blue background */
             --surface-card: #ffffff;
@@ -34,9 +33,10 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        .header-container { text-align: center; }
         .header-container h1 {
             color: var(--brand-primary);
-            font-size: 3em;
+            font-size: clamp(2.5em, 5vw, 3em);
             font-weight: 800;
             margin-bottom: 24px;
             letter-spacing: -1.5px;
@@ -46,11 +46,14 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            align-items: center;
             gap: 12px;
             margin: 0 auto 48px auto;
             max-width: 900px;
         }
         
+        .filter-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
         .filter-chip, .segmented-button, .dropdown-toggle {
             padding: 12px 24px;
             border: none;
@@ -64,13 +67,13 @@
         }
         .filter-chip:hover, .segmented-button:hover, .dropdown-toggle:hover {
             background-color: #d8e6fa;
-            transform: scale(1.05);
+            transform: translateY(-2px);
         }
 
         .filter-chip.active, .segmented-button.active {
             background-color: var(--brand-primary);
             color: white;
-            transform: scale(1.05);
+            transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(25, 103, 210, 0.3);
         }
 
@@ -88,8 +91,7 @@
             visibility: hidden; opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .dropdown-filter.open .dropdown-menu { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(-5px); }
+        .dropdown-filter.open .dropdown-menu { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         .dropdown-item { padding: 12px 20px; cursor: pointer; font-weight: 700; border-radius: 100px; color: var(--text-secondary); }
         .dropdown-item:hover { background-color: var(--surface-light); color: var(--text-primary); }
         .dropdown-item.active { color: var(--brand-secondary); }
@@ -106,7 +108,8 @@
         .event-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .event-card.hidden { display: none; }
         
-        .event-header { cursor: pointer; padding: 24px; font-size: 1.4em; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; letter-spacing: -0.5px; }
+        .event-header { cursor: pointer; padding: 24px; font-size: 1.4em; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; letter-spacing: -0.5px; text-align: left; }
+        .event-header .title { flex-grow: 1; padding-right: 16px; }
         .event-header .plus-icon {
             font-size: 32px;
             font-weight: 400;
@@ -117,6 +120,11 @@
         
         .event-content { max-height: 0; opacity: 0; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out, padding 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px; font-size: 1rem; font-weight: 500; line-height: 1.8; color: var(--text-secondary); }
         .event-header.active + .event-content { padding: 0 24px 24px 24px; max-height: 3500px; opacity: 1; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-in; }
+
+        .event-content p, .event-content ul { margin: 0 0 1em 0; padding-left: 0; }
+        .event-content ul { padding-left: 20px; list-style-position: outside; }
+        .event-content p:first-child { margin-top: 0; }
+        .event-content p:last-child, .event-content ul:last-child { margin-bottom: 0; }
 
         .register-button {
             display: inline-flex;
@@ -166,22 +174,382 @@
     </div>
     
     <div class="events-container">
-        <!-- Event cards go here, with their full, unaltered descriptions -->
-        <!-- Each card must have data-date="..." and data-category="..." -->
+        <div id="no-events-message">No events match the selected filter.</div>
+        
         <div class="event-card" data-date="01-29-2025" data-category="book-club">
             <div class="event-header"><span class="title">TRAIL Book Club: Trust Factor (Spring 2025)</span><span class="plus-icon">+</span></div>
             <div class="event-content">
                 <p>This book club features Paul Zak’s book <i>Trust Factor: The Science of Creating High-Performance Companies</i>. Participants must purchase their own book prior to attending the meetings. Please complete the reading for each session prior to the meeting.</p>
+                <p>The book club is open to faculty and staff. This is part of the TRAIL Leadership Development program in the “Engager” track. Participants must register in Talent Management and attend at least 6 of the 7 sessions to receive credit toward TRAIL certification.</p>
+                <p>The sessions will be led by Dr. Rob Bittick, Associate Professor, SHSU Dept of Political Science. In these workshops, Dr. Bittick will tie Dr. Zak’s findings to themes in organizational behavior.</p>
+                <p>Each session = 1 Staff Professional Development Credit. Attendance at least 6 of the 7 sessions = 1 TRAIL credit.</p>
+                <table>
+                    <thead><tr><th>Date</th><th>Reading Assignment</th></tr></thead>
+                    <tbody>
+                        <tr><td>01-29-2025</td><td>Introduction & Chapter 1</td></tr>
+                        <tr><td>02-12-2025</td><td>Chapters 2 & 3</td></tr>
+                        <tr><td>02-26-2025</td><td>Chapters 4 & 5</td></tr>
+                        <tr><td>03-05-2025</td><td>Chapters 6 & 7</td></tr>
+                        <tr><td>03-19-2025</td><td>Chapters 8 & 9</td></tr>
+                        <tr><td>04-09-2025</td><td>Chapter 10</td></tr>
+                        <tr><td>04-23-2025</td><td>Chapter 11 & Conclusion</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Time:</strong> 12:00PM - 1:00PM | <strong>Location:</strong> Zoom</p>
                 <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d1cadb33e-331d-4362-abc2-d04e18b16843" target="_blank">Register</a>
             </div>
         </div>
-        <!-- And so on for ALL events... -->
+
+        <div class="event-card" data-date="09-03-2025" data-category="book-club">
+            <div class="event-header"><span class="title">TRAIL Book Club: Dare to Lead (Fall 2025)</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p><b>Dare to Lead: Brave Work. Tough Conversations. Whole Hearts.</b></p>
+                <p>#1 NEW YORK TIMES BESTSELLER [Houston native] Brené Brown has taught us what it means to dare greatly, rise strong, and brave the wilderness. Now, based on new research conducted with leaders, change makers, and culture shifters, she’s showing us how to put those ideas into practice so we can step up and lead…</p>
+                <p>How do you cultivate braver, more daring leaders, and how do you embed the value of courage in your culture?</p>
+                <p>In Dare to Lead, Brown uses research, stories, and examples to answer these questions in the no-BS style that millions of readers have come to expect and love.</p>
+                <p>Whether you’ve read Daring Greatly and Rising Strong or you’re new to Brené Brown’s work, this book is for anyone who wants to step up and into brave leadership. (Amazon.com)</p>
+                <p><b>Dr. Shani N. Robinson</b> is the Senior Associate Dean and an Accounting Professor in the College of Business Administration at Sam Houston State University. With over 20 years of experience in higher education, she is known for her work in leadership development, mentoring, and strategic initiatives that support students, faculty, and business leaders through community engagement. With a long-standing focus on authentic leadership, effective communication, and purpose-driven work, she is honored to facilitate this semester’s Dare to Lead book club, a title that closely aligns with her professional philosophy.</p>
+                <p><b>Eligible to attend:</b> The book club is open to faculty and staff. This is part of the TRAIL Leadership Development program for the “Engager” track, but TRAIL participation is not required to attend. Participants will need to purchase their own books.</p>
+                <p>Participants must register in Talent Management and attend at least 5 of the 6 sessions to receive credit toward the TRAIL certification.</p>
+                <p><b>Credit:</b> 1 Staff Professional Development Credit per session. Attendance at a minimum of 5 of the 6 sessions = 1 TRAIL Influencer credit.</p>
+                <table>
+                    <thead><tr><th>Session</th><th>Date</th><th>Reading Assignment</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>09-03-2025</td><td>Introduction & Part One, pp. 1–65</td></tr>
+                        <tr><td>2</td><td>09-17-2025</td><td>Finish Part One, pp. 66–117</td></tr>
+                        <tr><td>3</td><td>10-01-2025</td><td>Part Two, pp. 119–150</td></tr>
+                        <tr><td>4</td><td>10-22-2025</td><td>Part Three, pp. 151–186</td></tr>
+                        <tr><td>5</td><td>11-05-2025</td><td>Part Four, pp. 187–232</td></tr>
+                        <tr><td>6</td><td>12-03-2025</td><td>Daring Leadership in Action & Closing, pp. 233–end</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Time:</strong> 12:00 PM – 1:00 PM | <strong>Location:</strong> LSC Room 320</p>
+                <p>We encourage participants to attend the in-person offerings. However, if attendees are traveling, working remote, or need an alternative to attending a session in person, please contact HRTraining@shsu.edu to receive a Zoom link and access information prior to each session you will miss.</p>
+                <a class="register-button" href="#" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="02-06-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Using Visuals to Quickly Communicate Information</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>Learn how to create narratives, metaphors, and visualizations from data to make the complex more simple and to give it an emotional immediacy.</p>
+                <p><strong>Date:</strong> 02-06-2025 | <strong>Time:</strong> 2:00PM - 3:15PM | <strong>Location:</strong> LSC 320</p>
+                <p>Professional Development Credit: 1.25</p>
+                <p>Core Competency: Innovative in Thinking</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d8d870ae6-f686-4207-9439-36f98d7501ff" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="02-13-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Crisis Communication for Current and Aspiring Leaders</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                 <p>This session on crisis communication is designed for current and aspiring leaders who want to strengthen their ability to manage communication during crises within their team, organization, or community. Through real-world examples and interactive exercises, leaders will learn to maintain transparency, mitigate rumors, and prioritize the safety and well-being of their community. Participants will develop essential skills for crisis response, including identifying key stakeholders, crafting clear and timely messages, and selecting the right communication channels. By the end of the session, attendees will be equipped to navigate high-pressure situations with confidence and clarity.</p>
+                <p><strong>Date:</strong> 02-13-2025 | <strong>Time:</strong> 10:00AM - 12:00PM | <strong>Location:</strong> LSC 242 (Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Influencer Track* | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d79e1a5b2-509e-4540-814f-d425ed5e3909" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="02-13-2025" data-category="tu">
+            <div class="event-header"><span class="title">TU: Falling in Love with Functions</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>Roses are red, violets are blue, I’ve fallen for functions—and I hope you do too! In this ‘Falling in Love with Function’ Excel session, participants will learn how to use essential Excel functions to streamline data analysis and calculations. The session will include hands-on practice, step-by-step examples, and tips on combining functions to solve real-world problems efficiently. By the end, participants will have the confidence to leverage Excel functions to enhance productivity and accuracy in their work.</p>
+                <p><strong>Date:</strong> 02-13-2025 | <strong>Time:</strong> 2:00PM - 3:30PM | <strong>Location:</strong> Thomason 107</p>
+                <p>Professional Development Credit: 1.5 | Core Competency: Dedicated to Life-Long Learning</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d77f5064f-80f0-41cf-9d43-31e0287461f4" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="02-27-2025" data-category="ma">
+            <div class="event-header"><span class="title">MA: Minimizing Legal Risks</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                 <p>As a supervisor or manager, you need to know the most up-to-date information on employment law to deal ethically and legally with your employees. For this Management Academy session, Jeff Farrell, Associate General Counsel for the Texas State University System, provides legal advice to managers to implement best management practices and departmental operations to put the University in the best position to defend itself against employment claims arising from your employment actions.</p>
+                <p><strong>Date:</strong> 02-27-2025 | <strong>Time:</strong> 10:00AM - 12:00PM | <strong>Location:</strong> Zoom</p>
+                <p>Professional Development Credit: 2.0 | Availability: Managers Only</p>
+                <a class="register-button" href="https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsamhouston.csod.com%2Fsamldefault.aspx%3Fouid%3D1%26returnUrl%3D%25252fDeepLink%25252fProcessRedirect.aspx%25253fmodule%25253dlodetails%252526lo%25253dc85a8348-2f49-44f6-a033-4dd9e866b5e9&data=05%7C02%7Cmario%40shsu.edu%7C4193063223b4496652dc08dd3cbd15f3%7Cb153cbd8b39247449b39e3cdb8677f00%7C0%7C0%7C638733504986701367%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=xoAFZObWXR5oAL5ZiDLUlBR5VrzjDY8XJ8ngXc0pCWw%3D&reserved=0" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="03-19-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Constructive Conversations: Delivering Impactful Performance Feedback*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>This training will equip supervisors with practical tools and models to deliver constructive feedback that fosters employee growth and enhances team success. Learn techniques for framing feedback to encourage employees to make meaningful adjustments, meet expectations, and reach their full potential. Participants will gain insights into effective communication strategies, methods for setting clear performance goals, and approaches for addressing challenges.</p>
+                <p><strong>Date:</strong> 03-19-2025 | <strong>Time:</strong> 10:00AM - 11:30AM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Engager or Influencer Track | Professional Development Credit: 1.5</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253da4347c99-3aa3-456d-9232-42a2279b41ef" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="03-25-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Personal Branding Workshop</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>This course is designed for faculty and staff who want to build a strong personal brand within higher education. This course will provide a comprehensive understanding of personal branding in academia, drawing inspiration from the personal brands of leaders in the field. Participants will learn how to identify, refine, and communicate their unique personal brands to establish themselves as dynamic leaders in higher education.</p>
+                <p><strong>Date:</strong> 03-25-2025 | <strong>Time:</strong> 2:30PM - 4:30PM | <strong>Location:</strong> LSC 116</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Influencer Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253dbc23c93c-58fb-4a26-82c0-6bf8c92fc5d2" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="04-01-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Decision-Making Under Pressure</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>When the heat is on, how do you show up? This course focuses on strategies for making the best possible decisions under difficult circumstances. Presented by Bobby Williams, Jr., Athletic Director. Bobby will bring his 40-plus years of working with athletes, leaders, fans, and followers to the table and show how building trust, relationships, and humility can help prepare you for the moment when it is up to you to make that final call.</p>
+                <p><strong>Date:</strong> 04-01-2025 | <strong>Time:</strong> 1:00PM - 3:00PM | <strong>Location:</strong> LSC 324</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Engager Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253df1c2de76-bfa2-4b6e-97ef-d32d93bda6ca" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="04-07-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Developing Your Leadership Philosophy*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>Not all leaders lead the same. Discover what strengths you bring to the table, and how you can craft your leadership philosophy to reflect the values that guide you. This course uses the CliftonStrengths assessment to provide insight into your talents and how you communicate, connect, and work with others.</p>
+                <p><strong>Date:</strong> 04-07-2025 | <strong>Time:</strong> 2:00PM - 4:00PM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Engager or Influencer Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d6a0db907-de85-4ee6-a8c3-3890e2d83f40" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="04-10-2025" data-category="tu">
+            <div class="event-header"><span class="title">TU: Spring Into Excel: A Blooming Workshop on Functions</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p><strong>Description:</strong> Spring is in the air, and so is your chance to refresh your Excel skills! Join us for a fun and interactive workshop where we’ll help your spreadsheets blossom with powerful Excel functions. Just like flowers need sunshine and rain to thrive, your data needs the right formulas to grow!</p>
+                <ul>
+                    <li>Sprout essential functions like <code>SUM</code>, <code>AVERAGE</code>, and <code>IF</code></li>
+                    <li>Shine with advanced formulas like <code>VLOOKUP</code>, <code>XLOOKUP</code>, <code>TEXT</code>, and date functions</li>
+                    <li>Buzz through common pitfalls and troubleshoot errors</li>
+                    <li>Branch out into combining multiple functions for efficiency</li>
+                </ul>
+                <p><strong>Date:</strong> 04-10-2025 | <strong>Time:</strong> 2:00 PM - 3:30 PM | <strong>Location:</strong> Smith-Hutson 202</p>
+                <p><strong>Professional Development Credit:</strong> 1.5</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d77f5064f-80f0-41cf-9d43-31e0287461f4" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="04-14-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Supervising within the Guardrails*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>In the ever-changing landscape of the higher education workplace, supervisors must balance the demands of leadership with the boundaries of our institutional culture, policies, and best practices. This one-hour interactive training session empowers leaders to address workplace challenges effectively without veering off course.</p>
+                <p><strong>Date:</strong> 04-14-2025 | <strong>Time:</strong> 2:00PM - 3:00PM | <strong>Location:</strong> LSC 320</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Engager or Influencer Track | Professional Development Credit: 1.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d33143bd7-86bf-41e3-898b-da7a0d7c8615" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="05-01-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: The Art of Strategic Influence: Harnessing Teamwork for Impactful Leadership</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>How leaders can motivate others through influence, persuasion, and inspiration. This session, presented by Dr. Shani Robinson, Senior Associate Dean of COBA, will provide a mix of engaging activities, academic insights, and practical strategies that leaders can apply right away.</p>
+                <p><strong>Date:</strong> 05-01-2025 | <strong>Time:</strong> 10:00AM - 12:00PM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Influencer Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253de12940f7-adaa-4063-9bbf-90db0fc767b7" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="05-12-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Presentation Skills For Leaders*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>How to create your Leadership Presence by enhancing your presentation skills, from managing anxiety, preparing effectively, and using compelling storytelling.</p>
+                <p><strong>Date:</strong> 05-12-2025 | <strong>Time:</strong> 10:00AM - 11:30AM | <strong>Location:</strong> LSC 323</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Influencer Track | Professional Development Credit: 1.5</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d412229a3-ee6b-475d-8330-a2b62d9c2e19" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="06-03-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Building a Culture of Trust</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                 <p>In today’s dynamic workplace, trust is the foundation of high-performing teams and resilient leadership. Join this interactive session to explore the essential elements of building—and sometimes rebuilding—trust within your team. Presented by Dr. Ruth Chisum, Asst. VP for SHSU Online Operations.</p>
+                <p><strong>Date:</strong> 06-03-2025 | <strong>Time:</strong> 10:00AM - 12:00PM | <strong>Location:</strong> Zoom</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Engager Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d55bbc2b9-c662-4ca1-b449-bc335c085b10" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="06-18-2025" data-category="tu">
+            <div class="event-header"><span class="title">TU: Basic Conflict Management</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                 <p>Conflict is a normal part of human interactions. This seminar teaches basic conflict management skills to help participants communicate better and build stronger relationships both personally and at work. Presented in partnership with the SHSU Ombuds Office.</p>
+                <p><strong>Date:</strong> 06-18-2025 | <strong>Time:</strong> 10:00AM - 11:15AM | <strong>Location:</strong> Zoom</p>
+                <p>Professional Development Credit: 1.25</p>
+                <a class="register-button" href="https://samhouston.csod.com/ui/lms-learning-details/app/event/becc4b42-2629-469b-a6d8-fb02d47f0943" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="06-26-2025" data-category="tu">
+            <div class="event-header"><span class="title">TU: Sizzle into Summer with Smarter Spreadsheets</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                 <p>Make a splash this summer by leveling up your Excel skills! This hands-on session will help you work smarter—not harder—with your data, covering importing external data, Excel Tables, and Pivot Tables. No experience needed—just bring your curiosity.</p>
+                <p><strong>Date:</strong> 06-26-2025 | <strong>Time:</strong> 2:00PM - 4:00PM | <strong>Location:</strong> SHB 202</p>
+                <p>Professional Development Credit: 2</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253df0289baf-91c4-4f75-8bb6-01f0654138d7" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="07-15-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Constructive Conversations: Delivering Impactful Performance Feedback*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>This training will equip supervisors with practical tools and models to deliver constructive feedback that fosters employee growth and enhances team success. Learn techniques for framing feedback to encourage employees to make meaningful adjustments, meet expectations, and reach their full potential.</p>
+                <p><strong>Date:</strong> 07-15-2025 | <strong>Time:</strong> 10:00AM - 11:30AM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Engager or Influencer Track | Professional Development Credit: 1.5</p>
+                <a class="register-button" href="https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsamhouston.csod.com%2Fsamldefault.aspx%3Fouid%3D1%26returnUrl%3D%25252fDeepLink%25252fProcessRedirect.aspx%25253fmodule%25253dlodetails%252526lo%25253da4347c99-3aa3-456d-9232-42a2279b41ef&data=05%7C02%7Cmario%40shsu.edu%7C7b7785a6807b4c8304a408dd8e343102%7Cb153cbd8b39247449b39e3cdb8677f00%7C0%7C0%7C638823076995991113%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=UWoqmGYgxzKW5z3RUwxIwLINXyZU3Z2pdLKaqUk5UrY%3D&reserved=0" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="07-16-2025" data-category="tu">
+            <div class="event-header"><span class="title">TU: Sizzle into Summer with Smarter Spreadsheets</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>Make a splash this summer by leveling up your Excel skills! This hands-on session will help you work smarter—not harder—with your data, covering importing external data, Excel Tables, and Pivot Tables. No experience needed—just bring your curiosity.</p>
+                <p><strong>Date:</strong> 07-16-2025 | <strong>Time:</strong> 2:00PM - 4:00PM | <strong>Location:</strong> SHB 202</p>
+                <p>Professional Development Credit: 2</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253df0289baf-91c4-4f75-8bb6-01f0654138d7" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="09-24-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Written Communication for Leaders*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>As a leader, your written communications reflect your professionalism. This interactive TRAIL session is designed to help you craft messages that are clear, concise, and impactful. Real-world examples and practical exercises will ensure you leave with tools to write emails, memos, and other documents that achieve their purpose while fostering trust and collaboration.</p>
+                <p><strong>Date:</strong> 09-24-2025 | <strong>Time:</strong> 2:00PM - 4:00PM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Engager Track | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253db1484e18-c6a4-4395-8ccf-236ffeb78023" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="10-03-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Crisis Communication for Current and Aspiring Leaders</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>This session on crisis communication is designed for current and aspiring leaders who want to strengthen their ability to manage communication during crises. Participants will develop essential skills for crisis response, including identifying key stakeholders, crafting clear and timely messages, and selecting the right communication channels.</p>
+                <p><strong>Date:</strong> 10-03-2025 | <strong>Time:</strong> 10:00AM - 12:00PM | <strong>Location:</strong> LSC 115 (Glass Room)</p>
+                <p><strong>TRAIL DESIGNATION:</strong> Influencer Track* | Professional Development Credit: 2.0</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d79e1a5b2-509e-4540-814f-d425ed5e3909" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="10-07-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Presentation Skills For Leaders*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>How to create your Leadership Presence by enhancing your presentation skills, from managing anxiety, preparing effectively, and using compelling storytelling.</p>
+                <p><strong>Date:</strong> 10-07-2025 | <strong>Time:</strong> 2:00PM - 3:30PM | <strong>Location:</strong> LSC 320</p>
+                <p><strong>TRAIL DESIGNATION:</strong> *Core Course Influencer Track | Professional Development Credit: 1.5</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d412229a3-ee6b-475d-8330-a2b62d9c2e19" target="_blank">Register</a>
+            </div>
+        </div>
+
+        <div class="event-card" data-date="11-04-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Developing Your Leadership Philosophy*</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>Not all leaders lead the same. Discover what strengths you bring to the table, and how you can craft your leadership philosophy to reflect the values that guide you. This is a <strong>core</strong> TRAIL for the Engager or Influencer track.</p>
+                <p><strong>Date:</strong> 11-04-2025 | <strong>Time:</strong> 2:00PM - 4:00PM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p>Staff Professional Development Credits = 2</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253d6a0db907-de85-4ee6-a8c3-3890e2d83f40" target="_blank">Register</a>
+            </div>
+        </div>
+        
+        <div class="event-card" data-date="11-12-2025" data-category="trail">
+            <div class="event-header"><span class="title">TRAIL: Micromoving Your Way to Better Work Relationships</span><span class="plus-icon">+</span></div>
+            <div class="event-content">
+                <p>An interactive TRAIL session in which you will learn about interpersonal- and technology-based tactics for fostering stronger connections with co-workers. Presented by Dr. Ashly Smith.</p>
+                <p><strong>Date:</strong> 11-12-2025 | <strong>Time:</strong> 10:00AM - 11:30AM | <strong>Location:</strong> LSC 242 (The Glass Room)</p>
+                <p><strong>TRAIL Certification Credit:</strong> 1 elective credit, Engager Track | Staff Professional Development Credits = 1.5</p>
+                <a class="register-button" href="https://samhouston.csod.com/samldefault.aspx?ouid=1&returnUrl=%252fDeepLink%252fProcessRedirect.aspx%253fmodule%253dlodetails%2526lo%253df7bb0685-8546-4aec-bde7-5192187a4015" target="_blank">Register</a>
+            </div>
+        </div>
+
     </div>
-    
-     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Full JS code here as in previous turns, no changes needed for this aesthetic update.
+
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const timeFilterTabs = document.querySelectorAll(".filter-chip, .segmented-button");
+        const categoryFilterItems = document.querySelectorAll(".dropdown-item");
+        const categoryToggleBtn = document.getElementById("category-filter-toggle");
+        const categoryDropdown = document.querySelector(".dropdown-filter");
+        const events = document.querySelectorAll(".event-card");
+        const noEventsMessage = document.getElementById('no-events-message');
+        const headers = document.querySelectorAll('.event-header');
+        
+        const filterChips = document.querySelectorAll('.filter-chip:not(.dropdown-toggle)');
+        const segmentedButtons = document.querySelectorAll('.segmented-button');
+
+        let activeTimeFilter = 'all';
+        let activeCategoryFilter = 'all';
+
+        // Accordion Logic
+        headers.forEach(header => {
+            header.addEventListener('click', function(e) {
+                if (e.target.closest('.register-button')) return;
+                const isActive = this.classList.contains('active');
+                headers.forEach(h => { if (h !== this) h.classList.remove('active'); });
+                this.classList.toggle('active', !isActive);
+            });
         });
-    </script>
+
+        const runFilters = () => {
+            let visibleEvents = 0;
+            events.forEach(event => {
+                const eventDateStr = event.getAttribute('data-date');
+                let timeMatch = false;
+                if (!eventDateStr) { timeMatch = true; } 
+                else {
+                    const [month, day, year] = eventDateStr.split("-").map(num => parseInt(num, 10));
+                    const eventDate = new Date(year, month - 1, day);
+                    const today = new Date(); today.setHours(0, 0, 0, 0);
+                    switch (activeTimeFilter) {
+                        case 'all': timeMatch = true; break;
+                        case 'upcoming': timeMatch = eventDate >= today; break;
+                        case 'past': timeMatch = eventDate < today; break;
+                        case '24-25': timeMatch = (eventDate >= new Date(2024, 7, 1)) && (eventDate < new Date(2025, 7, 1)); break;
+                        case '25-26': timeMatch = (eventDate >= new Date(2025, 7, 1)) && (eventDate < new Date(2026, 7, 1)); break;
+                    }
+                }
+                const eventCategory = event.getAttribute('data-category');
+                let categoryMatch = (activeCategoryFilter === 'all') || (activeCategoryFilter === eventCategory);
+                if (timeMatch && categoryMatch) {
+                    event.classList.remove('hidden');
+                    visibleEvents++;
+                } else {
+                    event.classList.add('hidden');
+                }
+            });
+            noEventsMessage.style.display = visibleEvents === 0 ? 'block' : 'none';
+        };
+
+        timeFilterTabs.forEach(tab => {
+            tab.addEventListener("click", function () {
+                 if (this.classList.contains('filter-chip')) {
+                    filterChips.forEach(t => t.classList.remove("active"));
+                    segmentedButtons.forEach(t => t.classList.remove("active"));
+                 }
+                 if (this.classList.contains('segmented-button')) {
+                    segmentedButtons.forEach(t => t.classList.remove("active"));
+                    filterChips.forEach(t => t.classList.remove("active"));
+                 }
+                this.classList.add("active");
+                activeTimeFilter = this.getAttribute("data-filter");
+                runFilters();
+            });
+        });
+
+        categoryToggleBtn.addEventListener('click', () => categoryDropdown.classList.toggle('open'));
+        categoryFilterItems.forEach(item => {
+            item.addEventListener('click', () => {
+                categoryFilterItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                activeCategoryFilter = item.getAttribute('data-category');
+                const selectedText = item.textContent;
+                categoryToggleBtn.innerHTML = `${selectedText} ▼`;
+                categoryDropdown.classList.remove('open');
+                runFilters();
+            });
+        });
+        
+        window.addEventListener('click', function(e) {
+            if (!categoryDropdown.contains(e.target)) {
+                categoryDropdown.classList.remove('open');
+            }
+        });
+        runFilters(); 
+    });
+</script>
 </body>
 </html>
