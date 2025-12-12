@@ -2,395 +2,518 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Open World Supra Racer</title>
+    <title>APEX MOTORSPORT SIMULATION</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        #ui {
-            position: absolute;
-            top: 20px; left: 20px;
-            color: white;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
-            pointer-events: none;
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Rajdhani', sans-serif; user-select: none; }
+        
+        /* UI LAYERS */
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        
+        /* MENUS */
+        .menu-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(20,20,30,0.9) 0%, rgba(0,0,0,1) 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; pointer-events: auto; transition: opacity 0.5s;
         }
-        h1 { margin: 0; font-style: italic; color: #ff9900; letter-spacing: 2px; }
-        #stats { font-size: 20px; font-weight: bold; margin-top: 5px; }
-        #minimap {
-            position: absolute; bottom: 20px; right: 20px;
-            width: 150px; height: 150px;
-            background: rgba(0,0,0,0.5); border: 2px solid white; border-radius: 50%;
-            overflow: hidden; transform: rotate(0deg);
+        .hidden { opacity: 0; pointer-events: none; }
+        
+        h1 { font-size: 80px; margin: 0; letter-spacing: 10px; text-transform: uppercase; 
+             background: linear-gradient(45deg, #ff3333, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 60px; font-size: 24px; color: white; margin: 10px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: all 0.2s;
+            font-family: 'Rajdhani', sans-serif; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
         }
-        #mini-player {
-            position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
-            background: orange; transform: translate(-50%, -50%);
-            border-radius: 50%; box-shadow: 0 0 4px white;
+        .btn:hover { background: #ff3333; border-color: #ff3333; transform: scale(1.05); }
+
+        /* HUD */
+        #hud { display: none; pointer-events: none; }
+        #speedometer {
+            position: absolute; bottom: 50px; right: 50px; text-align: right;
         }
+        #speed-val { font-size: 100px; font-weight: bold; color: white; line-height: 0.8; }
+        #gear-val { font-size: 40px; color: #ff3333; }
+        #lap-timer {
+            position: absolute; top: 20px; right: 40px; font-size: 30px; color: white;
+        }
+        #position-display {
+            position: absolute; top: 20px; left: 40px; font-size: 60px; font-weight: bold; color: white; font-style: italic;
+        }
+        
+        /* CINEMATIC BARS */
+        .cine-bar {
+            position: absolute; left: 0; width: 100%; height: 0%; background: black; transition: height 1s; z-index: 10;
+        }
+        #bar-top { top: 0; }
+        #bar-bottom { bottom: 0; }
+        .cinematic-mode #bar-top, .cinematic-mode #bar-bottom { height: 12%; }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
 </head>
 <body>
 
-    <div id="ui">
-        <h1>SUPRA DRIFT WORLD</h1>
-        <div id="stats">Speed: <span id="speedVal">0</span> km/h</div>
-        <div style="font-size: 14px; opacity: 0.8">WASD / Arrows to Drive | SPACE to Brake</div>
+    <div id="game-container"></div>
+
+    <div id="ui-layer">
+        
+        <div id="menu-start" class="menu-screen">
+            <h1>Apex Motorsport</h1>
+            <p style="color:#888; letter-spacing: 4px; margin-bottom: 40px;">REAL DRIVING SIMULATOR</p>
+            <div class="btn" onclick="goToCarSelect()">Enter Race</div>
+        </div>
+
+        <div id="menu-select" class="menu-screen hidden">
+            <h1>Select Vehicle</h1>
+            <div style="display:flex; gap: 20px;">
+                <div class="btn" onclick="selectCar('red')">Rosso Corsa</div>
+                <div class="btn" onclick="selectCar('silver')">Silver Arrow</div>
+                <div class="btn" onclick="selectCar('black')">Midnight Ops</div>
+            </div>
+        </div>
+
+        <div id="hud">
+            <div class="cine-bar" id="bar-top"></div>
+            <div class="cine-bar" id="bar-bottom"></div>
+            <div id="position-display">POS <span id="pos-val">1</span>/4</div>
+            <div id="lap-timer">LAP <span id="lap-val">1</span>/3</div>
+            <div id="speedometer">
+                <div id="speed-val">0</div>
+                <div id="gear-val">N</div>
+                <div style="font-size:14px; color:#aaa">KM/H</div>
+            </div>
+        </div>
     </div>
 
-    <div id="minimap"><div id="mini-player"></div></div>
-
 <script>
-    // --- CONFIGURATION ---
-    const RENDER_DISTANCE = 160; 
-    const CHUNK_SIZE = 40;
-    const CAR_SCALE = 0.5;
-    
-    // --- 1. SCENE SETUP ---
-    const scene = new THREE.Scene();
-    const skyColor = 0x87CEEB; // Cartoon Sky Blue
-    scene.background = new THREE.Color(skyColor);
-    scene.fog = new THREE.Fog(skyColor, 50, RENDER_DISTANCE - 10);
-
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(renderer.domElement);
-
-    // Lights
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(50, 100, 50);
-    dirLight.castShadow = true;
-    dirLight.shadow.camera.left = -50;
-    dirLight.shadow.camera.right = 50;
-    dirLight.shadow.camera.top = 50;
-    dirLight.shadow.camera.bottom = -50;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    scene.add(dirLight);
-
-    // --- 2. THE SUPRA (Model Builder) ---
-    function createSupra(colorHex) {
-        const carGroup = new THREE.Group();
-
-        const carMat = new THREE.MeshToonMaterial({ color: colorHex });
-        const blackMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
-        const glassMat = new THREE.MeshPhongMaterial({ color: 0x222222, shininess: 100 });
-        const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffaa });
-        const tailLightMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-
-        // 1. Chassis (Main Body)
-        const chassisGeo = new THREE.BoxGeometry(2.2, 0.7, 5);
-        // Modify geometry to slope the hood (simple vertex manipulation)
-        const pos = chassisGeo.attributes.position;
-        // This is a rough approximation of shaping via code
-        const chassis = new THREE.Mesh(chassisGeo, carMat);
-        chassis.position.y = 0.6;
-        chassis.castShadow = true;
-        carGroup.add(chassis);
-
-        // 2. Cabin (Roof)
-        const cabinGeo = new THREE.BoxGeometry(1.8, 0.6, 2.5);
-        const cabin = new THREE.Mesh(cabinGeo, glassMat);
-        cabin.position.set(0, 1.2, -0.2);
-        carGroup.add(cabin);
-
-        // 3. The Spoiler (The Iconic Wing)
-        const wingGeo = new THREE.BoxGeometry(2.4, 0.1, 0.5);
-        const wing = new THREE.Mesh(wingGeo, carMat);
-        wing.position.set(0, 1.3, 2.2);
-        carGroup.add(wing);
-
-        // Spoiler Struts
-        const strutGeo = new THREE.BoxGeometry(0.1, 0.5, 0.2);
-        const strutL = new THREE.Mesh(strutGeo, carMat);
-        strutL.position.set(0.8, 1.0, 2.2);
-        const strutR = new THREE.Mesh(strutGeo, carMat);
-        strutR.position.set(-0.8, 1.0, 2.2);
-        carGroup.add(strutL);
-        carGroup.add(strutR);
-
-        // 4. Wheels
-        const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 24);
-        wheelGeo.rotateZ(Math.PI / 2);
-        
-        function makeWheel(x, z) {
-            const w = new THREE.Mesh(wheelGeo, blackMat);
-            w.position.set(x, 0.4, z);
-            w.castShadow = true;
-            return w;
-        }
-        carGroup.add(makeWheel(1.1, 1.5));
-        carGroup.add(makeWheel(-1.1, 1.5));
-        carGroup.add(makeWheel(1.1, -1.5));
-        carGroup.add(makeWheel(-1.1, -1.5));
-
-        // 5. Headlights
-        const headLightGeo = new THREE.BoxGeometry(0.6, 0.2, 0.1);
-        const hlL = new THREE.Mesh(headLightGeo, lightMat);
-        hlL.position.set(0.6, 0.7, -2.5);
-        carGroup.add(hlL);
-        const hlR = new THREE.Mesh(headLightGeo, lightMat);
-        hlR.position.set(-0.6, 0.7, -2.5);
-        carGroup.add(hlR);
-
-        // 6. Tail Lights (Supra circles)
-        const tailGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 16);
-        tailGeo.rotateX(Math.PI/2);
-        const tl1 = new THREE.Mesh(tailGeo, tailLightMat); tl1.position.set(0.5, 0.7, 2.5);
-        const tl2 = new THREE.Mesh(tailGeo, tailLightMat); tl2.position.set(0.8, 0.7, 2.5);
-        const tl3 = new THREE.Mesh(tailGeo, tailLightMat); tl3.position.set(-0.5, 0.7, 2.5);
-        const tl4 = new THREE.Mesh(tailGeo, tailLightMat); tl4.position.set(-0.8, 0.7, 2.5);
-        carGroup.add(tl1); carGroup.add(tl2); carGroup.add(tl3); carGroup.add(tl4);
-
-        // Scale entire car
-        carGroup.scale.set(CAR_SCALE, CAR_SCALE, CAR_SCALE);
-        return carGroup;
-    }
-
-    // Create Player Car
-    const playerCar = createSupra(0xff6600); // Supra Orange
-    scene.add(playerCar);
-
-    // --- 3. PHYSICS ENGINE ---
-    const physics = {
-        speed: 0,
-        maxSpeed: 1.5,
-        acceleration: 0.02,
-        friction: 0.98,
-        turnSpeed: 0.04,
-        angle: 0,
-        x: 0,
-        z: 0,
-        velocity: { x: 0, z: 0 }
+    /**
+     * APEX ENGINE CONFIGURATION
+     */
+    const CONFIG = {
+        shadowQuality: 2048,
+        trackWidth: 14,
+        aiCount: 3,
+        gravity: -9.8,
+        cameraHeight: 2.5,
+        cameraDist: 5.5
     };
 
-    const keys = { w: false, a: false, s: false, d: false, space: false };
+    let gameState = 'MENU'; // MENU, SELECT, CINEMATIC, RACING, FINISH
+    let renderer, scene, camera;
+    let clock = new THREE.Clock();
+    let player, trackCurve;
+    let aiCars = [];
+    let collidables = [];
+    let selectedColor = 0xff0000;
+    
+    // Physics State
+    const carPhys = { speed: 0, maxSpeed: 240, accel: 40, break: 80, friction: 0.98, turnSpeed: 1.5, driftFactor: 0.95 };
+    const keys = { w:0, a:0, s:0, d:0 };
+    
+    // --- INITIALIZATION ---
+    function init() {
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        document.body.appendChild(renderer.domElement);
 
-    window.addEventListener('keydown', e => {
-        if(e.key === "ArrowUp" || e.key === "w") keys.w = true;
-        if(e.key === "ArrowDown" || e.key === "s") keys.s = true;
-        if(e.key === "ArrowLeft" || e.key === "a") keys.a = true;
-        if(e.key === "ArrowRight" || e.key === "d") keys.d = true;
-        if(e.code === "Space") keys.space = true;
-    });
-    window.addEventListener('keyup', e => {
-        if(e.key === "ArrowUp" || e.key === "w") keys.w = false;
-        if(e.key === "ArrowDown" || e.key === "s") keys.s = false;
-        if(e.key === "ArrowLeft" || e.key === "a") keys.a = false;
-        if(e.key === "ArrowRight" || e.key === "d") keys.d = false;
-        if(e.code === "Space") keys.space = false;
-    });
+        // Scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x111111);
+        scene.fog = new THREE.FogExp2(0x111111, 0.005);
 
-    // --- 4. INFINITE TERRAIN GENERATOR ---
-    const chunks = {}; // Store chunk meshes by key "x,z"
-    const noise = new SimplexNoise();
+        // Lights
+        const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambient);
 
-    // Reusable Geometries
-    const treeGeo = new THREE.ConeGeometry(2, 6, 8);
-    const treeMat = new THREE.MeshToonMaterial({ color: 0x228b22 });
-    const trunkGeo = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
-    const trunkMat = new THREE.MeshToonMaterial({ color: 0x8B4513 });
+        const sun = new THREE.DirectionalLight(0xffdfba, 1.5);
+        sun.position.set(100, 100, 50);
+        sun.castShadow = true;
+        sun.shadow.mapSize.width = CONFIG.shadowQuality;
+        sun.shadow.mapSize.height = CONFIG.shadowQuality;
+        sun.shadow.camera.near = 0.5;
+        sun.shadow.camera.far = 500;
+        sun.shadow.camera.left = -100;
+        sun.shadow.camera.right = 100;
+        sun.shadow.camera.top = 100;
+        sun.shadow.camera.bottom = -100;
+        scene.add(sun);
 
-    function createTree() {
-        const group = new THREE.Group();
-        const leaves = new THREE.Mesh(treeGeo, treeMat);
-        leaves.position.y = 4;
-        leaves.castShadow = true;
-        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = 1;
-        group.add(leaves);
-        group.add(trunk);
-        return group;
+        // Camera
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+        // Generate Assets
+        createTrack();
+        generateEnvironment();
+
+        // Listeners
+        window.addEventListener('resize', onResize);
+        window.addEventListener('keydown', e => handleKey(e, 1));
+        window.addEventListener('keyup', e => handleKey(e, 0));
+
+        // Start Loop
+        animate();
     }
 
-    function getChunkKey(cx, cz) {
-        return `${cx},${cz}`;
+    // --- GAME FLOW CONTROL ---
+    window.goToCarSelect = function() {
+        document.getElementById('menu-start').classList.add('hidden');
+        document.getElementById('menu-select').classList.remove('hidden');
+        gameState = 'SELECT';
     }
 
-    function generateChunk(cx, cz) {
-        const group = new THREE.Group();
+    window.selectCar = function(color) {
+        if(color === 'red') selectedColor = 0xc41e3a;
+        if(color === 'silver') selectedColor = 0xcccccc;
+        if(color === 'black') selectedColor = 0x111111;
         
-        // Ground Plane for this chunk
-        const groundGeo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE);
-        // Make ground color slightly varied
-        const n = noise.noise2D(cx * 0.1, cz * 0.1);
-        const gColor = n > 0 ? 0x7cfc00 : 0x32cd32; // Lawngreen vs Limegreen
-        const groundMat = new THREE.MeshToonMaterial({ color: gColor });
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
-        group.add(ground);
+        document.getElementById('menu-select').classList.add('hidden');
+        document.getElementById('hud').style.display = 'block';
+        document.getElementById('hud').classList.add('cinematic-mode');
+        
+        startGame();
+    }
 
-        // Populate Chunk with Objects (Procedural)
-        // Use deterministic random based on chunk coord
-        let seed = cx * 1234 + cz * 5678;
-        const random = () => {
-            const x = Math.sin(seed++) * 10000;
-            return x - Math.floor(x);
-        };
-
-        const numTrees = Math.floor(random() * 5); // 0 to 5 trees per chunk
-        for(let i=0; i<numTrees; i++) {
-            const tree = createTree();
-            tree.position.x = (random() - 0.5) * CHUNK_SIZE;
-            tree.position.z = (random() - 0.5) * CHUNK_SIZE; // On plane (xz) is actually (xy) relative to group center?
-            // Wait, group is at cx*size, cz*size. 
-            // Local coords:
-            tree.position.y = 0; 
-            // Just adjusting for the rotation of the ground? No, tree is vertical Y
-            group.add(tree);
+    function startGame() {
+        // Create Player
+        player = new Car(scene, selectedColor, 0); // 0 offset
+        player.mesh.position.copy(trackCurve.getPointAt(0));
+        
+        // Create AI
+        const aiColors = [0x2244ff, 0x118811, 0xffaa00];
+        for(let i=0; i<CONFIG.aiCount; i++) {
+            let ai = new Car(scene, aiColors[i], (i+1) * 0.015); // Start slightly ahead
+            ai.isAI = true;
+            ai.aiOffset = (Math.random() - 0.5) * 4; // Lane variance
+            ai.progress = (i+1) * 0.005; // Starting grid positions
+            aiCars.push(ai);
         }
 
-        group.position.set(cx * CHUNK_SIZE, 0, cz * CHUNK_SIZE);
-        scene.add(group);
-        return group;
+        gameState = 'CINEMATIC';
+        cinematicTimer = 0;
     }
 
-    function updateChunks() {
-        const pX = physics.x;
-        const pZ = physics.z;
-        const currentChunkX = Math.floor(pX / CHUNK_SIZE);
-        const currentChunkZ = Math.floor(pZ / CHUNK_SIZE);
-        const renderRange = 3; // How many chunks radius to render
+    // --- ASSET GENERATION ---
+    
+    // 1. Procedural Asphalt Texture
+    function getAsphaltTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#333'; ctx.fillRect(0,0,512,512);
+        
+        // Noise
+        for(let i=0; i<50000; i++) {
+            ctx.fillStyle = Math.random() > 0.5 ? '#444' : '#222';
+            ctx.fillRect(Math.random()*512, Math.random()*512, 2, 2);
+        }
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(20, 100);
+        tex.anisotropy = 16;
+        return tex;
+    }
 
-        const activeKeys = new Set();
+    // 2. The Track (CatmullRom Spline)
+    function createTrack() {
+        // Define key points for a complex circuit
+        const points = [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(50, 0, -100),
+            new THREE.Vector3(150, 0, -150),
+            new THREE.Vector3(250, 0, -50),
+            new THREE.Vector3(200, 0, 50),
+            new THREE.Vector3(100, 0, 100),
+            new THREE.Vector3(-50, 0, 150),
+            new THREE.Vector3(-150, 0, 50),
+            new THREE.Vector3(-100, 0, -50)
+        ];
+        
+        trackCurve = new THREE.CatmullRomCurve3(points);
+        trackCurve.closed = true;
+        
+        // Visual Track Mesh
+        const geometry = new THREE.TubeGeometry(trackCurve, 200, CONFIG.trackWidth, 8, true);
+        const material = new THREE.MeshStandardMaterial({ 
+            map: getAsphaltTexture(),
+            roughness: 0.8,
+            color: 0xffffff
+        });
+        const trackMesh = new THREE.Mesh(geometry, material);
+        trackMesh.receiveShadow = true;
+        // Flatten the tube to be a road
+        trackMesh.scale.y = 0.05; 
+        scene.add(trackMesh);
 
-        for (let x = -renderRange; x <= renderRange; x++) {
-            for (let z = -renderRange; z <= renderRange; z++) {
-                const cx = currentChunkX + x;
-                const cz = currentChunkZ + z;
-                const key = getChunkKey(cx, cz);
-                activeKeys.add(key);
+        // Curbs (Visual)
+        const curbGeo = new THREE.TubeGeometry(trackCurve, 200, CONFIG.trackWidth + 1, 8, true);
+        const curbMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }); // Hacky outline
+        const curb = new THREE.Mesh(curbGeo, curbMat);
+        curb.position.y = -0.1;
+        curb.scale.y = 0.05;
+        scene.add(curb);
+    }
 
-                if (!chunks[key]) {
-                    chunks[key] = generateChunk(cx, cz);
+    function generateEnvironment() {
+        // Simple Ground
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(1000, 1000),
+            new THREE.MeshStandardMaterial({ color: 0x1a2e1a, roughness: 1 })
+        );
+        plane.rotation.x = -Math.PI/2;
+        plane.position.y = -0.5;
+        plane.receiveShadow = true;
+        scene.add(plane);
+
+        // Random Trees/Buildings (Low Poly)
+        const geo = new THREE.BoxGeometry(10, 50, 10);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+        for(let i=0; i<50; i++) {
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set((Math.random()-0.5)*800, 25, (Math.random()-0.5)*800);
+            mesh.castShadow = true;
+            scene.add(mesh);
+        }
+    }
+
+    // --- CAR CLASS ---
+    class Car {
+        constructor(scene, color, startProgress) {
+            this.mesh = new THREE.Group();
+            this.velocity = new THREE.Vector3();
+            this.speed = 0;
+            this.progress = startProgress; // 0 to 1 along the track
+            this.lap = 1;
+            this.isAI = false;
+            this.aiOffset = 0;
+            
+            // --- CAR MODEL BUILDING ---
+            // Main Body
+            const bodyMat = new THREE.MeshPhysicalMaterial({ 
+                color: color, 
+                metalness: 0.7, 
+                roughness: 0.2, 
+                clearcoat: 1.0, 
+                clearcoatRoughness: 0.1 
+            });
+            const chassisGeo = new THREE.BoxGeometry(1.8, 0.6, 4.2);
+            // Vertex manipulation for shape
+            const pos = chassisGeo.attributes.position;
+            for(let i=0; i<pos.count; i++) {
+                if(pos.getY(i) > 0) {
+                    pos.setX(i, pos.getX(i) * 0.85); // Taper top
+                    // Slope hood/trunk
+                    if(pos.getZ(i) > 1.5 || pos.getZ(i) < -1.5) pos.setY(i, 0.1); 
                 }
             }
-        }
-
-        // Cleanup old chunks
-        for (const key in chunks) {
-            if (!activeKeys.has(key)) {
-                scene.remove(chunks[key]);
-                delete chunks[key];
-            }
-        }
-    }
-
-    // --- 5. AI RIVALS ---
-    const bots = [];
-    const botColors = [0x0000ff, 0xff00ff, 0x00ffff, 0xffff00];
-
-    for(let i=0; i<4; i++) {
-        const bot = {
-            mesh: createSupra(botColors[i]),
-            x: (Math.random() - 0.5) * 20,
-            z: (Math.random() - 0.5) * 20 - 10,
-            angle: 0,
-            speed: 0.5 + Math.random() * 0.3,
-            turnOffset: Math.random() * 100
-        };
-        scene.add(bot.mesh);
-        bots.push(bot);
-    }
-
-    function updateBots() {
-        bots.forEach(bot => {
-            // Simple AI: Move forward and wander slightly
-            const time = Date.now() * 0.001;
-            const wander = Math.sin(time + bot.turnOffset) * 0.02;
+            chassisGeo.computeVertexNormals();
             
-            // If far away from player, teleport closer (rubber banding) so the race never ends
-            const dist = Math.hypot(bot.x - physics.x, bot.z - physics.z);
-            if(dist > RENDER_DISTANCE) {
-                // Teleport ahead of player
-                bot.x = physics.x + Math.sin(physics.angle) * 40 + (Math.random()-0.5)*20;
-                bot.z = physics.z + Math.cos(physics.angle) * 40 + (Math.random()-0.5)*20;
-                bot.angle = physics.angle;
+            const chassis = new THREE.Mesh(chassisGeo, bodyMat);
+            chassis.castShadow = true;
+            chassis.position.y = 0.5;
+            this.mesh.add(chassis);
+
+            // Cabin
+            const glass = new THREE.Mesh(
+                new THREE.BoxGeometry(1.6, 0.5, 2.0),
+                new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1, transmission: 0.5 })
+            );
+            glass.position.set(0, 0.9, -0.2);
+            this.mesh.add(glass);
+
+            // Wheels
+            const wGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 32);
+            wGeo.rotateZ(Math.PI/2);
+            const wMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.9 });
+            const positions = [
+                {x: 0.9, z: 1.2}, {x: -0.9, z: 1.2},
+                {x: 0.9, z: -1.2}, {x: -0.9, z: -1.2}
+            ];
+            positions.forEach(p => {
+                const w = new THREE.Mesh(wGeo, wMat);
+                w.position.set(p.x, 0.35, p.z);
+                w.castShadow = true;
+                this.mesh.add(w);
+            });
+
+            // Headlights (Point Lights for realism)
+            if(!this.isAI) {
+                const hl = new THREE.SpotLight(0xffffff, 2, 50, 0.5, 0.5);
+                hl.position.set(0, 0.6, -2);
+                hl.target.position.set(0, 0, -10);
+                this.mesh.add(hl);
+                this.mesh.add(hl.target);
             }
 
-            bot.angle += wander;
-            bot.x -= Math.sin(bot.angle) * bot.speed;
-            bot.z -= Math.cos(bot.angle) * bot.speed;
+            scene.add(this.mesh);
+        }
 
-            bot.mesh.position.set(bot.x, 0, bot.z);
-            bot.mesh.rotation.y = bot.angle + Math.PI; // Face direction
-        });
+        update(dt) {
+            // Get position on track curve
+            const trackPos = trackCurve.getPointAt(this.progress % 1);
+            const tangent = trackCurve.getTangentAt(this.progress % 1).normalize();
+            
+            // Calculate orientation
+            // We need a 'Right' vector to apply lateral movement (steering)
+            const up = new THREE.Vector3(0, 1, 0);
+            const axisRight = new THREE.Vector3().crossVectors(up, tangent).normalize();
+
+            // AI LOGIC
+            let steerInput = 0;
+            let accelInput = 0;
+
+            if (this.isAI) {
+                // Ideally, AI stays on track line + offset
+                // Current position vs Ideal Position
+                const idealPos = trackPos.clone().add(axisRight.clone().multiplyScalar(this.aiOffset));
+                const distToIdeal = this.mesh.position.distanceTo(idealPos);
+                
+                // Simple AI speed governance
+                this.speed = 180 * 0.02; // AI constant speed for simplicity
+                
+                // Lerp towards ideal
+                this.mesh.position.lerp(idealPos, 0.05);
+                this.mesh.lookAt(trackPos.clone().add(tangent.multiplyScalar(10)));
+                
+                // Loop progress
+                this.progress += (this.speed * 0.0001); 
+
+            } else {
+                // PLAYER PHYSICS
+                
+                // 1. Acceleration
+                if (keys.w) this.speed += carPhys.accel * dt;
+                else if (keys.s) this.speed -= carPhys.break * dt;
+                else this.speed *= carPhys.friction; // Coasting
+                
+                // Cap Speed
+                this.speed = Math.max(Math.min(this.speed, carPhys.maxSpeed), -50);
+
+                // 2. Turning
+                // Rotate the CAR MESH, not just position
+                if(Math.abs(this.speed) > 1) {
+                    if (keys.a) this.mesh.rotation.y += carPhys.turnSpeed * dt;
+                    if (keys.d) this.mesh.rotation.y -= carPhys.turnSpeed * dt;
+                }
+
+                // 3. Apply Velocity Vector based on Car Rotation (Drifting possible)
+                // Get car's forward vector
+                const forward = new THREE.Vector3(0, 0, -1);
+                forward.applyAxisAngle(new THREE.Vector3(0,1,0), this.mesh.rotation.y);
+                
+                // Move car
+                this.mesh.position.add(forward.multiplyScalar(this.speed * dt));
+
+                // 4. Track Progress Calculation (for laps)
+                // Find closest point on spline to track lap completion (Simple approximation)
+                // In a real sim, we project vector. Here we just update progress blindly for lap counting visual
+                // Actually, let's just drive. We need to stay somewhat near the track or we are "offroad"
+                
+                // Check Lap
+                const d = this.mesh.position.distanceTo(trackCurve.getPointAt(0));
+                if (d < 20 && this.lastD > 20) {
+                   // Lap crossed logic would go here
+                }
+                this.lastD = d;
+            }
+
+            // --- COLLISION (Simple Sphere) ---
+            if (!this.isAI) {
+                aiCars.forEach(ai => {
+                    const dist = this.mesh.position.distanceTo(ai.mesh.position);
+                    if (dist < 3.0) {
+                        // Bounce
+                        const push = this.mesh.position.clone().sub(ai.mesh.position).normalize();
+                        this.mesh.position.add(push.multiplyScalar(0.5));
+                        this.speed *= 0.8; // Crash penalty
+                    }
+                });
+            }
+        }
     }
 
-    // --- 6. GAME LOOP ---
+    // Input Handling
+    function handleKey(e, state) {
+        if(e.key === 'w' || e.key === 'ArrowUp') keys.w = state;
+        if(e.key === 'a' || e.key === 'ArrowLeft') keys.a = state;
+        if(e.key === 's' || e.key === 'ArrowDown') keys.s = state;
+        if(e.key === 'd' || e.key === 'ArrowRight') keys.d = state;
+    }
+
+    // Resize
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // --- MAIN LOOP ---
+    let cinematicTimer = 0;
+
     function animate() {
         requestAnimationFrame(animate);
+        const dt = clock.getDelta();
 
-        // 1. Physics Logic
-        if (keys.w) physics.speed += physics.acceleration;
-        if (keys.s) physics.speed -= physics.acceleration;
-        
-        // Friction
-        physics.speed *= physics.friction;
-        if (keys.space) physics.speed *= 0.90; // Hard brake
+        if (gameState === 'CINEMATIC') {
+            cinematicTimer += dt;
+            // Pan Camera around player
+            const angle = cinematicTimer * 0.5;
+            const camX = player.mesh.position.x + Math.sin(angle) * 15;
+            const camZ = player.mesh.position.z + Math.cos(angle) * 15;
+            camera.position.set(camX, 5, camZ);
+            camera.lookAt(player.mesh.position);
 
-        // Turning (only if moving)
-        if (Math.abs(physics.speed) > 0.01) {
-            if (keys.a) physics.angle += physics.turnSpeed * Math.sign(physics.speed);
-            if (keys.d) physics.angle -= physics.turnSpeed * Math.sign(physics.speed);
+            if (cinematicTimer > 4) {
+                gameState = 'RACE';
+                document.getElementById('hud').classList.remove('cinematic-mode');
+            }
+        }
+        else if (gameState === 'RACE') {
+            // Player Logic
+            player.update(dt);
+
+            // Camera Follow (Smooth Lerp)
+            // Calculate desired camera position relative to car rotation
+            const relativeOffset = new THREE.Vector3(0, CONFIG.cameraHeight, CONFIG.cameraDist);
+            const carRotation = player.mesh.rotation.y;
+            
+            // Offset logic: Position behind car
+            const camX = player.mesh.position.x + Math.sin(carRotation) * CONFIG.cameraDist;
+            const camZ = player.mesh.position.z + Math.cos(carRotation) * CONFIG.cameraDist;
+            
+            // Lerp Camera
+            camera.position.x += (camX - camera.position.x) * 0.1;
+            camera.position.z += (camZ - camera.position.z) * 0.1;
+            camera.position.y += ((player.mesh.position.y + CONFIG.cameraHeight) - camera.position.y) * 0.1;
+            camera.lookAt(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
+
+            // Update UI
+            document.getElementById('speed-val').innerText = Math.floor(Math.abs(player.speed));
+            
+            // Calc Position (Simple: who has higher Z usually implies further, but on a loop its hard. 
+            // We will just randomize it for the demo effect or check Distance to next waypoint)
+            // (Skipped complex lap logic for brevity)
         }
 
-        // Apply Velocity
-        physics.velocity.x = Math.sin(physics.angle) * physics.speed;
-        physics.velocity.z = Math.cos(physics.angle) * physics.speed;
-
-        physics.x -= physics.velocity.x;
-        physics.z -= physics.velocity.z;
-
-        // 2. Update Player Mesh
-        playerCar.position.set(physics.x, 0, physics.z);
-        playerCar.rotation.y = physics.angle + Math.PI; // Correct model orientation
-        
-        // Tilt body when turning (Visual flair)
-        const turnTilt = (keys.a ? 1 : 0) + (keys.d ? -1 : 0);
-        playerCar.rotation.z = turnTilt * 0.1 * (physics.speed / physics.maxSpeed);
-
-        // 3. Camera Follow
-        // Smooth camera lerp
-        const camDist = 10;
-        const camHeight = 5;
-        const targetCamX = physics.x + Math.sin(physics.angle) * camDist;
-        const targetCamZ = physics.z + Math.cos(physics.angle) * camDist;
-        
-        camera.position.x += (targetCamX - camera.position.x) * 0.1;
-        camera.position.z += (targetCamZ - camera.position.z) * 0.1;
-        camera.position.y = camHeight;
-        camera.lookAt(playerCar.position);
-
-        // Light follows car for infinite shadows
-        dirLight.position.x = physics.x + 50;
-        dirLight.position.z = physics.z + 50;
-        dirLight.target = playerCar;
-
-        // 4. World Generation
-        updateChunks();
-        updateBots();
-
-        // 5. UI Updates
-        document.getElementById('speedVal').innerText = Math.floor(Math.abs(physics.speed) * 200);
+        // AI Update (Always running)
+        if(gameState === 'CINEMATIC' || gameState === 'RACE') {
+            aiCars.forEach(ai => ai.update(dt));
+        }
 
         renderer.render(scene, camera);
     }
 
-    // Handle Resize
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    animate();
+    init();
 
 </script>
 </body>
