@@ -2,247 +2,388 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>3D Hyper Kart</title>
+    <title>Open World Supra Racer</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Arial', sans-serif; background: #000; }
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         #ui {
             position: absolute;
             top: 20px; left: 20px;
-            color: #fff;
-            text-shadow: 2px 2px 0 #000;
+            color: white;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
             pointer-events: none;
         }
-        h1 { margin: 0; font-style: italic; color: #ff3333; }
-        #scoreBoard { font-size: 24px; font-weight: bold; }
-        #gameOver {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            background: rgba(0,0,0,0.8);
-            padding: 40px;
-            border: 4px solid #ff3333;
-            border-radius: 10px;
+        h1 { margin: 0; font-style: italic; color: #ff9900; letter-spacing: 2px; }
+        #stats { font-size: 20px; font-weight: bold; margin-top: 5px; }
+        #minimap {
+            position: absolute; bottom: 20px; right: 20px;
+            width: 150px; height: 150px;
+            background: rgba(0,0,0,0.5); border: 2px solid white; border-radius: 50%;
+            overflow: hidden; transform: rotate(0deg);
         }
-        button {
-            background: #ff3333; color: white; border: none;
-            padding: 10px 20px; font-size: 20px; cursor: pointer; margin-top: 10px;
+        #mini-player {
+            position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
+            background: orange; transform: translate(-50%, -50%);
+            border-radius: 50%; box-shadow: 0 0 4px white;
         }
-        button:hover { background: #ff0000; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
 </head>
 <body>
 
     <div id="ui">
-        <h1>HYPER KART 3D</h1>
-        <div id="scoreBoard">Score: 0</div>
-        <div>Use <b>Left/Right Arrows</b> to Drive</div>
+        <h1>SUPRA DRIFT WORLD</h1>
+        <div id="stats">Speed: <span id="speedVal">0</span> km/h</div>
+        <div style="font-size: 14px; opacity: 0.8">WASD / Arrows to Drive | SPACE to Brake</div>
     </div>
 
-    <div id="gameOver">
-        <h1>CRASHED!</h1>
-        <p>Final Score: <span id="finalScore">0</span></p>
-        <button onclick="location.reload()">RETRY</button>
-    </div>
+    <div id="minimap"><div id="mini-player"></div></div>
 
 <script>
-    // --- 1. SETUP THE SCENE ---
+    // --- CONFIGURATION ---
+    const RENDER_DISTANCE = 160; 
+    const CHUNK_SIZE = 40;
+    const CAR_SCALE = 0.5;
+    
+    // --- 1. SCENE SETUP ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87CEEB); // Sky Blue
-    scene.fog = new THREE.Fog(0x87CEEB, 10, 50); // Fog to hide the horizon
+    const skyColor = 0x87CEEB; // Cartoon Sky Blue
+    scene.background = new THREE.Color(skyColor);
+    scene.fog = new THREE.Fog(skyColor, 50, RENDER_DISTANCE - 10);
 
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 3, 6); // Third person view
-    camera.lookAt(0, 0, -5);
-
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    // --- 2. LIGHTING ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+    // Lights
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+    scene.add(hemiLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(10, 20, 10);
+    dirLight.position.set(50, 100, 50);
     dirLight.castShadow = true;
+    dirLight.shadow.camera.left = -50;
+    dirLight.shadow.camera.right = 50;
+    dirLight.shadow.camera.top = 50;
+    dirLight.shadow.camera.bottom = -50;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
     scene.add(dirLight);
 
-    // --- 3. THE WORLD (Ground & Grid) ---
-    // We create a moving grid to simulate speed
-    const gridHelper = new THREE.GridHelper(200, 50, 0xffffff, 0x555555);
-    scene.add(gridHelper);
-    
-    const groundGeo = new THREE.PlaneGeometry(200, 200);
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x228B22 }); // Grass Green
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.1;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    // --- 2. THE SUPRA (Model Builder) ---
+    function createSupra(colorHex) {
+        const carGroup = new THREE.Group();
 
-    // --- 4. THE PLAYER (The Kart) ---
-    const kartGroup = new THREE.Group();
+        const carMat = new THREE.MeshToonMaterial({ color: colorHex });
+        const blackMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+        const glassMat = new THREE.MeshPhongMaterial({ color: 0x222222, shininess: 100 });
+        const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffaa });
+        const tailLightMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
-    // Body
-    const bodyGeo = new THREE.BoxGeometry(1, 0.5, 2);
-    const bodyMat = new THREE.MeshPhongMaterial({ color: 0xff0000 }); // Mario Red
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.5;
-    body.castShadow = true;
-    kartGroup.add(body);
+        // 1. Chassis (Main Body)
+        const chassisGeo = new THREE.BoxGeometry(2.2, 0.7, 5);
+        // Modify geometry to slope the hood (simple vertex manipulation)
+        const pos = chassisGeo.attributes.position;
+        // This is a rough approximation of shaping via code
+        const chassis = new THREE.Mesh(chassisGeo, carMat);
+        chassis.position.y = 0.6;
+        chassis.castShadow = true;
+        carGroup.add(chassis);
 
-    // Wheels function
-    function createWheel(x, z) {
-        const wGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 16);
-        const wMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
-        const wheel = new THREE.Mesh(wGeo, wMat);
-        wheel.rotation.z = Math.PI / 2;
-        wheel.position.set(x, 0.3, z);
-        return wheel;
+        // 2. Cabin (Roof)
+        const cabinGeo = new THREE.BoxGeometry(1.8, 0.6, 2.5);
+        const cabin = new THREE.Mesh(cabinGeo, glassMat);
+        cabin.position.set(0, 1.2, -0.2);
+        carGroup.add(cabin);
+
+        // 3. The Spoiler (The Iconic Wing)
+        const wingGeo = new THREE.BoxGeometry(2.4, 0.1, 0.5);
+        const wing = new THREE.Mesh(wingGeo, carMat);
+        wing.position.set(0, 1.3, 2.2);
+        carGroup.add(wing);
+
+        // Spoiler Struts
+        const strutGeo = new THREE.BoxGeometry(0.1, 0.5, 0.2);
+        const strutL = new THREE.Mesh(strutGeo, carMat);
+        strutL.position.set(0.8, 1.0, 2.2);
+        const strutR = new THREE.Mesh(strutGeo, carMat);
+        strutR.position.set(-0.8, 1.0, 2.2);
+        carGroup.add(strutL);
+        carGroup.add(strutR);
+
+        // 4. Wheels
+        const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 24);
+        wheelGeo.rotateZ(Math.PI / 2);
+        
+        function makeWheel(x, z) {
+            const w = new THREE.Mesh(wheelGeo, blackMat);
+            w.position.set(x, 0.4, z);
+            w.castShadow = true;
+            return w;
+        }
+        carGroup.add(makeWheel(1.1, 1.5));
+        carGroup.add(makeWheel(-1.1, 1.5));
+        carGroup.add(makeWheel(1.1, -1.5));
+        carGroup.add(makeWheel(-1.1, -1.5));
+
+        // 5. Headlights
+        const headLightGeo = new THREE.BoxGeometry(0.6, 0.2, 0.1);
+        const hlL = new THREE.Mesh(headLightGeo, lightMat);
+        hlL.position.set(0.6, 0.7, -2.5);
+        carGroup.add(hlL);
+        const hlR = new THREE.Mesh(headLightGeo, lightMat);
+        hlR.position.set(-0.6, 0.7, -2.5);
+        carGroup.add(hlR);
+
+        // 6. Tail Lights (Supra circles)
+        const tailGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 16);
+        tailGeo.rotateX(Math.PI/2);
+        const tl1 = new THREE.Mesh(tailGeo, tailLightMat); tl1.position.set(0.5, 0.7, 2.5);
+        const tl2 = new THREE.Mesh(tailGeo, tailLightMat); tl2.position.set(0.8, 0.7, 2.5);
+        const tl3 = new THREE.Mesh(tailGeo, tailLightMat); tl3.position.set(-0.5, 0.7, 2.5);
+        const tl4 = new THREE.Mesh(tailGeo, tailLightMat); tl4.position.set(-0.8, 0.7, 2.5);
+        carGroup.add(tl1); carGroup.add(tl2); carGroup.add(tl3); carGroup.add(tl4);
+
+        // Scale entire car
+        carGroup.scale.set(CAR_SCALE, CAR_SCALE, CAR_SCALE);
+        return carGroup;
     }
-    kartGroup.add(createWheel(0.6, 0.6));
-    kartGroup.add(createWheel(-0.6, 0.6));
-    kartGroup.add(createWheel(0.6, -0.6));
-    kartGroup.add(createWheel(-0.6, -0.6));
 
-    scene.add(kartGroup);
+    // Create Player Car
+    const playerCar = createSupra(0xff6600); // Supra Orange
+    scene.add(playerCar);
 
-    // --- 5. GAME LOGIC ---
-    let gameActive = true;
-    let score = 0;
-    let speed = 0.3;
-    let lateralSpeed = 0.15;
-    
-    // Input Handling
-    const keys = { left: false, right: false };
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "ArrowLeft") keys.left = true;
-        if (e.key === "ArrowRight") keys.right = true;
+    // --- 3. PHYSICS ENGINE ---
+    const physics = {
+        speed: 0,
+        maxSpeed: 1.5,
+        acceleration: 0.02,
+        friction: 0.98,
+        turnSpeed: 0.04,
+        angle: 0,
+        x: 0,
+        z: 0,
+        velocity: { x: 0, z: 0 }
+    };
+
+    const keys = { w: false, a: false, s: false, d: false, space: false };
+
+    window.addEventListener('keydown', e => {
+        if(e.key === "ArrowUp" || e.key === "w") keys.w = true;
+        if(e.key === "ArrowDown" || e.key === "s") keys.s = true;
+        if(e.key === "ArrowLeft" || e.key === "a") keys.a = true;
+        if(e.key === "ArrowRight" || e.key === "d") keys.d = true;
+        if(e.code === "Space") keys.space = true;
     });
-    document.addEventListener('keyup', (e) => {
-        if (e.key === "ArrowLeft") keys.left = false;
-        if (e.key === "ArrowRight") keys.right = false;
+    window.addEventListener('keyup', e => {
+        if(e.key === "ArrowUp" || e.key === "w") keys.w = false;
+        if(e.key === "ArrowDown" || e.key === "s") keys.s = false;
+        if(e.key === "ArrowLeft" || e.key === "a") keys.a = false;
+        if(e.key === "ArrowRight" || e.key === "d") keys.d = false;
+        if(e.code === "Space") keys.space = false;
     });
 
-    // Object Pooling (Obstacles)
-    const obstacles = [];
-    const coins = [];
+    // --- 4. INFINITE TERRAIN GENERATOR ---
+    const chunks = {}; // Store chunk meshes by key "x,z"
+    const noise = new SimplexNoise();
 
-    function spawnObstacle() {
-        const geo = new THREE.BoxGeometry(1, 1, 1);
-        const mat = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Brown Box
-        const mesh = new THREE.Mesh(geo, mat);
-        
-        // Random X position between -4 and 4
-        mesh.position.x = (Math.random() * 8) - 4;
-        mesh.position.y = 0.5;
-        mesh.position.z = -60; // Start far away
-        mesh.castShadow = true;
-        
-        scene.add(mesh);
-        obstacles.push(mesh);
+    // Reusable Geometries
+    const treeGeo = new THREE.ConeGeometry(2, 6, 8);
+    const treeMat = new THREE.MeshToonMaterial({ color: 0x228b22 });
+    const trunkGeo = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
+    const trunkMat = new THREE.MeshToonMaterial({ color: 0x8B4513 });
+
+    function createTree() {
+        const group = new THREE.Group();
+        const leaves = new THREE.Mesh(treeGeo, treeMat);
+        leaves.position.y = 4;
+        leaves.castShadow = true;
+        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.y = 1;
+        group.add(leaves);
+        group.add(trunk);
+        return group;
     }
 
-    function spawnCoin() {
-        const geo = new THREE.SphereGeometry(0.4, 16, 16);
-        const mat = new THREE.MeshPhongMaterial({ color: 0xFFD700, emissive: 0xAA6600 }); // Gold
-        const mesh = new THREE.Mesh(geo, mat);
-        
-        mesh.position.x = (Math.random() * 8) - 4;
-        mesh.position.y = 0.5;
-        mesh.position.z = -60;
-        
-        scene.add(mesh);
-        coins.push(mesh);
+    function getChunkKey(cx, cz) {
+        return `${cx},${cz}`;
     }
 
-    // --- 6. ANIMATION LOOP ---
-    let frameCount = 0;
+    function generateChunk(cx, cz) {
+        const group = new THREE.Group();
+        
+        // Ground Plane for this chunk
+        const groundGeo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE);
+        // Make ground color slightly varied
+        const n = noise.noise2D(cx * 0.1, cz * 0.1);
+        const gColor = n > 0 ? 0x7cfc00 : 0x32cd32; // Lawngreen vs Limegreen
+        const groundMat = new THREE.MeshToonMaterial({ color: gColor });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        group.add(ground);
 
+        // Populate Chunk with Objects (Procedural)
+        // Use deterministic random based on chunk coord
+        let seed = cx * 1234 + cz * 5678;
+        const random = () => {
+            const x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
+        };
+
+        const numTrees = Math.floor(random() * 5); // 0 to 5 trees per chunk
+        for(let i=0; i<numTrees; i++) {
+            const tree = createTree();
+            tree.position.x = (random() - 0.5) * CHUNK_SIZE;
+            tree.position.z = (random() - 0.5) * CHUNK_SIZE; // On plane (xz) is actually (xy) relative to group center?
+            // Wait, group is at cx*size, cz*size. 
+            // Local coords:
+            tree.position.y = 0; 
+            // Just adjusting for the rotation of the ground? No, tree is vertical Y
+            group.add(tree);
+        }
+
+        group.position.set(cx * CHUNK_SIZE, 0, cz * CHUNK_SIZE);
+        scene.add(group);
+        return group;
+    }
+
+    function updateChunks() {
+        const pX = physics.x;
+        const pZ = physics.z;
+        const currentChunkX = Math.floor(pX / CHUNK_SIZE);
+        const currentChunkZ = Math.floor(pZ / CHUNK_SIZE);
+        const renderRange = 3; // How many chunks radius to render
+
+        const activeKeys = new Set();
+
+        for (let x = -renderRange; x <= renderRange; x++) {
+            for (let z = -renderRange; z <= renderRange; z++) {
+                const cx = currentChunkX + x;
+                const cz = currentChunkZ + z;
+                const key = getChunkKey(cx, cz);
+                activeKeys.add(key);
+
+                if (!chunks[key]) {
+                    chunks[key] = generateChunk(cx, cz);
+                }
+            }
+        }
+
+        // Cleanup old chunks
+        for (const key in chunks) {
+            if (!activeKeys.has(key)) {
+                scene.remove(chunks[key]);
+                delete chunks[key];
+            }
+        }
+    }
+
+    // --- 5. AI RIVALS ---
+    const bots = [];
+    const botColors = [0x0000ff, 0xff00ff, 0x00ffff, 0xffff00];
+
+    for(let i=0; i<4; i++) {
+        const bot = {
+            mesh: createSupra(botColors[i]),
+            x: (Math.random() - 0.5) * 20,
+            z: (Math.random() - 0.5) * 20 - 10,
+            angle: 0,
+            speed: 0.5 + Math.random() * 0.3,
+            turnOffset: Math.random() * 100
+        };
+        scene.add(bot.mesh);
+        bots.push(bot);
+    }
+
+    function updateBots() {
+        bots.forEach(bot => {
+            // Simple AI: Move forward and wander slightly
+            const time = Date.now() * 0.001;
+            const wander = Math.sin(time + bot.turnOffset) * 0.02;
+            
+            // If far away from player, teleport closer (rubber banding) so the race never ends
+            const dist = Math.hypot(bot.x - physics.x, bot.z - physics.z);
+            if(dist > RENDER_DISTANCE) {
+                // Teleport ahead of player
+                bot.x = physics.x + Math.sin(physics.angle) * 40 + (Math.random()-0.5)*20;
+                bot.z = physics.z + Math.cos(physics.angle) * 40 + (Math.random()-0.5)*20;
+                bot.angle = physics.angle;
+            }
+
+            bot.angle += wander;
+            bot.x -= Math.sin(bot.angle) * bot.speed;
+            bot.z -= Math.cos(bot.angle) * bot.speed;
+
+            bot.mesh.position.set(bot.x, 0, bot.z);
+            bot.mesh.rotation.y = bot.angle + Math.PI; // Face direction
+        });
+    }
+
+    // --- 6. GAME LOOP ---
     function animate() {
-        if (!gameActive) return;
-
         requestAnimationFrame(animate);
 
-        // 1. Move Grid (Illusion of speed)
-        // We actually move the grid towards Z, then reset it
-        gridHelper.position.z += speed;
-        if (gridHelper.position.z > 2) gridHelper.position.z = 0;
+        // 1. Physics Logic
+        if (keys.w) physics.speed += physics.acceleration;
+        if (keys.s) physics.speed -= physics.acceleration;
+        
+        // Friction
+        physics.speed *= physics.friction;
+        if (keys.space) physics.speed *= 0.90; // Hard brake
 
-        // 2. Move Player (Steering)
-        if (keys.left && kartGroup.position.x > -4.5) {
-            kartGroup.position.x -= lateralSpeed;
-            kartGroup.rotation.z = 0.1; // Tilt effect
-            kartGroup.rotation.y = 0.1; // Turn effect
-        } else if (keys.right && kartGroup.position.x < 4.5) {
-            kartGroup.position.x += lateralSpeed;
-            kartGroup.rotation.z = -0.1;
-            kartGroup.rotation.y = -0.1;
-        } else {
-            kartGroup.rotation.z = 0;
-            kartGroup.rotation.y = 0;
+        // Turning (only if moving)
+        if (Math.abs(physics.speed) > 0.01) {
+            if (keys.a) physics.angle += physics.turnSpeed * Math.sign(physics.speed);
+            if (keys.d) physics.angle -= physics.turnSpeed * Math.sign(physics.speed);
         }
 
-        // 3. Spawner
-        frameCount++;
-        if (frameCount % 40 === 0) spawnObstacle(); // Spawn box every 40 frames
-        if (frameCount % 60 === 0) spawnCoin();     // Spawn coin every 60 frames
+        // Apply Velocity
+        physics.velocity.x = Math.sin(physics.angle) * physics.speed;
+        physics.velocity.z = Math.cos(physics.angle) * physics.speed;
 
-        // 4. Update Obstacles
-        for (let i = obstacles.length - 1; i >= 0; i--) {
-            let obs = obstacles[i];
-            obs.position.z += speed;
+        physics.x -= physics.velocity.x;
+        physics.z -= physics.velocity.z;
 
-            // Collision Check (Simple Distance)
-            if (obs.position.distanceTo(kartGroup.position) < 1.2) {
-                gameOver();
-            }
+        // 2. Update Player Mesh
+        playerCar.position.set(physics.x, 0, physics.z);
+        playerCar.rotation.y = physics.angle + Math.PI; // Correct model orientation
+        
+        // Tilt body when turning (Visual flair)
+        const turnTilt = (keys.a ? 1 : 0) + (keys.d ? -1 : 0);
+        playerCar.rotation.z = turnTilt * 0.1 * (physics.speed / physics.maxSpeed);
 
-            // Remove if behind camera
-            if (obs.position.z > 5) {
-                scene.remove(obs);
-                obstacles.splice(i, 1);
-                score++;
-                speed += 0.001; // Get faster over time
-                document.getElementById('scoreBoard').innerText = "Score: " + score;
-            }
-        }
+        // 3. Camera Follow
+        // Smooth camera lerp
+        const camDist = 10;
+        const camHeight = 5;
+        const targetCamX = physics.x + Math.sin(physics.angle) * camDist;
+        const targetCamZ = physics.z + Math.cos(physics.angle) * camDist;
+        
+        camera.position.x += (targetCamX - camera.position.x) * 0.1;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.1;
+        camera.position.y = camHeight;
+        camera.lookAt(playerCar.position);
 
-        // 5. Update Coins
-        for (let i = coins.length - 1; i >= 0; i--) {
-            let coin = coins[i];
-            coin.position.z += speed;
-            coin.rotation.y += 0.1; // Spin effect
+        // Light follows car for infinite shadows
+        dirLight.position.x = physics.x + 50;
+        dirLight.position.z = physics.z + 50;
+        dirLight.target = playerCar;
 
-            // Collection Check
-            if (coin.position.distanceTo(kartGroup.position) < 1.2) {
-                scene.remove(coin);
-                coins.splice(i, 1);
-                score += 50;
-                document.getElementById('scoreBoard').innerText = "Score: " + score;
-            }
-            // Remove if behind camera
-            else if (coin.position.z > 5) {
-                scene.remove(coin);
-                coins.splice(i, 1);
-            }
-        }
+        // 4. World Generation
+        updateChunks();
+        updateBots();
+
+        // 5. UI Updates
+        document.getElementById('speedVal').innerText = Math.floor(Math.abs(physics.speed) * 200);
 
         renderer.render(scene, camera);
     }
 
-    function gameOver() {
-        gameActive = false;
-        document.getElementById('finalScore').innerText = score;
-        document.getElementById('gameOver').style.display = 'block';
-    }
-
-    // Handle Window Resize
+    // Handle Resize
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
