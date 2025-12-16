@@ -3,85 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedural Ops: Mountain Ascent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Procedural Ops: Infinite Summit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Press Start 2P', monospace; user-select: none; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Chakra Petch', sans-serif; user-select: none; }
         
         /* UI LAYERS */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; z-index: 5; }
-        #damage-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 0 rgba(255, 0, 0, 0); transition: box-shadow 0.1s; pointer-events: none; z-index: 4; }
+        #damage-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 0 rgba(220, 20, 60, 0); transition: box-shadow 0.1s; pointer-events: none; z-index: 4; mix-blend-mode: multiply;}
         
         /* HUD */
-        .hud-row { padding: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .hud-row { padding: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
         
         #crosshair { 
-            position: absolute; top: 50%; left: 50%; width: 24px; height: 24px; 
-            transform: translate(-50%, -50%); border: 2px solid rgba(0, 255, 255, 0.4); border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; width: 4px; height: 4px; background: cyan;
+            transform: translate(-50%, -50%); border-radius: 50%; box-shadow: 0 0 4px cyan;
+        }
+        #crosshair-circle {
+            position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; 
+            border: 1px solid rgba(0,255,255,0.3); border-radius: 50%; transform: translate(-50%, -50%);
             transition: width 0.1s, height 0.1s;
         }
-        #crosshair::after { content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 4px; background: cyan; transform: translate(-50%, -50%); border-radius: 50%; box-shadow: 0 0 4px cyan;}
 
         .stat-box { 
-            background: rgba(10, 25, 40, 0.85); border: 2px solid #0ff; 
-            padding: 15px; border-radius: 2px; text-shadow: 0 0 8px #0ff; 
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); 
-            min-width: 120px;
+            background: rgba(0, 0, 0, 0.6); border-left: 4px solid #0ff; 
+            padding: 10px 20px; text-shadow: 0 0 5px rgba(0,255,255,0.5); 
+            backdrop-filter: blur(4px); transform: skewX(-10deg);
         }
-        .stat-label { font-size: 10px; color: #aaa; margin-bottom: 8px; display: block; letter-spacing: 1px;}
-        .stat-value { font-size: 28px; color: #fff; display: block;}
+        .stat-label { font-size: 10px; color: #88ccff; margin-bottom: 5px; display: block; letter-spacing: 2px;}
+        .stat-value { font-size: 24px; color: #fff; display: block; font-weight: 700;}
         
-        #ammo-bar-container { width: 100%; height: 8px; background: #222; margin-top: 8px; border: 1px solid #555; }
-        #ammo-fill { height: 100%; background: #0ff; width: 100%; transition: width 0.1s linear, background 0.3s; box-shadow: 0 0 5px #0ff;}
+        #ammo-fill { height: 6px; background: #0ff; width: 100%; margin-top:5px; transition: width 0.1s linear, background 0.3s; box-shadow: 0 0 5px #0ff;}
 
         /* LOADING & START SCREEN */
         #blocker { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%); 
+            background: #050505; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            pointer-events: auto; z-index: 10; backdrop-filter: blur(2px);
+            pointer-events: auto; z-index: 10;
         }
 
-        #start-screen-content { text-align: center; color: white; position: relative; width: 60%; max-width: 600px;}
+        #start-screen-content { text-align: center; color: white; width: 80%; max-width: 800px; position: relative;}
         
         h1 { 
-            font-size: 40px; text-transform: uppercase; letter-spacing: 5px; color: #fff;
-            text-shadow: 4px 4px 0px #0055aa; margin-bottom: 10px; line-height: 1.2;
+            font-size: 60px; text-transform: uppercase; letter-spacing: 10px; color: #fff; margin: 0;
+            background: linear-gradient(180deg, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
-        .subtitle { font-size: 14px; color: cyan; margin-bottom: 40px; letter-spacing: 2px; opacity: 0.8; }
-        .controls { font-size: 12px; color: #888; margin-top: 30px; line-height: 24px; border-top: 1px solid #333; padding-top: 20px;}
-        .key { color: #fff; background: #333; padding: 2px 6px; border-radius: 4px; border: 1px solid #555;}
+        .subtitle { font-size: 16px; color: cyan; margin-bottom: 60px; letter-spacing: 4px; text-transform: uppercase;}
 
         /* LOADING BAR */
-        #loading-container { width: 100%; margin: 20px 0; display: block;}
-        #loading-label { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: left; display: block;}
-        #loading-bar-bg { width: 100%; height: 20px; background: #111; border: 2px solid #333; padding: 2px;}
-        #loading-bar-fill { height: 100%; background: #00ffaa; width: 0%; box-shadow: 0 0 10px #00ffaa; transition: width 0.1s linear;}
+        #loading-container { width: 100%; max-width: 400px; margin: 0 auto; display: block; position: relative;}
+        #loading-bar-bg { width: 100%; height: 2px; background: #333; margin-top: 10px;}
+        #loading-bar-fill { height: 100%; background: #0ff; width: 0%; box-shadow: 0 0 20px #0ff; transition: width 0.2s;}
         
-        /* CLICK TO START BUTTON (Hidden initially) */
         #start-btn { 
-            display: none; padding: 20px 40px; background: transparent; 
-            border: 2px solid #0ff; color: #0ff; font-family: inherit; font-size: 20px; 
-            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
-            margin: 0 auto;
+            display: none; padding: 15px 50px; background: rgba(0,255,255,0.1); 
+            border: 1px solid #0ff; color: #0ff; font-family: inherit; font-size: 18px; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+            margin: 30px auto; transition: all 0.2s;
         }
-        #start-btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff;}
+        #start-btn:hover { background: #0ff; color: #000; }
+
+        /* VIGNETTE */
+        #vignette {
+            position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none;
+            background: radial-gradient(circle, transparent 50%, black 150%);
+            z-index: 3;
+        }
 
     </style>
 </head>
 <body>
 
+    <div id="vignette"></div>
     <div id="damage-overlay"></div>
     
     <div id="ui-layer">
         <div class="hud-row">
             <div class="stat-box">
-                <span class="stat-label">OPERATIVE SCORE</span>
+                <span class="stat-label">OP // SCORE</span>
                 <span class="stat-value" id="score">0000</span>
             </div>
         </div>
         
+        <div id="crosshair-circle"></div>
         <div id="crosshair"></div>
 
         <div class="hud-row">
@@ -89,32 +95,26 @@
                 <span class="stat-label">VITALS</span>
                 <span class="stat-value" id="health">100%</span>
             </div>
-            <div class="stat-box" style="text-align: right; min-width: 180px;">
-                <span class="stat-label">AMMUNITION</span>
-                <span class="stat-value" id="ammo">30 / 30</span>
-                <div id="ammo-bar-container"><div id="ammo-fill"></div></div>
+            <div class="stat-box" style="text-align: right; min-width: 150px;">
+                <span class="stat-label">MAGAZINE</span>
+                <span class="stat-value" id="ammo">30</span>
+                <div id="ammo-fill"></div>
             </div>
         </div>
     </div>
 
     <div id="blocker">
         <div id="start-screen-content">
-            <h1>Peak Protocol</h1>
-            <div class="subtitle">TACTICAL ALPINE ASSAULT</div>
+            <h1>TITAN FALLOUT</h1>
+            <div class="subtitle">Procedural Alpine Combat</div>
             
             <div id="loading-container">
-                <span id="loading-label">ESTABLISHING UPLINK... <span id="percent">0%</span></span>
-                <div id="loading-bar-bg">
-                    <div id="loading-bar-fill"></div>
-                </div>
+                <span style="font-size:10px; color:#555; letter-spacing:2px;">GENERATING TERRAIN... <span id="percent">0%</span></span>
+                <div id="loading-bar-bg"><div id="loading-bar-fill"></div></div>
             </div>
 
-            <button id="start-btn">INITIALIZE</button>
-
-            <div class="controls" id="controls-text" style="display:none;">
-                <span class="key">WASD</span> MOVE &nbsp; <span class="key">SHIFT</span> SPRINT &nbsp; <span class="key">SPACE</span> JUMP<br>
-                <span class="key">L-CLICK</span> FIRE &nbsp; <span class="key">R</span> RELOAD
-            </div>
+            <button id="start-btn">DEPLOY</button>
+            <div style="margin-top:20px; font-size: 10px; color:#444;">WASD MOVE | SHIFT SPRINT | R RELOAD | CLICK FIRE</div>
         </div>
     </div>
 
@@ -132,524 +132,475 @@
         import * as THREE from 'three';
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-        // --- 1. PROCEDURAL GENERATORS (Canvas API) ---
-        // Generates detailed texture maps in memory
-        function createProceduralTexture(type, hexColor) {
-            const size = 512;
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
+        // --- 1. PROCEDURAL TERRAIN ENGINE (MATH BASED) ---
+        
+        // Simplex-ish pseudo random noise for vastness without library
+        const _seed = 1337;
+        function fract(x) { return x - Math.floor(x); }
+        function hash(n) { return fract(Math.sin(n) * 43758.5453123); }
+        
+        function noise(x, z) {
+            const floorX = Math.floor(x);
+            const floorZ = Math.floor(z);
+            const s = floorX + floorZ * 57;
+            const a = hash(s);
+            const b = hash(s + 1);
+            const c = hash(s + 57);
+            const d = hash(s + 58);
             
-            // Base fill
-            ctx.fillStyle = hexColor;
-            ctx.fillRect(0,0,size,size);
+            const fX = fract(x);
+            const fZ = fract(z);
             
-            // Noise/Grit
-            for(let i=0; i<40000; i++) {
-                ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.15})`;
-                ctx.fillRect(Math.random()*size, Math.random()*size, 2, 2);
-                ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`;
-                ctx.fillRect(Math.random()*size, Math.random()*size, 2, 2);
-            }
-
-            if(type === 'rock') {
-                ctx.strokeStyle = "rgba(0,0,0,0.1)";
-                for(let i=0; i<20; i++){
-                    ctx.lineWidth = Math.random()*5;
-                    ctx.beginPath();
-                    ctx.moveTo(Math.random()*size, Math.random()*size);
-                    ctx.lineTo(Math.random()*size, Math.random()*size);
-                    ctx.stroke();
-                }
-            } else if (type === 'snow') {
-                ctx.fillStyle = "rgba(255,255,255,0.1)";
-                for(let i=0; i<100; i++) ctx.fillRect(Math.random()*size, Math.random()*size, 4, 4);
-            }
-
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.wrapS = THREE.RepeatWrapping;
-            tex.wrapT = THREE.RepeatWrapping;
-            return tex;
+            // Cubic smoothing
+            const smoothX = fX * fX * (3.0 - 2.0 * fX);
+            const smoothZ = fZ * fZ * (3.0 - 2.0 * fZ);
+            
+            return (a + (b - a) * smoothX + (c - a) * smoothZ + (a - b - c + d) * smoothX * smoothZ);
         }
 
-        const matRock = new THREE.MeshStandardMaterial({ 
-            map: createProceduralTexture('rock', '#555555'), roughness: 0.9, metalness: 0.1 
-        });
-        const matSnow = new THREE.MeshStandardMaterial({ 
-            map: createProceduralTexture('snow', '#ddddff'), roughness: 0.4, metalness: 0.1,
-            color: 0xeeeeff 
-        });
+        // The master height function: Returns ground height at X,Z
+        // combines multiple "Octaves" of noise for realism
+        function getTerrainHeight(x, z) {
+            let y = 0;
+            // Major peaks (Large structures)
+            y += noise(x * 0.003, z * 0.003) * 120; 
+            // Medium hills
+            y += noise(x * 0.01, z * 0.01) * 30;
+            // Rocky details
+            y += noise(x * 0.05, z * 0.05) * 5;
+            
+            // Valleys flattening
+            if(y < 10) y *= 0.8; 
+
+            return Math.max(-50, y);
+        }
 
         // --- 2. SETUP ---
         const scene = new THREE.Scene();
-        // Custom gradient background simulation via fog color matching
-        const fogColor = new THREE.Color(0xcceeff);
-        scene.background = new THREE.Color(0x88ccff); 
-        scene.fog = new THREE.Fog(0x88ccff, 10, 180);
+        // Fog mimics atmospheric depth
+        const fogColor = new THREE.Color(0xaaccff);
+        scene.background = fogColor;
+        scene.fog = new THREE.FogExp2(0xaaccff, 0.0025);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.1, 2000); // 65 FOV feels more "AAA"
+        const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }); // Performance tuning
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
         document.body.appendChild(renderer.domElement);
 
-        // Lights
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444455, 0.6);
+        // Lighting
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444455, 0.4);
         scene.add(hemiLight);
 
-        const dirLight = new THREE.DirectionalLight(0xffffee, 1.0);
-        dirLight.position.set(100, 150, 100);
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+        dirLight.position.set(300, 500, 200);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.camera.far = 400;
-        dirLight.shadow.bias = -0.0001;
         
-        // Shadow Camera bounds coverage
-        const d = 100;
-        dirLight.shadow.camera.left = -d; dirLight.shadow.camera.right = d;
-        dirLight.shadow.camera.top = d; dirLight.shadow.camera.bottom = -d;
+        // Massive Shadow Config for Vast Maps
+        const camSize = 300;
+        dirLight.shadow.camera.left = -camSize; dirLight.shadow.camera.right = camSize;
+        dirLight.shadow.camera.top = camSize; dirLight.shadow.camera.bottom = -camSize;
+        dirLight.shadow.camera.near = 50; dirLight.shadow.camera.far = 1000;
+        dirLight.shadow.mapSize.width = 4096;
+        dirLight.shadow.mapSize.height = 4096;
+        dirLight.shadow.bias = -0.0005;
         scene.add(dirLight);
 
-        // --- 3. TERRAIN GENERATION (The Mountain) ---
-        const chunkObjects = [];
+        // --- 3. GENERATE VISUAL MESH ---
+        // We create one huge chunk.
+        const TERRAIN_SIZE = 1200;
+        const RES = 256; // Vertex resolution (256x256)
         
-        function createTerrain() {
-            // Skydome for mountain vibes
-            const vertexShader = `
-                varying vec3 vWorldPosition;
-                void main() {
-                    vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
-                    vWorldPosition = worldPosition.xyz;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-                }
-            `;
-            const fragmentShader = `
-                varying vec3 vWorldPosition;
-                void main() {
-                    float h = normalize( vWorldPosition + vec3(0, 50, 0) ).y;
-                    gl_FragColor = mix( vec4(0.8,0.9,1.0,1.0), vec4(0.05,0.2,0.5,1.0), max(0.0, 1.0 - h*1.5) );
-                }
-            `;
-            const skyGeo = new THREE.SphereGeometry(600, 32, 15);
-            const skyMat = new THREE.ShaderMaterial({ vertexShader, fragmentShader, side: THREE.BackSide, fog: false });
-            scene.add(new THREE.Mesh(skyGeo, skyMat));
+        const groundGeo = new THREE.PlaneGeometry(TERRAIN_SIZE, TERRAIN_SIZE, RES, RES);
+        groundGeo.rotateX(-Math.PI / 2);
 
-            // Blocks for terrain (Voxel-ish style)
-            const floorY = -2;
+        // Displace vertices based on our Math Function
+        const colors = [];
+        const posAttr = groundGeo.attributes.position;
+        const vert = new THREE.Vector3();
+        const colorRock = new THREE.Color(0x555555);
+        const colorSnow = new THREE.Color(0xffffff);
+        const colorDirt = new THREE.Color(0x3a3a3a);
+
+        for (let i = 0; i < posAttr.count; i++) {
+            vert.fromBufferAttribute(posAttr, i);
+            const h = getTerrainHeight(vert.x, vert.z);
+            posAttr.setY(i, h);
+
+            // Simple Slope Calculation (neighbors would be better but this works for style)
+            // Color based on height and randomness
+            let c = colorRock.clone();
+            if(h > 80) c.lerp(colorSnow, (h-80)/40); // Snow caps
+            else if (h < 20) c.lerp(colorDirt, 0.8); // Dirt valleys
             
-            // Ground Plane
-            const planeGeo = new THREE.PlaneGeometry(300, 300);
-            const plane = new THREE.Mesh(planeGeo, matSnow);
-            plane.rotation.x = -Math.PI/2;
-            plane.position.y = floorY;
-            plane.receiveShadow = true;
-            scene.add(plane);
-            chunkObjects.push(plane);
+            // Add noise to color
+            c.r += (Math.random()-0.5)*0.1;
+            c.g += (Math.random()-0.5)*0.1;
+            c.b += (Math.random()-0.5)*0.1;
 
-            // Mountain Blocks
-            const boxGeo = new THREE.BoxGeometry(1,1,1);
-            
-            // Generate some random clustered heights (like Perlin noise but simpler)
-            for(let x=-50; x<=50; x+=5) {
-                for(let z=-50; z<=50; z+=5) {
-                    if (Math.abs(x) < 5 && Math.abs(z) < 5) continue; // Clear start area
-
-                    const dist = Math.sqrt(x*x + z*z);
-                    const height = (Math.sin(x*0.1) + Math.cos(z*0.1)) * 4 + (Math.random() * 5);
-                    const scaleY = Math.max(2, Math.abs(height) * (dist/20) + 2); // Taller at edges
-                    
-                    if (scaleY > 3) {
-                        const block = new THREE.Mesh(boxGeo, scaleY > 8 ? matRock : matSnow);
-                        block.position.set(x + Math.random()*2, scaleY/2 + floorY, z + Math.random()*2);
-                        block.scale.set(4 + Math.random()*3, scaleY, 4 + Math.random()*3);
-                        block.castShadow = true;
-                        block.receiveShadow = true;
-                        scene.add(block);
-                        chunkObjects.push(block);
-                    }
-                }
-            }
+            colors.push(c.r, c.g, c.b);
         }
-        createTerrain();
 
-        // --- 4. PLAYER & WEAPON ---
+        groundGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        groundGeo.computeVertexNormals();
+
+        const groundMat = new THREE.MeshStandardMaterial({ 
+            vertexColors: true, 
+            roughness: 0.9, 
+            metalness: 0.1,
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Water/Cloud Layer (just for visuals at low Y)
+        const cloudGeo = new THREE.PlaneGeometry(2000, 2000);
+        const cloudMat = new THREE.MeshBasicMaterial({color: 0xeeeeff, opacity:0.3, transparent:true, side: THREE.DoubleSide});
+        const cloudPlane = new THREE.Mesh(cloudGeo, cloudMat);
+        cloudPlane.rotation.x = -Math.PI/2;
+        cloudPlane.position.y = 5; // Low level clouds/mist
+        scene.add(cloudPlane);
+
+
+        // --- 4. PLAYER PHYSICS ENGINE (Ray/Height Checks) ---
         const controls = new PointerLockControls(camera, document.body);
-        const playerPos = new THREE.Vector3();
-        const playerVel = new THREE.Vector3();
-        const inputs = { w:false, a:false, s:false, d:false, space:false, shift:false };
-
-        // Procedural Weapon Construction
+        const velocity = new THREE.Vector3();
+        const playerSpeed = 8.0; // Units per second
+        let canJump = false;
+        
+        // Physics Consts
+        const GRAVITY = 35.0;
+        const JUMP_FORCE = 15.0;
+        const MAX_SLOPE_CLIMB = 1.2; // How steep of a step can we take instantly?
+        const PLAYER_HEIGHT = 2.0;
+        
+        // --- 5. WEAPON & FX ---
         const weaponGroup = new THREE.Group();
-        // Body
-        const wMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.2, metalness: 0.8 });
-        const wBody = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.6), wMat);
-        // Barrel
-        const wBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.7), wMat);
-        wBarrel.rotation.x = Math.PI/2;
-        wBarrel.position.z = -0.35;
-        // Scope
-        const wScope = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.2, 8), new THREE.MeshStandardMaterial({color: 0x111111}));
-        wScope.rotation.x = Math.PI/2;
-        wScope.position.set(0, 0.12, -0.1);
-        // Mag
-        const wMag = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.25, 0.12), new THREE.MeshStandardMaterial({color:0x111111}));
-        wMag.position.set(0, -0.15, 0);
-
-        weaponGroup.add(wBody, wBarrel, wScope, wMag);
-        weaponGroup.position.set(0.25, -0.25, -0.5); // Default pos
+        // Weapon Styling
+        const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.4 });
+        const gBody = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.5), gunMat);
+        const gGrip = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.15, 0.1), gunMat); gGrip.position.set(0,-0.1,0.1);
+        const gMag = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.25, 0.1), new THREE.MeshStandardMaterial({color:0x333333})); gMag.position.set(0,-0.2,0);
+        const gSight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), new THREE.MeshStandardMaterial({color:0x00ff00, emissive:0x00ff00})); gSight.position.set(0, 0.07, 0.2);
+        
+        weaponGroup.add(gBody, gGrip, gMag, gSight);
+        weaponGroup.position.set(0.2, -0.3, -0.4);
         camera.add(weaponGroup);
         scene.add(camera);
 
-        const weapon = {
-            ammo: 30, maxAmmo: 30, 
-            reloading: false, 
-            nextFire: 0, rate: 100,
-            recoil: 0,
-            basePos: new THREE.Vector3(0.25, -0.25, -0.5)
+        const weaponState = {
+            ammo: 30, maxAmmo: 30,
+            recoil: 0, recoilRecovery: 5.0,
+            rate: 90, lastShot: 0,
+            reloading: false
         };
 
-        // --- 5. ENEMY SYSTEM ---
-        const enemies = [];
-        const enemyGeo = new THREE.Group();
+        const bullets = [];
         
-        // Construct Enemy Model "Soldier"
-        function createSoldierTemplate() {
-            const root = new THREE.Group();
-            const mat = new THREE.MeshStandardMaterial({ color: 0x556644, roughness:0.8 }); // Green camo
-            const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.6), mat);
-            torso.position.y = 0.9;
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshStandardMaterial({color:0x221111}));
-            head.position.y = 1.55;
-            const limbGeo = new THREE.CapsuleGeometry(0.12, 0.5);
-            const legL = new THREE.Mesh(limbGeo, mat); legL.position.set(-0.2, 0.25, 0);
-            const legR = new THREE.Mesh(limbGeo, mat); legR.position.set(0.2, 0.25, 0);
-            
-            root.add(torso, head, legL, legR);
-            return root;
-        }
+        // --- 6. ENEMIES (Respects Physics) ---
+        const enemies = [];
+        const enemyMeshProto = new THREE.Group();
+        const eMat = new THREE.MeshStandardMaterial({ color: 0xaa4444 });
+        const eBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.4, 0.8), eMat); eBody.position.y = 0.9;
+        const eHead = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.3,0.35), new THREE.MeshStandardMaterial({color: 0x222222})); eHead.position.set(0, 1.5, 0);
+        enemyMeshProto.add(eBody, eHead);
 
-        const soldierProto = createSoldierTemplate();
-
-        function spawnEnemy() {
-            if(enemies.length > 6) return; // Limit active count
-            const ent = soldierProto.clone();
-            
-            // Random Pos around player
-            const ang = Math.random() * Math.PI * 2;
-            const dist = 15 + Math.random()*20;
-            ent.position.set(
-                playerPos.x + Math.cos(ang)*dist,
-                5, // Start high and drop
-                playerPos.z + Math.sin(ang)*dist
-            );
-            
-            ent.userData = { health: 3, lastAtk: 0, dy: 0 };
-            scene.add(ent);
+        function spawnEnemy(x, z) {
+            const ent = enemyMeshProto.clone();
+            ent.position.set(x, getTerrainHeight(x, z), z);
+            ent.userData = { health: 100, vel: new THREE.Vector3(), nextAtk: 0 };
             enemies.push(ent);
+            scene.add(ent);
         }
 
-        // --- 6. LOGIC & PARTICLES ---
-        const bullets = []; // Tracers
-        const particles = [];
+        // Spawn a squad near spawn area
+        for(let i=0; i<5; i++) spawnEnemy(20 + Math.random()*10, 20 + Math.random()*10);
 
-        function spawnParticles(pos, count, color) {
-            const mat = new THREE.MeshBasicMaterial({color: color});
-            const geo = new THREE.BoxGeometry(0.08,0.08,0.08);
-            for(let i=0; i<count; i++) {
-                const mesh = new THREE.Mesh(geo, mat);
-                mesh.position.copy(pos);
-                mesh.userData = {
-                    vel: new THREE.Vector3((Math.random()-0.5), Math.random(), (Math.random()-0.5)).normalize().multiplyScalar(5 + Math.random()*5),
-                    life: 0.5
-                };
-                scene.add(mesh);
-                particles.push(mesh);
-            }
-        }
 
-        function updateUI() {
-            document.getElementById('ammo').innerText = `${weapon.ammo} / ${weapon.maxAmmo}`;
-            document.getElementById('ammo-fill').style.width = (weapon.ammo / weapon.maxAmmo * 100) + "%";
-            
-            if(weapon.ammo === 0) document.getElementById('ammo-fill').style.background = 'red';
-            else document.getElementById('ammo-fill').style.background = '#0ff';
-        }
-
-        // --- 7. INPUT HANDLERS ---
-        document.addEventListener('keydown', (e) => {
-            const code = e.code.toLowerCase();
-            if (code === 'keyw') inputs.w = true;
-            if (code === 'keya') inputs.a = true;
-            if (code === 'keys') inputs.s = true;
-            if (code === 'keyd') inputs.d = true;
-            if (code === 'space') inputs.space = true;
-            if (code === 'shiftleft') inputs.shift = true;
-            if (code === 'keyr') reload();
+        // --- 7. LOGIC HANDLERS ---
+        const keyState = {};
+        document.addEventListener('keydown', e => { 
+            keyState[e.code] = true; 
+            if(e.code === 'KeyR') reload();
         });
-        document.addEventListener('keyup', (e) => {
-            const code = e.code.toLowerCase();
-            if (code === 'keyw') inputs.w = false;
-            if (code === 'keya') inputs.a = false;
-            if (code === 'keys') inputs.s = false;
-            if (code === 'keyd') inputs.d = false;
-            if (code === 'space') inputs.space = false;
-            if (code === 'shiftleft') inputs.shift = false;
-        });
+        document.addEventListener('keyup', e => keyState[e.code] = false);
+        
+        let mouseDown = false;
+        document.addEventListener('mousedown', () => mouseDown = true);
+        document.addEventListener('mouseup', () => mouseDown = false);
 
-        let isMouseDown = false;
-        document.addEventListener('mousedown', () => isMouseDown = true);
-        document.addEventListener('mouseup', () => isMouseDown = false);
 
         function reload() {
-            if (weapon.reloading || weapon.ammo === weapon.maxAmmo) return;
-            weapon.reloading = true;
+            if(weaponState.reloading || weaponState.ammo === weaponState.maxAmmo) return;
+            weaponState.reloading = true;
             
-            // UI Feedback
-            const container = document.getElementById('ammo-bar-container');
-            container.style.borderColor = "red";
-            
-            // Animation Helper
-            let progress = 0;
-            const startRot = weaponGroup.rotation.x;
-            const endRot = -Math.PI/3;
-
-            const reloadInt = setInterval(() => {
-                progress += 0.05;
-                // Animate down
-                if(progress < 0.5) weaponGroup.rotation.x = THREE.MathUtils.lerp(startRot, endRot, progress*2);
-                // Animate up
-                else weaponGroup.rotation.x = THREE.MathUtils.lerp(endRot, 0, (progress-0.5)*2);
-
-                if (progress >= 1) {
-                    weapon.ammo = weapon.maxAmmo;
-                    weapon.reloading = false;
-                    container.style.borderColor = "#555";
-                    updateUI();
-                    clearInterval(reloadInt);
+            // Animation
+            let rot = 0;
+            const interval = setInterval(() => {
+                rot += 0.2;
+                weaponGroup.rotation.x -= 0.1; 
+                weaponGroup.rotation.z += 0.05;
+                if(rot > Math.PI) {
+                    clearInterval(interval);
+                    weaponState.ammo = weaponState.maxAmmo;
+                    document.getElementById('ammo').innerText = weaponState.ammo;
+                    document.getElementById('ammo-fill').style.width = '100%';
+                    weaponGroup.rotation.set(0,0,0);
+                    weaponState.reloading = false;
                 }
-            }, 50); // Fast simple interval
+            }, 50);
         }
 
-        function shoot(time) {
-            if (weapon.ammo <= 0) {
-                if(!weapon.reloading) reload();
+        function fire(time) {
+            if(weaponState.reloading || weaponState.ammo <= 0) {
+                if(!weaponState.reloading && weaponState.ammo <=0) reload();
                 return;
             }
-            if (weapon.reloading || time < weapon.nextFire) return;
+            if(time - weaponState.lastShot < weaponState.rate) return;
 
-            weapon.nextFire = time + weapon.rate;
-            weapon.ammo--;
-            weapon.recoil = 0.1;
-            updateUI();
+            weaponState.lastShot = time;
+            weaponState.ammo--;
+            weaponState.recoil += 0.15; // Kick back
+            
+            // Update HUD
+            document.getElementById('ammo').innerText = weaponState.ammo;
+            document.getElementById('ammo-fill').style.width = (weaponState.ammo / weaponState.maxAmmo * 100) + '%';
 
-            // Create Tracer
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(0,0), camera);
-            const intersects = raycaster.intersectObjects(scene.children, true);
+            // Hitscan
+            const ray = new THREE.Raycaster();
+            ray.setFromCamera(new THREE.Vector2(0,0), camera);
+            const hits = ray.intersectObjects(scene.children, true);
             
-            let endPoint;
-            
-            // Check Hits
-            if(intersects.length > 0) {
-                const hit = intersects.find(x => x.object.parent !== weaponGroup); // Ignore self
-                if(hit) {
-                    endPoint = hit.point;
+            // Visual Line
+            let target = ray.ray.at(100, new THREE.Vector3());
+
+            for(let hit of hits) {
+                if(hit.object.parent && enemies.includes(hit.object.parent)) {
+                    // HIT ENEMY
+                    const en = hit.object.parent;
+                    en.userData.health -= 35;
+                    target = hit.point;
                     
-                    // Hit Enemy?
-                    let obj = hit.object;
-                    while(obj.parent && obj.parent.type === 'Group' && obj.parent !== scene) obj = obj.parent;
-                    
-                    if (enemies.includes(obj)) {
-                        obj.userData.health--;
-                        spawnParticles(hit.point, 5, 0xff0000);
-                        if (obj.userData.health <= 0) {
-                            spawnParticles(obj.position, 20, 0x00ff00);
-                            scene.remove(obj);
-                            enemies.splice(enemies.indexOf(obj), 1);
-                            let score = parseInt(document.getElementById('score').innerText);
-                            document.getElementById('score').innerText = (score+100).toString().padStart(4,'0');
-                        }
-                    } else {
-                        spawnParticles(hit.point, 5, 0xcccccc);
+                    // Flash effect
+                    en.children.forEach(c => {
+                         const oldHex = c.material.color.getHex();
+                         c.material.color.setHex(0xffffff);
+                         setTimeout(()=>c.material.color.setHex(oldHex), 50);
+                    });
+
+                    if(en.userData.health <= 0) {
+                        enemies.splice(enemies.indexOf(en), 1);
+                        scene.remove(en);
+                        let s = parseInt(document.getElementById('score').innerText) + 100;
+                        document.getElementById('score').innerText = s.toString().padStart(4,'0');
+                        // Spawn replacement
+                        const ang = Math.random()*6.28;
+                        const dist = 30 + Math.random()*20;
+                        spawnEnemy(camera.position.x + Math.cos(ang)*dist, camera.position.z + Math.sin(ang)*dist);
                     }
-                } else {
-                    endPoint = raycaster.ray.at(100, new THREE.Vector3());
+                    break;
+                } else if (hit.object === ground) {
+                    target = hit.point;
+                    break; // Hit ground
                 }
-            } else {
-                endPoint = raycaster.ray.at(100, new THREE.Vector3());
             }
 
-            // Visual Tracer
-            const lineGeo = new THREE.BufferGeometry().setFromPoints([weaponGroup.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0.05, 0, -0.5)), endPoint]);
-            const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({color:0xffff00}));
+            const geo = new THREE.BufferGeometry().setFromPoints([
+                weaponGroup.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0,0.05,-0.5)),
+                target
+            ]);
+            const line = new THREE.Line(geo, new THREE.LineBasicMaterial({color: 0xffffaa}));
             scene.add(line);
-            setTimeout(() => scene.remove(line), 50);
-
-            // Cam recoil
-            camera.rotation.x += 0.01; 
-            weaponGroup.position.z += 0.05;
+            setTimeout(()=>scene.remove(line), 40);
         }
 
-        // --- 8. GAME LOOP ---
+
+        // --- 8. MAIN LOOP ---
         const clock = new THREE.Clock();
         
-        // Cinematic State
+        // Cinematic Vars
         let isCinematic = true;
-        let cinematicTimer = 0;
-        const CINEMATIC_DURATION = 5.0; 
-        const camStartPos = new THREE.Vector3(0, 100, 100);
-        const camEndPos = new THREE.Vector3(0, 2, 0);
+        let cinematicProgress = 0;
+        const curve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3( -200, 300, 200 ),
+            new THREE.Vector3( 0, 150, 0 ),
+            new THREE.Vector3( 20, 120, -20 ),
+            new THREE.Vector3( 50, getTerrainHeight(50,50)+2, 50 ) // Land
+        ]);
 
-        function animate() {
-            requestAnimationFrame(animate);
+        function updateGame() {
             const dt = Math.min(0.05, clock.getDelta());
             const now = Date.now();
 
-            if (isCinematic) {
-                cinematicTimer += dt;
-                const p = Math.min(1.0, cinematicTimer / CINEMATIC_DURATION);
+            // CINEMATIC MODE
+            if(isCinematic) {
+                cinematicProgress += dt * 0.15; // Speed
+                const pt = curve.getPointAt(Math.min(1, cinematicProgress));
+                camera.position.copy(pt);
+                camera.lookAt(50, getTerrainHeight(50,50), 50);
                 
-                // --- PROGRESS BAR UPDATE ---
-                const pct = Math.floor(p * 100);
+                // Loading bar visuals
+                const pct = Math.floor(Math.min(1, cinematicProgress) * 100);
                 document.getElementById('percent').innerText = pct + '%';
                 document.getElementById('loading-bar-fill').style.width = pct + '%';
 
-                // Curve path
-                const curveP = p * p * (3 - 2 * p); // Smoothstep
-                camera.position.lerpVectors(camStartPos, camEndPos, curveP);
-                camera.lookAt(0, 0, 0);
-
-                if (p >= 1) {
-                    // Loading complete
-                    document.getElementById('loading-label').innerText = "SYSTEMS ONLINE";
-                    document.getElementById('loading-label').style.color = "#0f0";
-                    document.getElementById('loading-bar-fill').style.background = "#fff";
-                    document.getElementById('start-btn').style.display = 'block'; // Show button
-                    document.getElementById('controls-text').style.display = 'block'; 
+                if(cinematicProgress >= 1) {
+                    document.getElementById('loading-container').style.display = 'none';
+                    document.getElementById('start-btn').style.display = 'block';
                     
-                    // Unlock button
-                    document.getElementById('start-btn').onclick = () => {
-                        isCinematic = false;
-                        document.getElementById('blocker').style.display = 'none';
-                        controls.lock();
-                    };
-
-                    // Just hover slightly while waiting for click
-                    camera.position.y = 2 + Math.sin(now*0.001)*0.2;
+                    // Simple hover
+                    camera.position.y = getTerrainHeight(50,50) + 5 + Math.sin(now*0.001);
                 }
+                
+                // Interaction to start
+                document.getElementById('start-btn').onclick = () => {
+                    isCinematic = false;
+                    document.getElementById('blocker').style.display = 'none';
+                    controls.lock();
+                    // Teleport player to start
+                    controls.getObject().position.set(50, getTerrainHeight(50,50)+5, 50);
+                };
+                
                 renderer.render(scene, camera);
-                return; 
+                requestAnimationFrame(updateGame);
+                return;
             }
 
-            // --- GAMEPLAY ---
-
-            // Controls
-            if (controls.isLocked) {
-                const speed = (inputs.shift ? 10.0 : 5.0) * dt;
+            // GAME MODE
+            if(controls.isLocked) {
                 
-                // Friction
-                playerVel.x -= playerVel.x * 10.0 * dt;
-                playerVel.z -= playerVel.z * 10.0 * dt;
-                // Gravity
-                playerVel.y -= 30 * dt;
-
-                const fwd = new THREE.Vector3();
+                // 1. Movement Logic (Respecting Slope)
+                // Determine intended movement direction
+                const speed = (keyState['ShiftLeft'] ? 16 : 8);
+                const forward = new THREE.Vector3();
                 const right = new THREE.Vector3();
-                camera.getWorldDirection(fwd); fwd.y = 0; fwd.normalize();
-                camera.getWorldDirection(right); right.cross(new THREE.Vector3(0,1,0)).normalize(); right.y=0;
+                
+                // Extract camera direction flattened on XZ
+                camera.getWorldDirection(forward); forward.y=0; forward.normalize();
+                camera.getWorldDirection(right); right.crossVectors(camera.up, forward).normalize(); right.multiplyScalar(-1);
 
-                if(inputs.w) playerVel.addScaledVector(fwd, speed * 200 * dt);
-                if(inputs.s) playerVel.addScaledVector(fwd, -speed * 200 * dt);
-                if(inputs.d) playerVel.addScaledVector(right, speed * 200 * dt); // Fixed left/right inverse
-                if(inputs.a) playerVel.addScaledVector(right, -speed * 200 * dt);
+                const moveDir = new THREE.Vector3();
+                if(keyState['KeyW']) moveDir.add(forward);
+                if(keyState['KeyS']) moveDir.sub(forward);
+                if(keyState['KeyD']) moveDir.add(right); // Fixed axis
+                if(keyState['KeyA']) moveDir.sub(right);
+                
+                if(moveDir.length() > 0) moveDir.normalize().multiplyScalar(speed * dt);
 
-                if(inputs.space && Math.abs(playerVel.y) < 0.2) {
-                     playerVel.y = 12; // Jump
+                // Proposed next position (Horizontal)
+                const currentPos = controls.getObject().position;
+                const nextX = currentPos.x + moveDir.x;
+                const nextZ = currentPos.z + moveDir.z;
+                
+                // COLLISION: Slope Check
+                const currentGround = getTerrainHeight(currentPos.x, currentPos.z);
+                const nextGround = getTerrainHeight(nextX, nextZ);
+                const slope = nextGround - currentGround; // Positive means going up
+
+                // Prevent moving off edge
+                if (Math.abs(nextX) > TERRAIN_SIZE/2 - 10 || Math.abs(nextZ) > TERRAIN_SIZE/2 - 10) {
+                    velocity.x = 0; velocity.z = 0; // Wall
+                } 
+                // Wall Climb check (Physics collision)
+                else if (slope > MAX_SLOPE_CLIMB) {
+                    // Wall! Halt horizontal movement
+                    velocity.x = 0; velocity.z = 0;
+                } else {
+                    controls.getObject().position.x = nextX;
+                    controls.getObject().position.z = nextZ;
                 }
 
-                controls.moveRight(playerVel.x * dt); // Library handles local vs world quirk, use simplified Vel logic usually but let's just stick manually
-                controls.getObject().position.add(new THREE.Vector3(playerVel.x*dt, 0, playerVel.z*dt));
-                controls.getObject().position.y += playerVel.y * dt;
-
-                // Floor Hit Test
-                if (controls.getObject().position.y < 2) {
-                    playerVel.y = 0;
-                    controls.getObject().position.y = 2;
+                // Vertical Physics (Gravity)
+                if (keyState['Space'] && canJump) {
+                    velocity.y = JUMP_FORCE;
+                    canJump = false;
                 }
                 
-                playerPos.copy(controls.getObject().position); // Update tracking var
-
-                // Firing
-                if(isMouseDown) shoot(now);
-
-                // Spawning
-                if(Math.random() < 0.005) spawnEnemy();
-            }
-
-            // Update Weapon Smoothness
-            const bob = (inputs.w||inputs.a||inputs.s||inputs.d) ? Math.sin(now * 0.015)*0.05 : Math.sin(now*0.005)*0.01;
-            weaponGroup.position.y = THREE.MathUtils.lerp(weaponGroup.position.y, weapon.basePos.y + bob, 0.1);
-            weaponGroup.position.x = THREE.MathUtils.lerp(weaponGroup.position.x, weapon.basePos.x + bob*0.5, 0.1);
-            weaponGroup.position.z = THREE.MathUtils.lerp(weaponGroup.position.z, weapon.basePos.z + weapon.recoil, 0.2); // Recoil return
-            weapon.recoil = Math.max(0, weapon.recoil - dt);
-
-            // Enemy AI
-            enemies.forEach(e => {
-                // Gravity
-                const rayDown = new THREE.Raycaster(e.position, new THREE.Vector3(0,-1,0));
-                const hits = rayDown.intersectObjects(chunkObjects);
+                velocity.y -= GRAVITY * dt;
                 
-                let targetY = 1.0;
-                if(hits.length>0) targetY = hits[0].point.y + 0.1;
-                
-                // Move to player
-                e.lookAt(playerPos.x, e.position.y, playerPos.z);
-                const dir = new THREE.Vector3().subVectors(playerPos, e.position).normalize();
-                e.position.add(dir.multiplyScalar(3.5 * dt));
-                
-                if (e.position.y > targetY) e.position.y -= 9.8 * dt; // Fall
-                if (e.position.y < targetY) e.position.y = targetY; // Land
+                // Apply Gravity
+                controls.getObject().position.y += velocity.y * dt;
 
-                // Animation bob
-                e.children[0].position.y = 0.9 + Math.sin(now*0.01)*0.05;
+                // Ground Clamping
+                const groundHeight = getTerrainHeight(controls.getObject().position.x, controls.getObject().position.z);
+                
+                if (controls.getObject().position.y < groundHeight + PLAYER_HEIGHT) {
+                    controls.getObject().position.y = groundHeight + PLAYER_HEIGHT;
+                    velocity.y = 0;
+                    canJump = true;
+                }
 
-                // Attack
-                if(e.position.distanceTo(playerPos) < 2) {
-                    if (now - e.userData.lastAtk > 1000) {
-                        e.userData.lastAtk = now;
-                        document.getElementById('damage-overlay').style.boxShadow = "inset 0 0 100px red";
-                        setTimeout(() => document.getElementById('damage-overlay').style.boxShadow = "none", 100);
+                // Recoil Handling
+                if(mouseDown) fire(now);
+                weaponState.recoil = Math.max(0, weaponState.recoil - dt * weaponState.recoilRecovery);
+                
+                // Procedural Animation (Sway + Recoil)
+                const moveBob = moveDir.lengthSq() > 0 ? Math.sin(now * 0.015) * 0.05 : Math.sin(now*0.005) * 0.01;
+                
+                weaponGroup.position.x = THREE.MathUtils.lerp(weaponGroup.position.x, 0.2 + moveBob, 0.1);
+                weaponGroup.position.y = THREE.MathUtils.lerp(weaponGroup.position.y, -0.3 + Math.abs(moveBob) + (velocity.y * -0.01), 0.1);
+                weaponGroup.position.z = THREE.MathUtils.lerp(weaponGroup.position.z, -0.4 + weaponState.recoil, 0.2);
+                
+                camera.rotation.x -= weaponState.recoil * 0.01; // Simple recoil influence on cam view
+
+                // Update Enemies
+                enemies.forEach(e => {
+                    // Logic: Follow Player, respect ground
+                    const dist = e.position.distanceTo(currentPos);
+                    
+                    if(dist < 50) { // Active range
+                        // Horizontal Move
+                        const dir = new THREE.Vector3().subVectors(currentPos, e.position).normalize();
+                        dir.y = 0; // Flatten
                         
-                        let hp = parseInt(document.getElementById('health').innerText);
-                        hp -= 10;
-                        document.getElementById('health').innerText = hp + '%';
-                        if(hp <= 0) {
-                             document.getElementById('start-btn').innerText = "RESTART MISSION";
-                             document.getElementById('start-screen-content').querySelector('h1').innerText = "K.I.A.";
-                             document.getElementById('blocker').style.display = 'flex';
-                             controls.unlock();
-                             location.reload(); 
+                        const nextEX = e.position.x + dir.x * 4 * dt;
+                        const nextEZ = e.position.z + dir.z * 4 * dt;
+                        const nextEHeight = getTerrainHeight(nextEX, nextEZ);
+
+                        if(nextEHeight - e.position.y < 2) { // Only move if slope isn't insane
+                             e.position.x = nextEX;
+                             e.position.z = nextEZ;
+                        }
+
+                        // Face player
+                        e.lookAt(currentPos.x, e.position.y, currentPos.z);
+                        
+                        // Attack
+                        if(dist < 3 && now > e.userData.nextAtk) {
+                            e.userData.nextAtk = now + 1000;
+                            // Flash RED screen
+                            const dom = document.getElementById('damage-overlay');
+                            dom.style.boxShadow = "inset 0 0 100px red";
+                            setTimeout(() => dom.style.boxShadow = "none", 150);
+                            
+                            let hp = parseInt(document.getElementById('health').innerText);
+                            hp -= 15;
+                            document.getElementById('health').innerText = hp + '%';
+                            if(hp <= 0) location.reload();
                         }
                     }
-                }
-            });
-
-            // Particles
-            for(let i=particles.length-1; i>=0; i--) {
-                const p = particles[i];
-                p.userData.life -= dt;
-                p.position.addScaledVector(p.userData.vel, dt);
-                p.rotation.x += dt;
-                if(p.userData.life <= 0) { scene.remove(p); particles.splice(i,1); }
+                    
+                    // Clamp to ground
+                    const gh = getTerrainHeight(e.position.x, e.position.z);
+                    e.position.y = gh + 0.1; 
+                });
             }
 
             renderer.render(scene, camera);
+            requestAnimationFrame(updateGame);
         }
 
-        animate();
+        updateGame();
+
+        // RESIZE HANDLER
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
     </script>
 </body>
 </html>
