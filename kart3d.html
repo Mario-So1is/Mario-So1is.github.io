@@ -2,519 +2,539 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>APEX MOTORSPORT SIMULATION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Ops: WebGL FPS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
-
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Rajdhani', sans-serif; user-select: none; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', Courier, monospace; user-select: none; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* UI LAYERS */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        /* HUD Elements */
+        .hud-row { padding: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        #crosshair { 
+            position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; 
+            transform: translate(-50%, -50%); border: 2px solid rgba(0, 255, 255, 0.5); border-radius: 50%;
+            transition: transform 0.1s;
+        }
+        #crosshair::after { content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 4px; background: cyan; transform: translate(-50%, -50%); }
         
-        /* MENUS */
-        .menu-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(20,20,30,0.9) 0%, rgba(0,0,0,1) 100%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; pointer-events: auto; transition: opacity 0.5s;
-        }
-        .hidden { opacity: 0; pointer-events: none; }
+        .stat-box { background: rgba(0, 20, 40, 0.7); color: #0ff; padding: 15px; border: 1px solid #0ff; border-radius: 4px; text-shadow: 0 0 5px #0ff; }
+        .stat-label { font-size: 12px; opacity: 0.7; display: block; margin-bottom: 5px; }
+        .stat-value { font-size: 32px; font-weight: bold; }
         
-        h1 { font-size: 80px; margin: 0; letter-spacing: 10px; text-transform: uppercase; 
-             background: linear-gradient(45deg, #ff3333, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #damage-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 0 rgba(255, 0, 0, 0); transition: box-shadow 0.1s; pointer-events: none; }
         
-        .btn {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
-            padding: 15px 60px; font-size: 24px; color: white; margin: 10px; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 2px; transition: all 0.2s;
-            font-family: 'Rajdhani', sans-serif; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-        }
-        .btn:hover { background: #ff3333; border-color: #ff3333; transform: scale(1.05); }
-
-        /* HUD */
-        #hud { display: none; pointer-events: none; }
-        #speedometer {
-            position: absolute; bottom: 50px; right: 50px; text-align: right;
-        }
-        #speed-val { font-size: 100px; font-weight: bold; color: white; line-height: 0.8; }
-        #gear-val { font-size: 40px; color: #ff3333; }
-        #lap-timer {
-            position: absolute; top: 20px; right: 40px; font-size: 30px; color: white;
-        }
-        #position-display {
-            position: absolute; top: 20px; left: 40px; font-size: 60px; font-weight: bold; color: white; font-style: italic;
-        }
+        #blocker { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; pointer-events: auto; z-index: 10; }
+        #instructions { text-align: center; color: white; cursor: pointer; }
+        h1 { font-size: 40px; text-transform: uppercase; letter-spacing: 5px; border-bottom: 2px solid cyan; display: inline-block; }
+        p { font-size: 18px; margin-top: 10px; }
         
-        /* CINEMATIC BARS */
-        .cine-bar {
-            position: absolute; left: 0; width: 100%; height: 0%; background: black; transition: height 1s; z-index: 10;
-        }
-        #bar-top { top: 0; }
-        #bar-bottom { bottom: 0; }
-        .cinematic-mode #bar-top, .cinematic-mode #bar-bottom { height: 12%; }
-
+        #ammo-bar { width: 100%; height: 5px; background: #333; margin-top: 5px; }
+        #ammo-fill { height: 100%; background: #0ff; width: 100%; transition: width 0.2s; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <div id="game-container"></div>
-
+    <!-- UI Overlay -->
+    <div id="damage-overlay"></div>
     <div id="ui-layer">
-        
-        <div id="menu-start" class="menu-screen">
-            <h1>Apex Motorsport</h1>
-            <p style="color:#888; letter-spacing: 4px; margin-bottom: 40px;">REAL DRIVING SIMULATOR</p>
-            <div class="btn" onclick="goToCarSelect()">Enter Race</div>
-        </div>
-
-        <div id="menu-select" class="menu-screen hidden">
-            <h1>Select Vehicle</h1>
-            <div style="display:flex; gap: 20px;">
-                <div class="btn" onclick="selectCar('red')">Rosso Corsa</div>
-                <div class="btn" onclick="selectCar('silver')">Silver Arrow</div>
-                <div class="btn" onclick="selectCar('black')">Midnight Ops</div>
+        <div class="hud-row">
+            <div class="stat-box">
+                <span class="stat-label">SCORE</span>
+                <span class="stat-value" id="score">0</span>
             </div>
         </div>
+        
+        <div id="crosshair"></div>
 
-        <div id="hud">
-            <div class="cine-bar" id="bar-top"></div>
-            <div class="cine-bar" id="bar-bottom"></div>
-            <div id="position-display">POS <span id="pos-val">1</span>/4</div>
-            <div id="lap-timer">LAP <span id="lap-val">1</span>/3</div>
-            <div id="speedometer">
-                <div id="speed-val">0</div>
-                <div id="gear-val">N</div>
-                <div style="font-size:14px; color:#aaa">KM/H</div>
+        <div class="hud-row">
+            <div class="stat-box">
+                <span class="stat-label">HEALTH</span>
+                <span class="stat-value" id="health">100</span>
+            </div>
+            <div class="stat-box" style="text-align: right;">
+                <span class="stat-label">AMMUNITION</span>
+                <span class="stat-value" id="ammo">30</span>
+                <div id="ammo-bar"><div id="ammo-fill"></div></div>
             </div>
         </div>
     </div>
 
-<script>
-    /**
-     * APEX ENGINE CONFIGURATION
-     */
-    const CONFIG = {
-        shadowQuality: 2048,
-        trackWidth: 14,
-        aiCount: 3,
-        gravity: -9.8,
-        cameraHeight: 2.5,
-        cameraDist: 5.5
-    };
+    <!-- Start Screen -->
+    <div id="blocker">
+        <div id="instructions">
+            <h1>Neon Protocol</h1>
+            <p>Click to Initialize Neural Link</p>
+            <p style="font-size: 14px; opacity: 0.7;">(W,A,S,D to Move | SPACE to Jump | CLICK to Fire | R to Reload)</p>
+        </div>
+    </div>
 
-    let gameState = 'MENU'; // MENU, SELECT, CINEMATIC, RACING, FINISH
-    let renderer, scene, camera;
-    let clock = new THREE.Clock();
-    let player, trackCurve;
-    let aiCars = [];
-    let collidables = [];
-    let selectedColor = 0xff0000;
-    
-    // Physics State
-    const carPhys = { speed: 0, maxSpeed: 240, accel: 40, break: 80, friction: 0.98, turnSpeed: 1.5, driftFactor: 0.95 };
-    const keys = { w:0, a:0, s:0, d:0 };
-    
-    // --- INITIALIZATION ---
-    function init() {
-        // Renderer
-        renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    <!-- Modules -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+        // --- 1. PROCEDURAL TEXTURE GENERATION SYSTEM ---
+        // Generates realistic gritty textures on the fly using Canvas API to avoid external assets.
+        const textureLoader = new THREE.TextureLoader();
+        
+        function createProceduralTexture(type, colorBase) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Fill background
+            ctx.fillStyle = colorBase;
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Add Noise
+            for (let i = 0; i < 50000; i++) {
+                ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.1})`;
+                ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+                ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.1})`;
+                ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+            }
+
+            // Specific Details
+            if (type === 'concrete') {
+                for(let i=0; i<50; i++) {
+                    ctx.beginPath();
+                    ctx.arc(Math.random()*512, Math.random()*512, Math.random()*20, 0, Math.PI*2);
+                    ctx.fillStyle = `rgba(0,0,0,0.05)`;
+                    ctx.fill();
+                }
+            } else if (type === 'metal') {
+                // Scratches
+                ctx.strokeStyle = 'rgba(200,200,200,0.2)';
+                ctx.lineWidth = 1;
+                for(let i=0; i<100; i++) {
+                    ctx.beginPath();
+                    const x = Math.random() * 512;
+                    const y = Math.random() * 512;
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + Math.random()*50 - 25, y + Math.random()*50 - 25);
+                    ctx.stroke();
+                }
+                // Rust
+                for(let i=0; i<20; i++) {
+                    ctx.fillStyle = `rgba(139, 69, 19, ${Math.random()*0.3})`;
+                    ctx.fillRect(Math.random()*512, Math.random()*512, Math.random()*60, Math.random()*60);
+                }
+            } else if (type === 'grid') {
+                ctx.strokeStyle = '#0ff';
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.2;
+                ctx.beginPath();
+                for(let i=0; i<=512; i+=64) {
+                    ctx.moveTo(i, 0); ctx.lineTo(i, 512);
+                    ctx.moveTo(0, i); ctx.lineTo(512, i);
+                }
+                ctx.stroke();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+
+        const texConcrete = createProceduralTexture('concrete', '#444');
+        const texMetal = createProceduralTexture('metal', '#2a2a2a');
+        const texFloor = createProceduralTexture('grid', '#111');
+        texFloor.repeat.set(10, 10);
+
+        // --- 2. GAME SETUP ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+        scene.fog = new THREE.FogExp2(0x050505, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
         document.body.appendChild(renderer.domElement);
 
-        // Scene
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111111);
-        scene.fog = new THREE.FogExp2(0x111111, 0.005);
-
         // Lights
-        const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-        scene.add(ambient);
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.4);
+        scene.add(hemiLight);
 
-        const sun = new THREE.DirectionalLight(0xffdfba, 1.5);
-        sun.position.set(100, 100, 50);
-        sun.castShadow = true;
-        sun.shadow.mapSize.width = CONFIG.shadowQuality;
-        sun.shadow.mapSize.height = CONFIG.shadowQuality;
-        sun.shadow.camera.near = 0.5;
-        sun.shadow.camera.far = 500;
-        sun.shadow.camera.left = -100;
-        sun.shadow.camera.right = 100;
-        sun.shadow.camera.top = 100;
-        sun.shadow.camera.bottom = -100;
-        scene.add(sun);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(50, 200, 100);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        scene.add(dirLight);
 
-        // Camera
-        camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+        // --- 3. LEVEL GENERATION ---
+        // Floor
+        const floorGeo = new THREE.PlaneGeometry(200, 200);
+        const floorMat = new THREE.MeshStandardMaterial({ map: texFloor, roughness: 0.8, metalness: 0.2 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
 
-        // Generate Assets
-        createTrack();
-        generateEnvironment();
+        // Walls (Randomly placed to create cover)
+        const wallGeo = new THREE.BoxGeometry(4, 8, 4);
+        const wallMat = new THREE.MeshStandardMaterial({ map: texConcrete, roughness: 0.9 });
 
-        // Listeners
-        window.addEventListener('resize', onResize);
-        window.addEventListener('keydown', e => handleKey(e, 1));
-        window.addEventListener('keyup', e => handleKey(e, 0));
-
-        // Start Loop
-        animate();
-    }
-
-    // --- GAME FLOW CONTROL ---
-    window.goToCarSelect = function() {
-        document.getElementById('menu-start').classList.add('hidden');
-        document.getElementById('menu-select').classList.remove('hidden');
-        gameState = 'SELECT';
-    }
-
-    window.selectCar = function(color) {
-        if(color === 'red') selectedColor = 0xc41e3a;
-        if(color === 'silver') selectedColor = 0xcccccc;
-        if(color === 'black') selectedColor = 0x111111;
-        
-        document.getElementById('menu-select').classList.add('hidden');
-        document.getElementById('hud').style.display = 'block';
-        document.getElementById('hud').classList.add('cinematic-mode');
-        
-        startGame();
-    }
-
-    function startGame() {
-        // Create Player
-        player = new Car(scene, selectedColor, 0); // 0 offset
-        player.mesh.position.copy(trackCurve.getPointAt(0));
-        
-        // Create AI
-        const aiColors = [0x2244ff, 0x118811, 0xffaa00];
-        for(let i=0; i<CONFIG.aiCount; i++) {
-            let ai = new Car(scene, aiColors[i], (i+1) * 0.015); // Start slightly ahead
-            ai.isAI = true;
-            ai.aiOffset = (Math.random() - 0.5) * 4; // Lane variance
-            ai.progress = (i+1) * 0.005; // Starting grid positions
-            aiCars.push(ai);
+        for (let i = 0; i < 40; i++) {
+            const wall = new THREE.Mesh(wallGeo, wallMat);
+            wall.position.x = (Math.random() - 0.5) * 100;
+            wall.position.z = (Math.random() - 0.5) * 100;
+            wall.position.y = 4;
+            wall.scale.set(1 + Math.random() * 2, 1 + Math.random(), 1 + Math.random() * 2);
+            wall.castShadow = true;
+            wall.receiveShadow = true;
+            scene.add(wall);
         }
 
-        gameState = 'CINEMATIC';
-        cinematicTimer = 0;
-    }
+        // --- 4. PLAYER CONTROLLER & WEAPON ---
+        const controls = new PointerLockControls(camera, document.body);
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        let moveForward = false;
+        let moveBackward = false;
+        let moveLeft = false;
+        let moveRight = false;
+        let canJump = false;
+        let isSprinting = false;
 
-    // --- ASSET GENERATION ---
-    
-    // 1. Procedural Asphalt Texture
-    function getAsphaltTexture() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 512; canvas.height = 512;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#333'; ctx.fillRect(0,0,512,512);
+        // Weapon Model (Procedural)
+        const weaponGroup = new THREE.Group();
+        const gunGeo = new THREE.BoxGeometry(0.2, 0.2, 0.6);
+        const gunMat = new THREE.MeshStandardMaterial({ map: texMetal, color: 0x333333, metalness: 0.8, roughness: 0.2 });
+        const gunMesh = new THREE.Mesh(gunGeo, gunMat);
+        gunMesh.position.set(0.2, -0.2, -0.5);
+        gunMesh.castShadow = true;
         
-        // Noise
-        for(let i=0; i<50000; i++) {
-            ctx.fillStyle = Math.random() > 0.5 ? '#444' : '#222';
-            ctx.fillRect(Math.random()*512, Math.random()*512, 2, 2);
-        }
-        const tex = new THREE.CanvasTexture(canvas);
-        tex.wrapS = THREE.RepeatWrapping;
-        tex.wrapT = THREE.RepeatWrapping;
-        tex.repeat.set(20, 100);
-        tex.anisotropy = 16;
-        return tex;
-    }
+        // Scope/Sight
+        const sightGeo = new THREE.BoxGeometry(0.05, 0.05, 0.1);
+        const sightMesh = new THREE.Mesh(sightGeo, new THREE.MeshBasicMaterial({ color: 0x00ffff }));
+        sightMesh.position.set(0, 0.15, 0.2);
+        gunMesh.add(sightMesh);
 
-    // 2. The Track (CatmullRom Spline)
-    function createTrack() {
-        // Define key points for a complex circuit
-        const points = [
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(50, 0, -100),
-            new THREE.Vector3(150, 0, -150),
-            new THREE.Vector3(250, 0, -50),
-            new THREE.Vector3(200, 0, 50),
-            new THREE.Vector3(100, 0, 100),
-            new THREE.Vector3(-50, 0, 150),
-            new THREE.Vector3(-150, 0, 50),
-            new THREE.Vector3(-100, 0, -50)
-        ];
-        
-        trackCurve = new THREE.CatmullRomCurve3(points);
-        trackCurve.closed = true;
-        
-        // Visual Track Mesh
-        const geometry = new THREE.TubeGeometry(trackCurve, 200, CONFIG.trackWidth, 8, true);
-        const material = new THREE.MeshStandardMaterial({ 
-            map: getAsphaltTexture(),
-            roughness: 0.8,
-            color: 0xffffff
-        });
-        const trackMesh = new THREE.Mesh(geometry, material);
-        trackMesh.receiveShadow = true;
-        // Flatten the tube to be a road
-        trackMesh.scale.y = 0.05; 
-        scene.add(trackMesh);
+        // Muzzle Flash Light
+        const muzzleLight = new THREE.PointLight(0x00ffff, 0, 5);
+        muzzleLight.position.set(0, 0, -0.6);
+        gunMesh.add(muzzleLight);
 
-        // Curbs (Visual)
-        const curbGeo = new THREE.TubeGeometry(trackCurve, 200, CONFIG.trackWidth + 1, 8, true);
-        const curbMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }); // Hacky outline
-        const curb = new THREE.Mesh(curbGeo, curbMat);
-        curb.position.y = -0.1;
-        curb.scale.y = 0.05;
-        scene.add(curb);
-    }
+        weaponGroup.add(gunMesh);
+        camera.add(weaponGroup);
+        scene.add(camera); // Add camera to scene
 
-    function generateEnvironment() {
-        // Simple Ground
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(1000, 1000),
-            new THREE.MeshStandardMaterial({ color: 0x1a2e1a, roughness: 1 })
-        );
-        plane.rotation.x = -Math.PI/2;
-        plane.position.y = -0.5;
-        plane.receiveShadow = true;
-        scene.add(plane);
+        // Weapon State
+        const weapon = {
+            damage: 25,
+            fireRate: 100, // ms
+            lastFire: 0,
+            maxAmmo: 30,
+            currentAmmo: 30,
+            reloading: false,
+            sway: { x: 0, y: 0 },
+            recoil: 0
+        };
 
-        // Random Trees/Buildings (Low Poly)
-        const geo = new THREE.BoxGeometry(10, 50, 10);
-        const mat = new THREE.MeshStandardMaterial({ color: 0x222222 });
-        for(let i=0; i<50; i++) {
-            const mesh = new THREE.Mesh(geo, mat);
-            mesh.position.set((Math.random()-0.5)*800, 25, (Math.random()-0.5)*800);
-            mesh.castShadow = true;
-            scene.add(mesh);
-        }
-    }
-
-    // --- CAR CLASS ---
-    class Car {
-        constructor(scene, color, startProgress) {
-            this.mesh = new THREE.Group();
-            this.velocity = new THREE.Vector3();
-            this.speed = 0;
-            this.progress = startProgress; // 0 to 1 along the track
-            this.lap = 1;
-            this.isAI = false;
-            this.aiOffset = 0;
-            
-            // --- CAR MODEL BUILDING ---
-            // Main Body
-            const bodyMat = new THREE.MeshPhysicalMaterial({ 
-                color: color, 
-                metalness: 0.7, 
-                roughness: 0.2, 
-                clearcoat: 1.0, 
-                clearcoatRoughness: 0.1 
-            });
-            const chassisGeo = new THREE.BoxGeometry(1.8, 0.6, 4.2);
-            // Vertex manipulation for shape
-            const pos = chassisGeo.attributes.position;
-            for(let i=0; i<pos.count; i++) {
-                if(pos.getY(i) > 0) {
-                    pos.setX(i, pos.getX(i) * 0.85); // Taper top
-                    // Slope hood/trunk
-                    if(pos.getZ(i) > 1.5 || pos.getZ(i) < -1.5) pos.setY(i, 0.1); 
-                }
+        // Inputs
+        const onKeyDown = function (event) {
+            switch (event.code) {
+                case 'ArrowUp': case 'KeyW': moveForward = true; break;
+                case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
+                case 'ArrowDown': case 'KeyS': moveBackward = true; break;
+                case 'ArrowRight': case 'KeyD': moveRight = true; break;
+                case 'Space': if (canJump === true) velocity.y += 15; canJump = false; break;
+                case 'ShiftLeft': isSprinting = true; break;
+                case 'KeyR': reload(); break;
             }
-            chassisGeo.computeVertexNormals();
-            
-            const chassis = new THREE.Mesh(chassisGeo, bodyMat);
-            chassis.castShadow = true;
-            chassis.position.y = 0.5;
-            this.mesh.add(chassis);
+        };
 
-            // Cabin
-            const glass = new THREE.Mesh(
-                new THREE.BoxGeometry(1.6, 0.5, 2.0),
-                new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1, transmission: 0.5 })
+        const onKeyUp = function (event) {
+            switch (event.code) {
+                case 'ArrowUp': case 'KeyW': moveForward = false; break;
+                case 'ArrowLeft': case 'KeyA': moveLeft = false; break;
+                case 'ArrowDown': case 'KeyS': moveBackward = false; break;
+                case 'ArrowRight': case 'KeyD': moveRight = false; break;
+                case 'ShiftLeft': isSprinting = false; break;
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('keyup', onKeyUp);
+        
+        // Mouse Listeners for Shooting
+        let isFiring = false;
+        document.addEventListener('mousedown', () => { if(controls.isLocked) isFiring = true; });
+        document.addEventListener('mouseup', () => { isFiring = false; });
+
+        // --- 5. ENEMY AI SYSTEM ---
+        const enemies = [];
+        const enemyGeo = new THREE.CapsuleGeometry(0.5, 1.5, 4, 8);
+        const enemyMat = new THREE.MeshStandardMaterial({ color: 0xff0044, metalness: 0.5, roughness: 0.5 });
+        
+        function spawnEnemy() {
+            if(enemies.length > 8) return; // Limit enemies
+            const enemy = new THREE.Mesh(enemyGeo, enemyMat.clone());
+            
+            // Random position away from player
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 20 + Math.random() * 30;
+            enemy.position.set(
+                camera.position.x + Math.cos(angle) * dist,
+                2,
+                camera.position.z + Math.sin(angle) * dist
             );
-            glass.position.set(0, 0.9, -0.2);
-            this.mesh.add(glass);
-
-            // Wheels
-            const wGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 32);
-            wGeo.rotateZ(Math.PI/2);
-            const wMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.9 });
-            const positions = [
-                {x: 0.9, z: 1.2}, {x: -0.9, z: 1.2},
-                {x: 0.9, z: -1.2}, {x: -0.9, z: -1.2}
-            ];
-            positions.forEach(p => {
-                const w = new THREE.Mesh(wGeo, wMat);
-                w.position.set(p.x, 0.35, p.z);
-                w.castShadow = true;
-                this.mesh.add(w);
-            });
-
-            // Headlights (Point Lights for realism)
-            if(!this.isAI) {
-                const hl = new THREE.SpotLight(0xffffff, 2, 50, 0.5, 0.5);
-                hl.position.set(0, 0.6, -2);
-                hl.target.position.set(0, 0, -10);
-                this.mesh.add(hl);
-                this.mesh.add(hl.target);
-            }
-
-            scene.add(this.mesh);
+            
+            enemy.userData = { health: 60, lastAttack: 0 };
+            enemy.castShadow = true;
+            scene.add(enemy);
+            enemies.push(enemy);
         }
 
-        update(dt) {
-            // Get position on track curve
-            const trackPos = trackCurve.getPointAt(this.progress % 1);
-            const tangent = trackCurve.getTangentAt(this.progress % 1).normalize();
+        // --- 6. PARTICLES & EFFECTS ---
+        const particles = [];
+        function createExplosion(pos, color) {
+            const particleGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+            const particleMat = new THREE.MeshBasicMaterial({ color: color });
             
-            // Calculate orientation
-            // We need a 'Right' vector to apply lateral movement (steering)
-            const up = new THREE.Vector3(0, 1, 0);
-            const axisRight = new THREE.Vector3().crossVectors(up, tangent).normalize();
-
-            // AI LOGIC
-            let steerInput = 0;
-            let accelInput = 0;
-
-            if (this.isAI) {
-                // Ideally, AI stays on track line + offset
-                // Current position vs Ideal Position
-                const idealPos = trackPos.clone().add(axisRight.clone().multiplyScalar(this.aiOffset));
-                const distToIdeal = this.mesh.position.distanceTo(idealPos);
-                
-                // Simple AI speed governance
-                this.speed = 180 * 0.02; // AI constant speed for simplicity
-                
-                // Lerp towards ideal
-                this.mesh.position.lerp(idealPos, 0.05);
-                this.mesh.lookAt(trackPos.clone().add(tangent.multiplyScalar(10)));
-                
-                // Loop progress
-                this.progress += (this.speed * 0.0001); 
-
-            } else {
-                // PLAYER PHYSICS
-                
-                // 1. Acceleration
-                if (keys.w) this.speed += carPhys.accel * dt;
-                else if (keys.s) this.speed -= carPhys.break * dt;
-                else this.speed *= carPhys.friction; // Coasting
-                
-                // Cap Speed
-                this.speed = Math.max(Math.min(this.speed, carPhys.maxSpeed), -50);
-
-                // 2. Turning
-                // Rotate the CAR MESH, not just position
-                if(Math.abs(this.speed) > 1) {
-                    if (keys.a) this.mesh.rotation.y += carPhys.turnSpeed * dt;
-                    if (keys.d) this.mesh.rotation.y -= carPhys.turnSpeed * dt;
-                }
-
-                // 3. Apply Velocity Vector based on Car Rotation (Drifting possible)
-                // Get car's forward vector
-                const forward = new THREE.Vector3(0, 0, -1);
-                forward.applyAxisAngle(new THREE.Vector3(0,1,0), this.mesh.rotation.y);
-                
-                // Move car
-                this.mesh.position.add(forward.multiplyScalar(this.speed * dt));
-
-                // 4. Track Progress Calculation (for laps)
-                // Find closest point on spline to track lap completion (Simple approximation)
-                // In a real sim, we project vector. Here we just update progress blindly for lap counting visual
-                // Actually, let's just drive. We need to stay somewhat near the track or we are "offroad"
-                
-                // Check Lap
-                const d = this.mesh.position.distanceTo(trackCurve.getPointAt(0));
-                if (d < 20 && this.lastD > 20) {
-                   // Lap crossed logic would go here
-                }
-                this.lastD = d;
+            for(let i=0; i<15; i++) {
+                const mesh = new THREE.Mesh(particleGeo, particleMat);
+                mesh.position.copy(pos);
+                // Random velocity
+                mesh.userData = {
+                    vel: new THREE.Vector3(
+                        (Math.random()-0.5), (Math.random()-0.5), (Math.random()-0.5)
+                    ).normalize().multiplyScalar(0.2 + Math.random()*0.3),
+                    life: 1.0
+                };
+                scene.add(mesh);
+                particles.push(mesh);
             }
+        }
 
-            // --- COLLISION (Simple Sphere) ---
-            if (!this.isAI) {
-                aiCars.forEach(ai => {
-                    const dist = this.mesh.position.distanceTo(ai.mesh.position);
-                    if (dist < 3.0) {
-                        // Bounce
-                        const push = this.mesh.position.clone().sub(ai.mesh.position).normalize();
-                        this.mesh.position.add(push.multiplyScalar(0.5));
-                        this.speed *= 0.8; // Crash penalty
+        // --- 7. GAME LOGIC ---
+        let prevTime = performance.now();
+        const player = { health: 100, score: 0 };
+
+        function updateHUD() {
+            document.getElementById('health').innerText = Math.max(0, Math.floor(player.health));
+            document.getElementById('ammo').innerText = weapon.currentAmmo;
+            document.getElementById('score').innerText = player.score;
+            document.getElementById('ammo-fill').style.width = (weapon.currentAmmo / weapon.maxAmmo * 100) + '%';
+            
+            // Crosshair bloom on recoil
+            const spread = 20 + weapon.recoil * 100;
+            const ch = document.getElementById('crosshair');
+            ch.style.width = spread + 'px';
+            ch.style.height = spread + 'px';
+        }
+
+        function reload() {
+            if(weapon.reloading || weapon.currentAmmo === weapon.maxAmmo) return;
+            weapon.reloading = true;
+            // Simple animation trick
+            gunMesh.rotation.x = -Math.PI/4; 
+            setTimeout(() => {
+                weapon.currentAmmo = weapon.maxAmmo;
+                weapon.reloading = false;
+                gunMesh.rotation.x = 0;
+                updateHUD();
+            }, 1000);
+        }
+
+        function shoot() {
+            const now = performance.now();
+            if (now - weapon.lastFire < weapon.fireRate || weapon.reloading || weapon.currentAmmo <= 0) return;
+
+            weapon.lastFire = now;
+            weapon.currentAmmo--;
+            weapon.recoil += 0.1;
+            
+            // Muzzle Flash
+            muzzleLight.intensity = 5;
+            setTimeout(() => muzzleLight.intensity = 0, 50);
+
+            // Raycast
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(0,0), camera);
+            const intersects = raycaster.intersectObjects(scene.children);
+
+            let hitSomething = false;
+
+            for (let i = 0; i < intersects.length; i++) {
+                const object = intersects[i].object;
+                if (object === floor) continue; // Don't shoot floor immediately
+                
+                // Hit enemy
+                if (enemies.includes(object)) {
+                    object.userData.health -= weapon.damage;
+                    createExplosion(intersects[i].point, 0xff0044); // Blood
+                    object.material.emissive.setHex(0xffffff);
+                    setTimeout(() => object.material.emissive.setHex(0x000000), 50);
+                    
+                    if (object.userData.health <= 0) {
+                        // Kill
+                        createExplosion(object.position, 0xffaa00);
+                        scene.remove(object);
+                        enemies.splice(enemies.indexOf(object), 1);
+                        player.score += 100;
+                    }
+                    hitSomething = true;
+                    break;
+                } else if(object !== gunMesh && object !== sightMesh) {
+                    // Hit wall
+                    createExplosion(intersects[i].point, 0xcccccc); // Dust
+                    hitSomething = true;
+                    break;
+                }
+            }
+            
+            // Camera Shake/Kick
+            camera.rotation.x += 0.002;
+            gunMesh.position.z += 0.1; // Kickback model
+
+            updateHUD();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = performance.now();
+            const delta = (time - prevTime) / 1000;
+            prevTime = time;
+
+            if (controls.isLocked) {
+                // --- PHYSICS ---
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+                velocity.y -= 9.8 * 20.0 * delta; // Gravity
+
+                direction.z = Number(moveForward) - Number(moveBackward);
+                direction.x = Number(moveRight) - Number(moveLeft);
+                direction.normalize();
+
+                const speed = isSprinting ? 120.0 : 60.0;
+                if (moveForward || moveBackward) velocity.z -= direction.z * speed * delta;
+                if (moveLeft || moveRight) velocity.x -= direction.x * speed * delta;
+
+                controls.moveRight(-velocity.x * delta);
+                controls.moveForward(-velocity.z * delta);
+                controls.getObject().position.y += (velocity.y * delta); // Move Up/Down
+
+                // Floor Collision
+                if (controls.getObject().position.y < 2) {
+                    velocity.y = 0;
+                    controls.getObject().position.y = 2;
+                    canJump = true;
+                }
+
+                // --- WEAPON DYNAMICS ---
+                // Return to rest
+                gunMesh.position.z = THREE.MathUtils.lerp(gunMesh.position.z, -0.5, delta * 10);
+                weapon.recoil = Math.max(0, weapon.recoil - delta * 2);
+
+                // Sway (Movement Bob)
+                if (moveForward || moveBackward || moveLeft || moveRight) {
+                    const bobFreq = isSprinting ? 15 : 10;
+                    const bobAmp = isSprinting ? 0.02 : 0.01;
+                    gunMesh.position.y = -0.2 + Math.sin(time * 0.01 * bobFreq) * bobAmp;
+                    gunMesh.position.x = 0.2 + Math.cos(time * 0.01 * bobFreq) * bobAmp;
+                } else {
+                    gunMesh.position.y = THREE.MathUtils.lerp(gunMesh.position.y, -0.2, delta * 5);
+                    gunMesh.position.x = THREE.MathUtils.lerp(gunMesh.position.x, 0.2, delta * 5);
+                }
+
+                // Fire Logic
+                if(isFiring) shoot();
+
+                // --- AI LOGIC ---
+                // Spawn logic
+                if (Math.random() < 0.01) spawnEnemy();
+
+                enemies.forEach(enemy => {
+                    // Look at player
+                    enemy.lookAt(camera.position.x, enemy.position.y, camera.position.z);
+                    
+                    // Move towards player
+                    const dist = enemy.position.distanceTo(camera.position);
+                    if(dist > 2) {
+                        const dir = new THREE.Vector3().subVectors(camera.position, enemy.position).normalize();
+                        enemy.position.add(dir.multiplyScalar(delta * 4)); // Enemy Speed
+                    }
+
+                    // Attack Player
+                    if(dist < 3 && time - enemy.userData.lastAttack > 1000) {
+                        player.health -= 10;
+                        enemy.userData.lastAttack = time;
+                        updateHUD();
+                        
+                        // Red flash
+                        const overlay = document.getElementById('damage-overlay');
+                        overlay.style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.5)";
+                        setTimeout(() => overlay.style.boxShadow = "none", 200);
+
+                        if(player.health <= 0) {
+                            controls.unlock();
+                            alert("GAME OVER - Score: " + player.score);
+                            location.reload();
+                        }
                     }
                 });
+
+                // --- PARTICLES ---
+                for(let i=particles.length-1; i>=0; i--) {
+                    const p = particles[i];
+                    p.userData.life -= delta * 2;
+                    p.position.add(p.userData.vel);
+                    p.scale.multiplyScalar(0.95);
+                    if(p.userData.life <= 0) {
+                        scene.remove(p);
+                        particles.splice(i, 1);
+                    }
+                }
             }
-        }
-    }
 
-    // Input Handling
-    function handleKey(e, state) {
-        if(e.key === 'w' || e.key === 'ArrowUp') keys.w = state;
-        if(e.key === 'a' || e.key === 'ArrowLeft') keys.a = state;
-        if(e.key === 's' || e.key === 'ArrowDown') keys.s = state;
-        if(e.key === 'd' || e.key === 'ArrowRight') keys.d = state;
-    }
-
-    // Resize
-    function onResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    // --- MAIN LOOP ---
-    let cinematicTimer = 0;
-
-    function animate() {
-        requestAnimationFrame(animate);
-        const dt = clock.getDelta();
-
-        if (gameState === 'CINEMATIC') {
-            cinematicTimer += dt;
-            // Pan Camera around player
-            const angle = cinematicTimer * 0.5;
-            const camX = player.mesh.position.x + Math.sin(angle) * 15;
-            const camZ = player.mesh.position.z + Math.cos(angle) * 15;
-            camera.position.set(camX, 5, camZ);
-            camera.lookAt(player.mesh.position);
-
-            if (cinematicTimer > 4) {
-                gameState = 'RACE';
-                document.getElementById('hud').classList.remove('cinematic-mode');
-            }
-        }
-        else if (gameState === 'RACE') {
-            // Player Logic
-            player.update(dt);
-
-            // Camera Follow (Smooth Lerp)
-            // Calculate desired camera position relative to car rotation
-            const relativeOffset = new THREE.Vector3(0, CONFIG.cameraHeight, CONFIG.cameraDist);
-            const carRotation = player.mesh.rotation.y;
-            
-            // Offset logic: Position behind car
-            const camX = player.mesh.position.x + Math.sin(carRotation) * CONFIG.cameraDist;
-            const camZ = player.mesh.position.z + Math.cos(carRotation) * CONFIG.cameraDist;
-            
-            // Lerp Camera
-            camera.position.x += (camX - camera.position.x) * 0.1;
-            camera.position.z += (camZ - camera.position.z) * 0.1;
-            camera.position.y += ((player.mesh.position.y + CONFIG.cameraHeight) - camera.position.y) * 0.1;
-            camera.lookAt(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
-
-            // Update UI
-            document.getElementById('speed-val').innerText = Math.floor(Math.abs(player.speed));
-            
-            // Calc Position (Simple: who has higher Z usually implies further, but on a loop its hard. 
-            // We will just randomize it for the demo effect or check Distance to next waypoint)
-            // (Skipped complex lap logic for brevity)
+            renderer.render(scene, camera);
         }
 
-        // AI Update (Always running)
-        if(gameState === 'CINEMATIC' || gameState === 'RACE') {
-            aiCars.forEach(ai => ai.update(dt));
-        }
+        // --- START GAME HANDLER ---
+        const blocker = document.getElementById('blocker');
+        const instructions = document.getElementById('instructions');
 
-        renderer.render(scene, camera);
-    }
+        instructions.addEventListener('click', function () {
+            controls.lock();
+        });
 
-    init();
+        controls.addEventListener('lock', function () {
+            instructions.style.display = 'none';
+            blocker.style.display = 'none';
+        });
 
-</script>
+        controls.addEventListener('unlock', function () {
+            blocker.style.display = 'flex';
+            instructions.style.display = '';
+        });
+
+        // Initialize HUD
+        updateHUD();
+        animate();
+
+        // Handle Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
 </body>
 </html>
